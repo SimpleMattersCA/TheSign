@@ -12,9 +12,32 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    
+    if (notification) {
+        [self showMessage:notification.alertBody];
+    }
+    
+    [self.window makeKeyAndVisible];
     // Override point for customization after application launch.
     return YES;
 }
+
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    
+   //[self showMessage:notification.alertBody];
+}
+
+- (void)showMessage:(NSString *)text {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"From Notification"
+                                                        message:text delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    [alertView show];
+}
+
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
