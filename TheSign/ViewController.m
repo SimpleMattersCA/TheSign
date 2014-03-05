@@ -86,6 +86,7 @@ CBCentralManager *man;
     _outputDescription.text=model.description;*/
     
 }
+/*
 - (IBAction)showInfo2:(id)sender {
     PopulateView *data=  [[PopulateView alloc]init];
     InfoModel *model=[[InfoModel alloc] init];
@@ -94,17 +95,7 @@ CBCentralManager *man;
     
     _outputText.text=model.title;
     _outputDescription.text=model.description;
-}
-
-- (IBAction)showInfo3:(id)sender {
-    PopulateView *data=  [[PopulateView alloc]init];
-    InfoModel *model=[[InfoModel alloc] init];
-    
-    model=[data getTextByID:2];
-    
-    _outputText.text=model.title;
-    _outputDescription.text=model.description;
-}
+}*/
 
 
 
