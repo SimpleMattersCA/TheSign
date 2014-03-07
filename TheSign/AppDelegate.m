@@ -7,38 +7,58 @@
 //
 
 #import "AppDelegate.h"
+@import CoreLocation;
+
+@interface AppDelegate() <UIApplicationDelegate,CLLocationManagerDelegate>
+@property CLLocationManager *locationManager;
+
+@end
+
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
-    
-    if (notification) {
-        [self showMessage:notification.alertBody];
-    }
-    
     [self.window makeKeyAndVisible];
+    
     // Override point for customization after application launch.
     return YES;
 }
 
 
+- (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
+{
+
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    
+    if(state == CLRegionStateInside)
+    {
+        notification.alertBody = NSLocalizedString(@"Beacon detected", @"");
+    }
+    else if(state == CLRegionStateOutside)
+    {
+        notification.alertBody = NSLocalizedString(@"Beacon lost", @"");
+    }
+    else
+    {
+        return;
+    }
+    
+    /*
+     If the application is in the foreground, it will get a callback to application:didReceiveLocalNotification:.
+     If it's not, iOS will display the notification to the user.
+     */
+    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+}
+
+
+
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-    
-    
-   //[self showMessage:notification.alertBody];
+    NSString *cancelButtonTitle = NSLocalizedString(@"OK", @"Cancel");
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:notification.alertBody message:nil delegate:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
+    [alert show];
 }
 
-- (void)showMessage:(NSString *)text {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"From Notification"
-                                                        message:text delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-    [alertView show];
-}
-
-							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

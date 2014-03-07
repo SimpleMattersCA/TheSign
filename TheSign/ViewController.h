@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "CoreBluetooth/CBCentralManager.h"
-@interface ViewController :UIViewController<CBCentralManagerDelegate>
+@import UIKit;
+
+@interface ViewController :UIViewController
 
 @end

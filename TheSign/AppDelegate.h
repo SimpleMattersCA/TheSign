@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder
 
 @property (strong, nonatomic) UIWindow *window;
 

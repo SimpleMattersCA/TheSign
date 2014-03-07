@@ -9,53 +9,118 @@
 #import "ViewController.h"
 #import "InfoModel.h"
 #import "PopulateView.h"
-#import "CoreBluetooth/CBCentralManager.h"
-#import "CoreBluetooth/CBPeripheral.h"
+#import "Business.h"
+#import "Item.h"
+@import CoreLocation;
 
-@interface ViewController ()
+@interface ViewController () <CLLocationManagerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *outputText;
 @property (weak, nonatomic) IBOutlet UITextView *outputDescription;
+@property (strong,nonatomic) CLLocationManager *locationManager;
 
 @end
 
 @implementation ViewController
 
-CBCentralManager *man;
+NSUUID *proximityUUID;
+
+
+
+NSArray *businesses;
+NSArray *items;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    man =[[CBCentralManager alloc] initWithDelegate:self queue:nil options:nil];
-    [man scanForPeripheralsWithServices:nil options:nil];
+    
+    Business *b1=[[Business alloc] init];
+    b1.name=@"Apple";
+    b1.welcomeText=@"Welcome to Apple Store";
+    
+    Business *b2=[[Business alloc] init];
+    b2.name=@"Microsoft";
+    b2.welcomeText=@"Welcome to Microsoft Store";
+    
+    businesses=[[NSArray alloc]initWithObjects:b1,b2, nil];
+
+
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+
+    proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
+    
+    [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"Estimote Region"];
+    
 }
 
-- (void)centralManager:(CBCentralManager *)central
- didDiscoverPeripheral:(CBPeripheral *)peripheral
-     advertisementData:(NSDictionary *)advertisementData
-                  RSSI:(NSNumber *)RSSI {
-    
-    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-    localNotification.fireDate = nil;
-    localNotification.alertBody = [@"Found: " stringByAppendingString:peripheral.identifier.UUIDString];
-    
-  //  peripheral.identifier;
-    localNotification.timeZone = [NSTimeZone defaultTimeZone];
-    
-    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-    // _outputDescription.text=peripheral.name;
-    //NSLog(@"Discovered %@", peripheral.name);
-}
-
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central
+- (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    if(central.state==CBCentralManagerStatePoweredOn)
-    {
+    
+    NSInteger i=[((CLBeaconRegion *)region).major integerValue];
+    // NSLog([region.major stringValue]);
+    //    i=i-1;
+    _outputText.text=((Business*)businesses[i]).name;
+    _outputDescription.text=((Business*)businesses[i]).welcomeText;
+
+}
+
+- (void)registerBeaconRegionWithUUID:(NSUUID *)proximityUUID andIdentifier:(NSString*)identifier {
+    
+    // Create the beacon region to be monitored.
+    CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc]
+                                    initWithProximityUUID:proximityUUID
+                                    identifier:identifier];
+       // Register the beacon region with the location manager.
+    [self.locationManager startMonitoringForRegion:beaconRegion];
+}
+
+/*- (void) locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
+{
+    switch (state) {
+        case CLRegionStateInside:
+            [self.locationManager startRangingBeaconsInRegion:self.region];
+            NSInteger i=[self.region.major integerValue];
+            NSLog([region.major stringValue]);
+        //    i=i-1;
+            _outputText.text=((Business*)businesses[i]).name;
+            _outputDescription.text=((Business*)businesses[i]).welcomeText;
+            break;
+        case CLRegionStateOutside:
+            _outputText.text=@"Default";
+            _outputDescription.text=@"Noone";
+            break;
+        case CLRegionStateUnknown:
+        default:
+            // stop ranging beacons, etc
+            _outputText.text=@"Outside";
+            _outputDescription.text=@"Outside Uknown";
+            break;
+            NSLog(@"Region unknown");
+    }
+}*/
+
+// Delegate method from the CLLocationManagerDelegate protocol.
+- (void)locationManager:(CLLocationManager *)manager
+        didRangeBeacons:(NSArray *)beacons
+               inRegion:(CLBeaconRegion *)region {
+    
+    if ([beacons count] > 0) {
+        CLBeacon *nearestExhibit = [beacons firstObject];
         
-        
-        //Now do your scanning and retrievals
+        // Present the exhibit-specific UI only when
+        // the user is relatively close to the exhibit.
+        if (CLProximityNear == nearestExhibit.proximity) {
+            NSInteger i=[region.major integerValue];
+           // NSLog([region.major stringValue]);
+            //    i=i-1;
+            _outputText.text=((Business*)businesses[i]).name;
+            _outputDescription.text=((Business*)businesses[i]).welcomeText;
+        } else {
+            //[self dismissExhibitInfo];
+        }
     }
 }
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -65,40 +130,16 @@ CBCentralManager *man;
 
 - (IBAction)showInfo1:(UIButton *)sender {
     
-    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-    localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
+  //  UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+  //  localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
     
-    localNotification.alertBody = @"test";
-     localNotification.alertAction=@"YEeeah!!";
-    localNotification.timeZone = [NSTimeZone defaultTimeZone];
+ //   localNotification.alertBody = @"test";
+ //    localNotification.alertAction=@"YEeeah!!";
+ //   localNotification.timeZone = [NSTimeZone defaultTimeZone];
     
-    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-   // if(man.state==CBCentralManagerStatePoweredOn)
-   // {
-   //     [man scanForPeripheralsWithServices:nil options:nil];
-  //  }
-  /*  PopulateView *data=  [[PopulateView alloc]init];
-    InfoModel *model=[[InfoModel alloc] init];
-    
-    model=[data getTextByID:0];
-    
-    _outputText.text=model.title;
-    _outputDescription.text=model.description;*/
-    
+ //   [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+      
 }
-/*
-- (IBAction)showInfo2:(id)sender {
-    PopulateView *data=  [[PopulateView alloc]init];
-    InfoModel *model=[[InfoModel alloc] init];
-    
-    model=[data getTextByID:1];
-    
-    _outputText.text=model.title;
-    _outputDescription.text=model.description;
-}*/
-
-
-
 
 
 @end

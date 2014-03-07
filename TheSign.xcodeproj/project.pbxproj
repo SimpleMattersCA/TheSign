@@ -24,9 +24,6 @@
 		55EE37D418B7057C002A121C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B618B7057C002A121C /* UIKit.framework */; };
 		55EE37DC18B7057C002A121C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55EE37DA18B7057C002A121C /* InfoPlist.strings */; };
 		55EE37DE18B7057C002A121C /* TheSignTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE37DD18B7057C002A121C /* TheSignTests.m */; };
-		55EE37EF18B882FF002A121C /* libEstimoteSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37EE18B882EE002A121C /* libEstimoteSDK.a */; };
-		55EE37F118B88317002A121C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37F018B88317002A121C /* CoreBluetooth.framework */; };
-		55EE37F318B8831D002A121C /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37F218B8831D002A121C /* CoreLocation.framework */; };
 		55EE37F518B88326002A121C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37F418B88326002A121C /* SystemConfiguration.framework */; };
 		55EE37F818BAAD92002A121C /* PopulateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE37F718BAAD92002A121C /* PopulateView.m */; };
 		55EE37FB18BAB0A2002A121C /* InfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE37FA18BAB0A2002A121C /* InfoModel.m */; };
@@ -68,14 +65,6 @@
 		55EE37D918B7057C002A121C /* TheSignTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TheSignTests-Info.plist"; sourceTree = "<group>"; };
 		55EE37DB18B7057C002A121C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		55EE37DD18B7057C002A121C /* TheSignTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TheSignTests.m; sourceTree = "<group>"; };
-		55EE37E918B882EE002A121C /* ESTBeacon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESTBeacon.h; sourceTree = "<group>"; };
-		55EE37EA18B882EE002A121C /* ESTBeaconDefinitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESTBeaconDefinitions.h; sourceTree = "<group>"; };
-		55EE37EB18B882EE002A121C /* ESTBeaconManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESTBeaconManager.h; sourceTree = "<group>"; };
-		55EE37EC18B882EE002A121C /* ESTBeaconRegion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESTBeaconRegion.h; sourceTree = "<group>"; };
-		55EE37ED18B882EE002A121C /* ESTBeaconUpdateInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESTBeaconUpdateInfo.h; sourceTree = "<group>"; };
-		55EE37EE18B882EE002A121C /* libEstimoteSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libEstimoteSDK.a; sourceTree = "<group>"; };
-		55EE37F018B88317002A121C /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
-		55EE37F218B8831D002A121C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		55EE37F418B88326002A121C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		55EE37F618BAAD92002A121C /* PopulateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopulateView.h; sourceTree = "<group>"; };
 		55EE37F718BAAD92002A121C /* PopulateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopulateView.m; sourceTree = "<group>"; };
@@ -89,9 +78,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				55EE37F518B88326002A121C /* SystemConfiguration.framework in Frameworks */,
-				55EE37F318B8831D002A121C /* CoreLocation.framework in Frameworks */,
-				55EE37F118B88317002A121C /* CoreBluetooth.framework in Frameworks */,
-				55EE37EF18B882FF002A121C /* libEstimoteSDK.a in Frameworks */,
 				55EE37B518B7057C002A121C /* CoreGraphics.framework in Frameworks */,
 				55EE37B718B7057C002A121C /* UIKit.framework in Frameworks */,
 				55EE37B318B7057C002A121C /* Foundation.framework in Frameworks */,
@@ -158,9 +144,6 @@
 			isa = PBXGroup;
 			children = (
 				55EE37F418B88326002A121C /* SystemConfiguration.framework */,
-				55EE37F218B8831D002A121C /* CoreLocation.framework */,
-				55EE37F018B88317002A121C /* CoreBluetooth.framework */,
-				55EE37E718B882EE002A121C /* EstimoteSDK */,
 				55EE37B218B7057C002A121C /* Foundation.framework */,
 				55EE37B418B7057C002A121C /* CoreGraphics.framework */,
 				55EE37B618B7057C002A121C /* UIKit.framework */,
@@ -172,10 +155,10 @@
 		55EE37B818B7057C002A121C /* TheSign */ = {
 			isa = PBXGroup;
 			children = (
-				553E4F4418C714D1004F8312 /* Controller */,
-				553E4F4518C71525004F8312 /* Model */,
 				55EE37C118B7057C002A121C /* AppDelegate.h */,
 				55EE37C218B7057C002A121C /* AppDelegate.m */,
+				553E4F4418C714D1004F8312 /* Controller */,
+				553E4F4518C71525004F8312 /* Model */,
 				55EE37C418B7057C002A121C /* Main.storyboard */,
 				55EE37F618BAAD92002A121C /* PopulateView.h */,
 				55EE37F718BAAD92002A121C /* PopulateView.m */,
@@ -212,28 +195,6 @@
 				55EE37DA18B7057C002A121C /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		55EE37E718B882EE002A121C /* EstimoteSDK */ = {
-			isa = PBXGroup;
-			children = (
-				55EE37E818B882EE002A121C /* Headers */,
-				55EE37EE18B882EE002A121C /* libEstimoteSDK.a */,
-			);
-			name = EstimoteSDK;
-			path = TheSign/EstimoteSDK;
-			sourceTree = "<group>";
-		};
-		55EE37E818B882EE002A121C /* Headers */ = {
-			isa = PBXGroup;
-			children = (
-				55EE37E918B882EE002A121C /* ESTBeacon.h */,
-				55EE37EA18B882EE002A121C /* ESTBeaconDefinitions.h */,
-				55EE37EB18B882EE002A121C /* ESTBeaconManager.h */,
-				55EE37EC18B882EE002A121C /* ESTBeaconRegion.h */,
-				55EE37ED18B882EE002A121C /* ESTBeaconUpdateInfo.h */,
-			);
-			path = Headers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -284,6 +245,7 @@
 				ORGANIZATIONNAME = "Andrey Chudnovskiy";
 				TargetAttributes = {
 					55EE37AE18B7057C002A121C = {
+						DevelopmentTeam = ZCEYGPU8ZJ;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -474,6 +436,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TheSign/TheSign-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/TheSign/EstimoteSDK/Headers";
@@ -494,6 +457,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TheSign/TheSign-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/TheSign/EstimoteSDK/Headers";
