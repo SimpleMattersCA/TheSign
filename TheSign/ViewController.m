@@ -7,8 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "InfoModel.h"
-#import "PopulateView.h"
+
 #import "Business.h"
 #import "Item.h"
 @import CoreLocation;
@@ -48,28 +47,40 @@ NSArray *items;
     self.locationManager.delegate = self;
 
     proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
-    
-    [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"Estimote Region"];
+   
+    [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
+
     
 }
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    
-    NSInteger i=[((CLBeaconRegion *)region).major integerValue];
-    // NSLog([region.major stringValue]);
-    //    i=i-1;
-    _outputText.text=((Business*)businesses[i]).name;
-    _outputDescription.text=((Business*)businesses[i]).welcomeText;
+    [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion*)region];
+   // NSInteger i=[((CLBeaconRegion *)region).major integerValue];
+   // i=i-1;
+   // _outputText.text=((Business*)businesses[i]).name;
+   // _outputDescription.text=((Business*)businesses[i]).welcomeText;
 
 }
 
-- (void)registerBeaconRegionWithUUID:(NSUUID *)proximityUUID andIdentifier:(NSString*)identifier {
+-(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
+{
+    [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+   // _outputText.text=@"Default";
+   // _outputDescription.text=@"";
+}
+
+
+
+- (void)registerBeaconRegionWithUUID:(NSUUID *)proximityUUID
+                       andIdentifier:(NSString*)identifier
+{
     
     // Create the beacon region to be monitored.
     CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc]
                                     initWithProximityUUID:proximityUUID
                                     identifier:identifier];
+    
        // Register the beacon region with the location manager.
     [self.locationManager startMonitoringForRegion:beaconRegion];
 }
@@ -105,19 +116,22 @@ NSArray *items;
                inRegion:(CLBeaconRegion *)region {
     
     if ([beacons count] > 0) {
-        CLBeacon *nearestExhibit = [beacons firstObject];
+        CLBeacon *nearest = [beacons firstObject];
+        
+        NSInteger i=[nearest.major integerValue];
+        // NSLog([region.major stringValue]);
+        i=i-1;
+        _outputText.text=((Business*)businesses[i]).name;
+        _outputDescription.text=((Business*)businesses[i]).welcomeText;
+        
         
         // Present the exhibit-specific UI only when
-        // the user is relatively close to the exhibit.
-        if (CLProximityNear == nearestExhibit.proximity) {
-            NSInteger i=[region.major integerValue];
-           // NSLog([region.major stringValue]);
-            //    i=i-1;
-            _outputText.text=((Business*)businesses[i]).name;
-            _outputDescription.text=((Business*)businesses[i]).welcomeText;
-        } else {
+      //  // the user is relatively close to the exhibit.
+       // if (CLProximityNear == nearestExhibit.proximity) {
+            
+       // } else {
             //[self dismissExhibitInfo];
-        }
+      //  }
     }
 }
 

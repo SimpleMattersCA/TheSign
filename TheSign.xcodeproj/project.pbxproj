@@ -25,8 +25,6 @@
 		55EE37DC18B7057C002A121C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55EE37DA18B7057C002A121C /* InfoPlist.strings */; };
 		55EE37DE18B7057C002A121C /* TheSignTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE37DD18B7057C002A121C /* TheSignTests.m */; };
 		55EE37F518B88326002A121C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37F418B88326002A121C /* SystemConfiguration.framework */; };
-		55EE37F818BAAD92002A121C /* PopulateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE37F718BAAD92002A121C /* PopulateView.m */; };
-		55EE37FB18BAB0A2002A121C /* InfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE37FA18BAB0A2002A121C /* InfoModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,10 +64,6 @@
 		55EE37DB18B7057C002A121C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		55EE37DD18B7057C002A121C /* TheSignTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TheSignTests.m; sourceTree = "<group>"; };
 		55EE37F418B88326002A121C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		55EE37F618BAAD92002A121C /* PopulateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopulateView.h; sourceTree = "<group>"; };
-		55EE37F718BAAD92002A121C /* PopulateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopulateView.m; sourceTree = "<group>"; };
-		55EE37F918BAB0A2002A121C /* InfoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoModel.h; sourceTree = "<group>"; };
-		55EE37FA18BAB0A2002A121C /* InfoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,8 +109,6 @@
 				553E4F3C18C309D2004F8312 /* Business.m */,
 				553E4F3818C3086C004F8312 /* Item.h */,
 				553E4F3918C3086C004F8312 /* Item.m */,
-				55EE37F918BAB0A2002A121C /* InfoModel.h */,
-				55EE37FA18BAB0A2002A121C /* InfoModel.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -160,8 +152,6 @@
 				553E4F4418C714D1004F8312 /* Controller */,
 				553E4F4518C71525004F8312 /* Model */,
 				55EE37C418B7057C002A121C /* Main.storyboard */,
-				55EE37F618BAAD92002A121C /* PopulateView.h */,
-				55EE37F718BAAD92002A121C /* PopulateView.m */,
 				55EE37CA18B7057C002A121C /* Images.xcassets */,
 				55EE37B918B7057C002A121C /* Supporting Files */,
 			);
@@ -303,10 +293,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				55EE37C918B7057C002A121C /* ViewController.m in Sources */,
-				55EE37FB18BAB0A2002A121C /* InfoModel.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
 				553E4F3D18C309D2004F8312 /* Business.m in Sources */,
-				55EE37F818BAAD92002A121C /* PopulateView.m in Sources */,
 				553E4F3A18C3086C004F8312 /* Item.m in Sources */,
 				55EE37BF18B7057C002A121C /* main.m in Sources */,
 				553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */,
