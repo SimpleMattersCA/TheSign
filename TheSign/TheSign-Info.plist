@@ -26,8 +26,7 @@
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>bluetooth-central</string>
-		<string>remote-notification</string>
+		<string>location</string>
 	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>

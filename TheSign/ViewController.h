@@ -10,4 +10,7 @@
 
 @interface ViewController :UIViewController
 
+-(void) updateViewForTitle:(NSString *) title andDescription:(NSString *)description;
+
+
 @end

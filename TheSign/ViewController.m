@@ -7,9 +7,9 @@
 //
 
 #import "ViewController.h"
-
 #import "Business.h"
 #import "Item.h"
+
 @import CoreLocation;
 
 @interface ViewController () <CLLocationManagerDelegate>
@@ -31,27 +31,24 @@ NSArray *items;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    Business *b1=[[Business alloc] init];
-    b1.name=@"Apple";
-    b1.welcomeText=@"Welcome to Apple Store";
-    
-    Business *b2=[[Business alloc] init];
-    b2.name=@"Microsoft";
-    b2.welcomeText=@"Welcome to Microsoft Store";
-    
-    businesses=[[NSArray alloc]initWithObjects:b1,b2, nil];
+  
+ //   self.locationManager = [[CLLocationManager alloc] init];
+  //  self.locationManager.delegate = self;
 
-
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.delegate = self;
-
-    proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
+   // proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
    
-    [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
+   // [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
 
     
 }
+
+-(void) updateViewForTitle:(NSString *) title andDescription:(NSString *)description
+{
+    _outputText.text=title;
+    _outputDescription.text=description;
+
+}
+
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
@@ -65,7 +62,7 @@ NSArray *items;
 
 -(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
-    [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+  //  [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
    // _outputText.text=@"Default";
    // _outputDescription.text=@"";
 }
@@ -80,25 +77,21 @@ NSArray *items;
     CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc]
                                     initWithProximityUUID:proximityUUID
                                     identifier:identifier];
-    
+    [beaconRegion setNotifyOnEntry:YES];
+    [beaconRegion setNotifyOnExit:YES];
+    [beaconRegion setNotifyEntryStateOnDisplay:YES];
        // Register the beacon region with the location manager.
     [self.locationManager startMonitoringForRegion:beaconRegion];
 }
 
-/*- (void) locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
+- (void) locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
 {
     switch (state) {
         case CLRegionStateInside:
-            [self.locationManager startRangingBeaconsInRegion:self.region];
-            NSInteger i=[self.region.major integerValue];
-            NSLog([region.major stringValue]);
-        //    i=i-1;
-            _outputText.text=((Business*)businesses[i]).name;
-            _outputDescription.text=((Business*)businesses[i]).welcomeText;
+            [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
             break;
         case CLRegionStateOutside:
-            _outputText.text=@"Default";
-            _outputDescription.text=@"Noone";
+             [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
             break;
         case CLRegionStateUnknown:
         default:
@@ -106,9 +99,8 @@ NSArray *items;
             _outputText.text=@"Outside";
             _outputDescription.text=@"Outside Uknown";
             break;
-            NSLog(@"Region unknown");
     }
-}*/
+}
 
 // Delegate method from the CLLocationManagerDelegate protocol.
 - (void)locationManager:(CLLocationManager *)manager
@@ -144,6 +136,11 @@ NSArray *items;
 
 - (IBAction)showInfo1:(UIButton *)sender {
     
+ //    proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
+ //   CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc]
+ //                                   initWithProximityUUID:proximityUUID
+ //                                   identifier:@"TheSign"];
+  //  [self.locationManager startRangingBeaconsInRegion:beaconRegion];
   //  UILocalNotification *localNotification = [[UILocalNotification alloc] init];
   //  localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
     
