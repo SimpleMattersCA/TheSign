@@ -24,7 +24,8 @@ NSUUID *proximityUUID;
 
 NSArray *businesses;
 NSArray *items;
-
+NSNumber *detectedBeaconMinor;
+NSNumber *detectedBeaconMajor;
 
 @implementation AppDelegate
 
@@ -33,7 +34,6 @@ NSArray *items;
     [self.window makeKeyAndVisible];
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
-
     
     
     Business *b1=[[Business alloc] init];
@@ -58,33 +58,50 @@ NSArray *items;
 
 - (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
 {
+    switch (state) {
+        case CLRegionStateInside:
+            [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
+            break;
+        case CLRegionStateOutside:
+        {
+            ViewController* viewController = (ViewController*)  self.window.rootViewController;
+            [viewController updateViewForTitle:@"Outside" andDescription:@"No description"];
+            [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+            break;
+        }
+        case CLRegionStateUnknown:
+        {
+            ViewController* viewController = (ViewController*)  self.window.rootViewController;
+            [viewController updateViewForTitle:@"Unknown" andDescription:@"No description"];
+            [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+            break;
+        }
+        default:
+
+            break;
+    }
+
   
 }
 
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+  //  NSString *cancelButtonTitle = NSLocalizedString(@"OK", @"Cancel");
+  //  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:notification.alertBody message:nil delegate:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
+  //  [alert show];
+}
+
+
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion*)region];
-    // NSInteger i=[((CLBeaconRegion *)region).major integerValue];
-    // i=i-1;
-    // _outputText.text=((Business*)businesses[i]).name;
-    // _outputDescription.text=((Business*)businesses[i]).welcomeText;
-    
+    [self.locationManager requestStateForRegion:region];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
-      [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
-    // _outputText.text=@"Default";
-    // _outputDescription.text=@"";
+    [self.locationManager requestStateForRegion:region];
 }
 
-
-
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-    NSString *cancelButtonTitle = NSLocalizedString(@"OK", @"Cancel");
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:notification.alertBody message:nil delegate:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
-    [alert show];
-}
 
 - (void)registerBeaconRegionWithUUID:(NSUUID *)proximityUUID
                        andIdentifier:(NSString*)identifier
@@ -94,38 +111,48 @@ NSArray *items;
     CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc]
                                     initWithProximityUUID:proximityUUID
                                     identifier:identifier];
-    [beaconRegion setNotifyOnEntry:YES];
-    [beaconRegion setNotifyOnExit:YES];
-    [beaconRegion setNotifyEntryStateOnDisplay:YES];
+    beaconRegion.notifyEntryStateOnDisplay=YES;
+    beaconRegion.notifyOnEntry=NO;
+    beaconRegion.notifyOnExit=YES;
+    
     // Register the beacon region with the location manager.
     [self.locationManager startMonitoringForRegion:beaconRegion];
+    [self.locationManager requestStateForRegion:beaconRegion];
 }
 
 // Delegate method from the CLLocationManagerDelegate protocol.
 - (void)locationManager:(CLLocationManager *)manager
         didRangeBeacons:(NSArray *)beacons
                inRegion:(CLBeaconRegion *)region {
+    NSLog(@"THE FUCK IS THAAAT");
     
-    if ([beacons count] > 0) {
-        CLBeacon *nearest = [beacons firstObject];
-        
-        NSInteger i=[nearest.major integerValue];
-        // NSLog([region.major stringValue]);
+    CLBeacon *closest=(CLBeacon*)[beacons firstObject];
+    if ([beacons count] > 0 && (detectedBeaconMajor==nil || ![detectedBeaconMajor isEqual:closest.major])) {
+        detectedBeaconMinor =closest.minor;
+        detectedBeaconMajor =closest.major;
+
+        NSInteger i=[closest.major integerValue];
         i=i-1;
         NSString* title=((Business*)businesses[i]).name;
-       NSString* description=((Business*)businesses[i]).welcomeText;
-        
+        NSString* description=((Business*)businesses[i]).welcomeText;
         ViewController* viewController = (ViewController*)  self.window.rootViewController;
-        
         [viewController updateViewForTitle:title andDescription:description];
         
-        // Present the exhibit-specific UI only when
-        //  // the user is relatively close to the exhibit.
-        // if (CLProximityNear == nearestExhibit.proximity) {
+        //CLearing notification center and lock screen notificaitons. Yeah, it's that weird
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
         
-        // } else {
-        //[self dismissExhibitInfo];
-        //  }
+        
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.alertBody = [NSString stringWithFormat:@"Store detected: %@",title];
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        
+
+        
+        if(![detectedBeaconMinor isEqual:closest.minor])
+        {
+                //beacon specific logic
+        }
     }
 }
 
