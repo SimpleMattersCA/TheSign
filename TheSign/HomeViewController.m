@@ -7,8 +7,10 @@
 //
 
 #import "HomeViewController.h"
+#import "Business.h"
+#import "AppDelegate.h"
 
-@interface HomeViewController ()
+@interface HomeViewController () <UICollectionViewDataSource>
 
 @end
 
@@ -33,6 +35,48 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return self.model.count;
+}
+
+
+-(NSArray*) model
+{
+    if(!_model)
+    {
+        _model=((AppDelegate*)[[UIApplication sharedApplication] delegate]).model;
+    }
+    return _model;
+}
+
+//reaction for closest beacon in range
+-(void) beaconActivatedWithMajor:(NSNumber*)major
+{
+}
+
+-(void) beaconActivatedWithMajor:(NSNumber*)major withMinor:(NSNumber*)minor;
+{
+    //Beacon specific reaction
+}
+
+-(void) beaconLeft
+{
+   
+}
+
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *identifier = @"Cell";
+    
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
+    
+    
+    UILabel *businessTitle = (UILabel *)[cell viewWithTag:100];
+    businessTitle.text= ((Business*)self.model[indexPath.row]).name;
+    
+    return cell;
 }
 
 @end

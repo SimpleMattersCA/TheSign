@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
+#import "HomeViewController.h"
 #import "Business.h"
 @import CoreLocation;
 
@@ -17,13 +18,15 @@
 @interface AppDelegate() <UIApplicationDelegate,CLLocationManagerDelegate>
 @property CLLocationManager *locationManager;
 
+@property NSArray *businesses;
+@property NSArray *items;
 @end
 
 
 NSUUID *proximityUUID;
 
-NSArray *businesses;
-NSArray *items;
+
+
 NSNumber *detectedBeaconMinor;
 NSNumber *detectedBeaconMajor;
 
@@ -31,11 +34,27 @@ NSNumber *detectedBeaconMajor;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+     [self refreshModel];
+    
     [self.window makeKeyAndVisible];
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     
     
+   
+
+    proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
+    
+    [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
+  
+    
+    
+    // Override point for customization after application launch.
+    return YES;
+}
+
+-(void)refreshModel
+{
     Business *b1=[[Business alloc] init];
     b1.name=@"Apple";
     b1.welcomeText=@"Welcome to Apple Store";
@@ -44,15 +63,9 @@ NSNumber *detectedBeaconMajor;
     b2.name=@"Microsoft";
     b2.welcomeText=@"Welcome to Microsoft Store";
     
-    businesses=[[NSArray alloc]initWithObjects:b1,b2, nil];
+    _businesses=[[NSArray alloc]initWithObjects:b1,b2, nil];
     
-
-    proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
-    
-    [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
-    
-    // Override point for customization after application launch.
-    return YES;
+    _model=_businesses;
 }
 
 
@@ -65,15 +78,19 @@ NSNumber *detectedBeaconMajor;
         case CLRegionStateOutside:
         {
             ViewController* viewController = (ViewController*)  self.window.rootViewController;
-            [viewController updateViewForTitle:@"Outside" andDescription:@"No description"];
+            [viewController beaconLeft];
             [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
             break;
         }
         case CLRegionStateUnknown:
         {
             ViewController* viewController = (ViewController*)  self.window.rootViewController;
-            [viewController updateViewForTitle:@"Unknown" andDescription:@"No description"];
+            [viewController beaconLeft];
             [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
             break;
         }
         default:
@@ -124,27 +141,21 @@ NSNumber *detectedBeaconMajor;
 - (void)locationManager:(CLLocationManager *)manager
         didRangeBeacons:(NSArray *)beacons
                inRegion:(CLBeaconRegion *)region {
-    NSLog(@"THE FUCK IS THAAAT");
     
     CLBeacon *closest=(CLBeacon*)[beacons firstObject];
     if ([beacons count] > 0 && (detectedBeaconMajor==nil || ![detectedBeaconMajor isEqual:closest.major])) {
         detectedBeaconMinor =closest.minor;
         detectedBeaconMajor =closest.major;
 
-        NSInteger i=[closest.major integerValue];
-        i=i-1;
-        NSString* title=((Business*)businesses[i]).name;
-        NSString* description=((Business*)businesses[i]).welcomeText;
         ViewController* viewController = (ViewController*)  self.window.rootViewController;
-        [viewController updateViewForTitle:title andDescription:description];
-        
+        [viewController beaconActivatedWithMajor:closest.major];
         //CLearing notification center and lock screen notificaitons. Yeah, it's that weird
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
         
         
         UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.alertBody = [NSString stringWithFormat:@"Store detected: %@",title];
+        notification.alertBody = [NSString stringWithFormat:@"Store detected: %@",((Business*)self.model[[closest.major integerValue]-1]).name];
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         
 

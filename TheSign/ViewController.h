@@ -10,7 +10,15 @@
 
 @interface ViewController :UIViewController
 
+@property (nonatomic,strong) NSArray *model;
+
 -(void) updateViewForTitle:(NSString *) title andDescription:(NSString *)description;
+
+-(void) beaconActivatedWithMajor:(NSNumber*)major;
+
+-(void) beaconActivatedWithMajor:(NSNumber*)major withMinor:(NSNumber*)minor;
+
+-(void) beaconLeft;
 
 
 @end

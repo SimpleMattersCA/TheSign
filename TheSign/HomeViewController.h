@@ -6,8 +6,14 @@
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 @interface HomeViewController : UICollectionViewController
+
+@property (nonatomic,strong) NSArray *model;
+
+-(void) beaconActivatedWithMajor:(NSNumber*)major;
+-(void) beaconActivatedWithMajor:(NSNumber*)major withMinor:(NSNumber*)minor;
+-(void) beaconLeft;
 
 @end
