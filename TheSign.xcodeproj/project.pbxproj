@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0283E2AC18D6694B007173FA /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2AB18D6694B007173FA /* Parse.framework */; };
 		0283E2B518D66AB6007173FA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2AD18D66AB6007173FA /* AudioToolbox.framework */; };
 		0283E2B618D66AB6007173FA /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2AE18D66AB6007173FA /* CFNetwork.framework */; };
 		0283E2B718D66AB6007173FA /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2AF18D66AB6007173FA /* CoreLocation.framework */; };
@@ -16,6 +15,8 @@
 		0283E2BA18D66AB6007173FA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2B218D66AB6007173FA /* QuartzCore.framework */; };
 		0283E2BB18D66AB6007173FA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2B318D66AB6007173FA /* Security.framework */; };
 		0283E2BC18D66AB6007173FA /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2B418D66AB6007173FA /* StoreKit.framework */; };
+		028F57CF18D66FA300372167 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2AB18D6694B007173FA /* Parse.framework */; };
+		028F57D018D670BB00372167 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2AB18D6694B007173FA /* Parse.framework */; };
 		553E4F3A18C3086C004F8312 /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F3918C3086C004F8312 /* Item.m */; };
 		553E4F3D18C309D2004F8312 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F3C18C309D2004F8312 /* Business.m */; };
 		553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F4218C714A3004F8312 /* HomeViewController.m */; };
@@ -47,7 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0283E2AB18D6694B007173FA /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = ../Downloads/Parse.framework; sourceTree = "<group>"; };
+		0283E2AB18D6694B007173FA /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = TheSign/Frameworks/Parse.framework; sourceTree = "<group>"; };
 		0283E2AD18D66AB6007173FA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		0283E2AE18D66AB6007173FA /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		0283E2AF18D66AB6007173FA /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -89,6 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				028F57D018D670BB00372167 /* Parse.framework in Frameworks */,
 				0283E2B518D66AB6007173FA /* AudioToolbox.framework in Frameworks */,
 				0283E2B618D66AB6007173FA /* CFNetwork.framework in Frameworks */,
 				0283E2B718D66AB6007173FA /* CoreLocation.framework in Frameworks */,
@@ -101,7 +103,6 @@
 				55EE37F518B88326002A121C /* SystemConfiguration.framework in Frameworks */,
 				55EE37B718B7057C002A121C /* UIKit.framework in Frameworks */,
 				55EE37B318B7057C002A121C /* Foundation.framework in Frameworks */,
-				0283E2AC18D6694B007173FA /* Parse.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,6 +112,7 @@
 			files = (
 				55EE37D218B7057C002A121C /* XCTest.framework in Frameworks */,
 				55EE37D418B7057C002A121C /* UIKit.framework in Frameworks */,
+				028F57CF18D66FA300372167 /* Parse.framework in Frameworks */,
 				55EE37D318B7057C002A121C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -461,16 +463,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/mariapak/Downloads,
+					"$(PROJECT_DIR)/TheSign/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TheSign/TheSign-Prefix.pch";
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/TheSign/EstimoteSDK/Headers";
 				INFOPLIST_FILE = "TheSign/TheSign-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/Users/Andrey/Project/TheSign/TheSign/EstimoteSDK,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "";
 				"USER_HEADER_SEARCH_PATHS[arch=*]" = "";
@@ -486,16 +483,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/mariapak/Downloads,
+					"$(PROJECT_DIR)/TheSign/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TheSign/TheSign-Prefix.pch";
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/TheSign/EstimoteSDK/Headers";
 				INFOPLIST_FILE = "TheSign/TheSign-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/Users/Andrey/Project/TheSign/TheSign/EstimoteSDK,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = app;
@@ -510,6 +502,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)/TheSign/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TheSign/TheSign-Prefix.pch";
@@ -532,6 +525,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)/TheSign/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TheSign/TheSign-Prefix.pch";

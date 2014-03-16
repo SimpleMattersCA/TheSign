@@ -10,6 +10,8 @@
 #import "DetailsViewController.h"
 #import "HomeViewController.h"
 #import "Business.h"
+#import "Parse/Parse.h"
+
 @import UIKit.UINavigationController;
 @import CoreLocation;
 
@@ -36,8 +38,9 @@ NSNumber *detectedBeaconMajor;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self refreshModel];
-
-    
+    [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
+                  clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
+    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
 
     
     
