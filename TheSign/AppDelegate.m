@@ -37,12 +37,13 @@ NSNumber *detectedBeaconMajor;
 {
     [self refreshModel];
 
-    
+    NSLog(@"DidFinishLaunching");
+
 
     
     
     
-    UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+ /*   UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if (notification)
     {
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController.parentViewController;
@@ -55,7 +56,7 @@ NSNumber *detectedBeaconMajor;
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
         
         
-    }
+    }*/
     [self.window makeKeyAndVisible];
 
     [self prepareForBeacons];
@@ -126,10 +127,23 @@ NSNumber *detectedBeaconMajor;
 
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    if (application.applicationState == UIApplicationStateInactive ) {
+        UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
+        DetailsViewController *details =
+        [navigation.storyboard instantiateViewControllerWithIdentifier:@"DetailsView"];
+        [details setBusinessToShow:detectedBeaconMajor];
+        [navigation pushViewController:details animated:NO];
+        
+        // Process the received notification
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+
+        //The application received the notification from an inactive state, i.e. the user tapped the "View" button for the alert.
+        //If the visible view controller in your view controller stack isn't the one you need then show the right one.
+    }
     
-  //  NSString *cancelButtonTitle = NSLocalizedString(@"OK", @"Cancel");
-  //  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:notification.alertBody message:nil delegate:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
-  //  [alert show];
+    if(application.applicationState == UIApplicationStateActive ) {
+        //The application received a notification in the active state, so you can display an alert view or do something appropriate.
+    }
 }
 
 
@@ -183,10 +197,12 @@ NSNumber *detectedBeaconMajor;
         
         
         UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.alertBody = [NSString stringWithFormat:@"Store detected: %@",((Business*)self.model[[closest.major integerValue]-1]).name];
+        notification.alertBody = [NSString stringWithFormat:@"Store detected: %@",((Business*)self.model[[closest.major integerValue]]).name];
+       // NSDictionary *infoDict = [NSDictionary dictionaryWithObject:item.eventName forKey:ToDoItemKey];
+
+       // notification.userInfo
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         
-
         
         if(![detectedBeaconMinor isEqual:closest.minor])
         {
@@ -213,6 +229,7 @@ NSNumber *detectedBeaconMajor;
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+ //   NSLog(@"EnerForeground");
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 

@@ -427,6 +427,7 @@
 				GCC_PREFIX_HEADER = "TheSign/TheSign-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/TheSign/EstimoteSDK/Headers";
 				INFOPLIST_FILE = "TheSign/TheSign-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/Andrey/Project/TheSign/TheSign/EstimoteSDK,
@@ -448,6 +449,7 @@
 				GCC_PREFIX_HEADER = "TheSign/TheSign-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/TheSign/EstimoteSDK/Headers";
 				INFOPLIST_FILE = "TheSign/TheSign-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/Andrey/Project/TheSign/TheSign/EstimoteSDK,
