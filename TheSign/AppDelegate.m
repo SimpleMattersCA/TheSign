@@ -7,16 +7,17 @@
 //
 
 #import "AppDelegate.h"
-#import "ViewController.h"
+#import "DetailsViewController.h"
 #import "HomeViewController.h"
 #import "Business.h"
+@import UIKit.UINavigationController;
 @import CoreLocation;
 
 
 
 
 @interface AppDelegate() <UIApplicationDelegate,CLLocationManagerDelegate>
-@property CLLocationManager *locationManager;
+@property (strong) CLLocationManager *locationManager;
 
 @property NSArray *businesses;
 @property NSArray *items;
@@ -34,38 +35,68 @@ NSNumber *detectedBeaconMajor;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-     [self refreshModel];
-    
-    [self.window makeKeyAndVisible];
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.delegate = self;
-    
-    
-   
+    [self refreshModel];
 
-    proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
     
-    [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
-  
+
     
     
+    
+    UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if (notification)
+    {
+        UINavigationController *navigation=(UINavigationController*)self.window.rootViewController.parentViewController;
+        DetailsViewController *details =
+        [navigation.storyboard instantiateViewControllerWithIdentifier:@"DetailsView"];
+        [details setBusinessToShow:detectedBeaconMajor];
+        [navigation pushViewController:details animated:NO];
+        
+        // Process the received notification
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+        
+        
+    }
+    [self.window makeKeyAndVisible];
+
+    [self prepareForBeacons];
+
     // Override point for customization after application launch.
     return YES;
 }
 
+-(void) prepareForBeacons
+{
+    if(!_locationManager)
+    {
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+        proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
+        [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
+    }
+    
+
+}
+
 -(void)refreshModel
 {
-    Business *b1=[[Business alloc] init];
-    b1.name=@"Apple";
-    b1.welcomeText=@"Welcome to Apple Store";
+    if(!_model)
+    {
+        Business *b0=[[Business alloc] init];
+        b0.name=@"Simple Matters";
+        b0.welcomeText=@"The fuck is that?";
     
-    Business *b2=[[Business alloc] init];
-    b2.name=@"Microsoft";
-    b2.welcomeText=@"Welcome to Microsoft Store";
+        Business *b1=[[Business alloc] init];
+        b1.name=@"Apple";
+        b1.welcomeText=@"Welcome to Apple Store";
     
-    _businesses=[[NSArray alloc]initWithObjects:b1,b2, nil];
+        Business *b2=[[Business alloc] init];
+        b2.name=@"Microsoft";
+        b2.welcomeText=@"Welcome to Microsoft Store";
     
-    _model=_businesses;
+        _businesses=[[NSArray alloc]initWithObjects:b0,b1,b2, nil];
+    
+        _model=_businesses;
+    }
 }
 
 
@@ -74,23 +105,15 @@ NSNumber *detectedBeaconMajor;
     switch (state) {
         case CLRegionStateInside:
             [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
+
             break;
         case CLRegionStateOutside:
         {
-            ViewController* viewController = (ViewController*)  self.window.rootViewController;
-            [viewController beaconLeft];
-            [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
             break;
         }
         case CLRegionStateUnknown:
         {
-            ViewController* viewController = (ViewController*)  self.window.rootViewController;
-            [viewController beaconLeft];
-            [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+           
             break;
         }
         default:
@@ -103,6 +126,7 @@ NSNumber *detectedBeaconMajor;
 
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
   //  NSString *cancelButtonTitle = NSLocalizedString(@"OK", @"Cancel");
   //  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:notification.alertBody message:nil delegate:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
   //  [alert show];
@@ -111,12 +135,18 @@ NSNumber *detectedBeaconMajor;
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    [self.locationManager requestStateForRegion:region];
+   // [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
+ //   [self.locationManager requestStateForRegion:region];
+   // UIViewController* viewController = self.window.rootViewController;
+    //[viewController beaconLeft];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
-    [self.locationManager requestStateForRegion:region];
+    [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+
 }
 
 
@@ -146,9 +176,7 @@ NSNumber *detectedBeaconMajor;
     if ([beacons count] > 0 && (detectedBeaconMajor==nil || ![detectedBeaconMajor isEqual:closest.major])) {
         detectedBeaconMinor =closest.minor;
         detectedBeaconMajor =closest.major;
-
-        ViewController* viewController = (ViewController*)  self.window.rootViewController;
-        [viewController beaconActivatedWithMajor:closest.major];
+        
         //CLearing notification center and lock screen notificaitons. Yeah, it's that weird
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];

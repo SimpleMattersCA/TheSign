@@ -9,6 +9,7 @@
 #import "HomeViewController.h"
 #import "Business.h"
 #import "AppDelegate.h"
+#import "DetailsViewController.h"
 
 @interface HomeViewController () <UICollectionViewDataSource>
 
@@ -64,6 +65,24 @@
 -(void) beaconLeft
 {
    
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"ListToBusiness"]){
+        if ([segue.destinationViewController isKindOfClass:[DetailsViewController class]])
+        {
+            NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
+            NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
+            
+            DetailsViewController *dest = (DetailsViewController *)segue.destinationViewController;
+            dest.model =self.model;
+            
+            NSNumber *businessID=[[NSNumber alloc] initWithInteger:indexPath.row];
+            
+            [dest setBusinessToShow:businessID];
+        }
+    }
 }
 
 
