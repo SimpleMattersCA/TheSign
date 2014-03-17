@@ -10,6 +10,8 @@
 #import "DetailsViewController.h"
 #import "HomeViewController.h"
 #import "Business.h"
+#import "Parse/Parse.h"
+
 @import UIKit.UINavigationController;
 @import CoreLocation;
 
