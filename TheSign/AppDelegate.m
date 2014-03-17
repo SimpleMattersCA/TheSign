@@ -75,6 +75,7 @@ NSNumber *detectedBeaconMajor;
         self.locationManager.delegate = self;
         proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
         [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
+        
     }
     
 
@@ -107,7 +108,7 @@ NSNumber *detectedBeaconMajor;
 {
     switch (state) {
         case CLRegionStateInside:
-            [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
+          //  [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
 
             break;
         case CLRegionStateOutside:
@@ -133,7 +134,7 @@ NSNumber *detectedBeaconMajor;
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
         DetailsViewController *details =
         [navigation.storyboard instantiateViewControllerWithIdentifier:@"DetailsView"];
-        [details setBusinessToShow:detectedBeaconMajor];
+        [details setBusinessToShow:[notification.userInfo objectForKey:@"BeaconMajor"]];
         [navigation pushViewController:details animated:NO];
         
         // Process the received notification
@@ -151,10 +152,7 @@ NSNumber *detectedBeaconMajor;
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-   // [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
- //   [self.locationManager requestStateForRegion:region];
-   // UIViewController* viewController = self.window.rootViewController;
-    //[viewController beaconLeft];
+    [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
@@ -180,7 +178,8 @@ NSNumber *detectedBeaconMajor;
     
     // Register the beacon region with the location manager.
     [self.locationManager startMonitoringForRegion:beaconRegion];
-    [self.locationManager requestStateForRegion:beaconRegion];
+    [self.locationManager startRangingBeaconsInRegion:beaconRegion];
+
 }
 
 // Delegate method from the CLLocationManagerDelegate protocol.
@@ -189,10 +188,11 @@ NSNumber *detectedBeaconMajor;
                inRegion:(CLBeaconRegion *)region {
     
     CLBeacon *closest=(CLBeacon*)[beacons firstObject];
-    if ([beacons count] > 0 && (detectedBeaconMajor==nil || ![detectedBeaconMajor isEqual:closest.major])) {
+    if ([beacons count] > 0 && (![detectedBeaconMajor isEqual:closest.major]))
+    {
         detectedBeaconMinor =closest.minor;
         detectedBeaconMajor =closest.major;
-        
+        NSLog([detectedBeaconMajor stringValue]);
         //CLearing notification center and lock screen notificaitons. Yeah, it's that weird
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
@@ -200,9 +200,9 @@ NSNumber *detectedBeaconMajor;
         
         UILocalNotification *notification = [[UILocalNotification alloc] init];
         notification.alertBody = [NSString stringWithFormat:@"Store detected: %@",((Business*)self.model[[closest.major integerValue]]).name];
-       // NSDictionary *infoDict = [NSDictionary dictionaryWithObject:item.eventName forKey:ToDoItemKey];
+        NSDictionary *infoDict = [NSDictionary dictionaryWithObject:closest.major forKey:@"BeaconMajor"];
 
-       // notification.userInfo
+        notification.userInfo=infoDict;
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         
         
