@@ -16,7 +16,6 @@
     Business *newBusiness=[[Business alloc] init];
     newBusiness.welcomeText=welcome;
     newBusiness.name=name;
-    newBusiness.regionUUID=[[NSUUID UUID] UUIDString];
     return newBusiness;
 }
 
@@ -24,6 +23,7 @@
 
 -(NSString*) name
 {
+    NSLog(@"test");
     if([_name length]==0)
     {
         NSLog(@"Name is not found");
@@ -34,6 +34,7 @@
 
 -(NSString*) welcomeText
 {
+    NSLog(@"welcometest");
     if([_welcomeText length]==0)
     {
         NSLog(@"Welcome text is not found");

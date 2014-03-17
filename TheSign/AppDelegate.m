@@ -37,10 +37,11 @@ NSNumber *detectedBeaconMajor;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self refreshModel];
     [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
                   clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
+    
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    [self refreshModel];
 
     
     
@@ -62,6 +63,7 @@ NSNumber *detectedBeaconMajor;
     [self.window makeKeyAndVisible];
 
     [self prepareForBeacons];
+
 
     // Override point for customization after application launch.
     return YES;
@@ -85,12 +87,20 @@ NSNumber *detectedBeaconMajor;
     if(!_model)
     {
         Business *b0=[[Business alloc] init];
-        b0.name=@"Simple Matters";
-        b0.welcomeText=@"The fuck is that?";
-    
+      //  b0.name=@"Simple Matters";
+      //  b0.welcomeText=@"The fuck is that?";
+        
+        PFQuery *query = [PFQuery queryWithClassName:@"Stores"];
+        [query getObjectInBackgroundWithId:@"u7Vhj0pw4d" block:^(PFObject *store, NSError *error)
+        {
+            b0.name=store[@"name"];
+            b0.welcomeText=store[@"Description"];
+        }];
+            
         Business *b1=[[Business alloc] init];
         b1.name=@"Apple";
         b1.welcomeText=@"Welcome to Apple Store";
+     
     
         Business *b2=[[Business alloc] init];
         b2.name=@"Microsoft";
