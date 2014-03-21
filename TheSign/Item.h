@@ -6,9 +6,10 @@
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+@import CoreData;
 
-@interface Item : NSObject
+@interface Item : NSManagedObjectContext
 
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSString *description;

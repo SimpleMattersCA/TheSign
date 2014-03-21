@@ -2,23 +2,17 @@
 //  Business.h
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-03-01.
+//  Created by Andrey Chudnovskiy on 2014-03-18.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "Item.h"
+@import Foundation;
+@import CoreData;
 
-@interface Business : NSObject
+@interface Business : NSManagedObject
 
-
-@property (nonatomic) NSString *name;
-@property (nonatomic) NSString *welcomeText;
-@property (nonatomic) NSArray *beacons;
-@property (nonatomic) NSArray *items;
-@property (nonatomic) NSString *regionUUID;
-
-+(Business*)initWithName:(NSString*)name
-     andWelcome:(NSString*)welcome;
+@property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSString * welcomeText;
+@property (nonatomic, retain) NSNumber * uid;
 
 @end

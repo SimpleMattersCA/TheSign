@@ -8,10 +8,12 @@
 
 #import "HomeViewController.h"
 #import "Business.h"
-#import "AppDelegate.h"
 #import "DetailsViewController.h"
+#import "Model.h"
 
 @interface HomeViewController () <UICollectionViewDataSource>
+
+@property (nonatomic, strong) NSArray * businesses;
 
 @end
 
@@ -39,17 +41,17 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.model.count;
+    return self.businesses.count;
 }
 
 
--(NSArray*) model
+-(NSArray*) businesses
 {
-    if(!_model)
+    if(!_businesses)
     {
-        _model=((AppDelegate*)[[UIApplication sharedApplication] delegate]).model;
+        _businesses=[Model sharedModel].businesses;
     }
-    return _model;
+    return _businesses;
 }
 
 //reaction for closest beacon in range
@@ -76,8 +78,6 @@
             NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
             
             DetailsViewController *dest = (DetailsViewController *)segue.destinationViewController;
-            dest.model =self.model;
-            
             NSNumber *businessID=[[NSNumber alloc] initWithInteger:indexPath.row];
             
             [dest setBusinessToShow:businessID];
@@ -93,7 +93,7 @@
     
     
     UILabel *businessTitle = (UILabel *)[cell viewWithTag:100];
-    businessTitle.text= ((Business*)self.model[indexPath.row]).name;
+    businessTitle.text= ((Business*)self.businesses[indexPath.row]).name;
     
     return cell;
 }

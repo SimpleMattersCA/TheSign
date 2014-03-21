@@ -14,12 +14,14 @@
 		0283E2B918D66AB6007173FA /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2B118D66AB6007173FA /* MobileCoreServices.framework */; };
 		0283E2BA18D66AB6007173FA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2B218D66AB6007173FA /* QuartzCore.framework */; };
 		0283E2BB18D66AB6007173FA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2B318D66AB6007173FA /* Security.framework */; };
-		0283E2BC18D66AB6007173FA /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2B418D66AB6007173FA /* StoreKit.framework */; };
 		028F57CF18D66FA300372167 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2AB18D6694B007173FA /* Parse.framework */; };
 		028F57D018D670BB00372167 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2AB18D6694B007173FA /* Parse.framework */; };
+		55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */; };
+		55101D3E18D823ED0074B4D2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55101D3D18D823ED0074B4D2 /* CoreData.framework */; };
+		55101D8E18D82A810074B4D2 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 55101D8D18D82A810074B4D2 /* Business.m */; };
 		553E4F3A18C3086C004F8312 /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F3918C3086C004F8312 /* Item.m */; };
-		553E4F3D18C309D2004F8312 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F3C18C309D2004F8312 /* Business.m */; };
 		553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F4218C714A3004F8312 /* HomeViewController.m */; };
+		55B746EB18DCAECA00F61354 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B746EA18DCAECA00F61354 /* Model.m */; };
 		55EE37B318B7057C002A121C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B218B7057C002A121C /* Foundation.framework */; };
 		55EE37B518B7057C002A121C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B418B7057C002A121C /* CoreGraphics.framework */; };
 		55EE37B718B7057C002A121C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B618B7057C002A121C /* UIKit.framework */; };
@@ -56,13 +58,16 @@
 		0283E2B118D66AB6007173FA /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		0283E2B218D66AB6007173FA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		0283E2B318D66AB6007173FA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		0283E2B418D66AB6007173FA /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		55101D3B18D81ADE0074B4D2 /* SignModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SignModel.xcdatamodel; sourceTree = "<group>"; };
+		55101D3D18D823ED0074B4D2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		55101D8C18D82A810074B4D2 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
+		55101D8D18D82A810074B4D2 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
 		553E4F3818C3086C004F8312 /* Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
 		553E4F3918C3086C004F8312 /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
-		553E4F3B18C309D2004F8312 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
-		553E4F3C18C309D2004F8312 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
 		553E4F4118C714A3004F8312 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		553E4F4218C714A3004F8312 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		55B746E918DCAECA00F61354 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
+		55B746EA18DCAECA00F61354 /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
 		55EE37AF18B7057C002A121C /* TheSign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSign.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55EE37B218B7057C002A121C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		55EE37B418B7057C002A121C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -90,6 +95,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55101D3E18D823ED0074B4D2 /* CoreData.framework in Frameworks */,
 				028F57D018D670BB00372167 /* Parse.framework in Frameworks */,
 				0283E2B518D66AB6007173FA /* AudioToolbox.framework in Frameworks */,
 				0283E2B618D66AB6007173FA /* CFNetwork.framework in Frameworks */,
@@ -98,7 +104,6 @@
 				0283E2B918D66AB6007173FA /* MobileCoreServices.framework in Frameworks */,
 				0283E2BA18D66AB6007173FA /* QuartzCore.framework in Frameworks */,
 				0283E2BB18D66AB6007173FA /* Security.framework in Frameworks */,
-				0283E2BC18D66AB6007173FA /* StoreKit.framework in Frameworks */,
 				55EE37B518B7057C002A121C /* CoreGraphics.framework in Frameworks */,
 				55EE37F518B88326002A121C /* SystemConfiguration.framework in Frameworks */,
 				55EE37B718B7057C002A121C /* UIKit.framework in Frameworks */,
@@ -134,8 +139,9 @@
 		553E4F4518C71525004F8312 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				553E4F3B18C309D2004F8312 /* Business.h */,
-				553E4F3C18C309D2004F8312 /* Business.m */,
+				55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */,
+				55101D8C18D82A810074B4D2 /* Business.h */,
+				55101D8D18D82A810074B4D2 /* Business.m */,
 				553E4F3818C3086C004F8312 /* Item.h */,
 				553E4F3918C3086C004F8312 /* Item.m */,
 			);
@@ -164,6 +170,7 @@
 		55EE37B118B7057C002A121C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				55101D3D18D823ED0074B4D2 /* CoreData.framework */,
 				0283E2AD18D66AB6007173FA /* AudioToolbox.framework */,
 				0283E2AE18D66AB6007173FA /* CFNetwork.framework */,
 				0283E2AF18D66AB6007173FA /* CoreLocation.framework */,
@@ -171,7 +178,6 @@
 				0283E2B118D66AB6007173FA /* MobileCoreServices.framework */,
 				0283E2B218D66AB6007173FA /* QuartzCore.framework */,
 				0283E2B318D66AB6007173FA /* Security.framework */,
-				0283E2B418D66AB6007173FA /* StoreKit.framework */,
 				0283E2AB18D6694B007173FA /* Parse.framework */,
 				55EE37F418B88326002A121C /* SystemConfiguration.framework */,
 				55EE37B218B7057C002A121C /* Foundation.framework */,
@@ -187,6 +193,8 @@
 			children = (
 				55EE37C118B7057C002A121C /* AppDelegate.h */,
 				55EE37C218B7057C002A121C /* AppDelegate.m */,
+				55B746E918DCAECA00F61354 /* Model.h */,
+				55B746EA18DCAECA00F61354 /* Model.m */,
 				553E4F4418C714D1004F8312 /* Controller */,
 				553E4F4518C71525004F8312 /* Model */,
 				55EE37C418B7057C002A121C /* Main.storyboard */,
@@ -278,6 +286,9 @@
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
 						};
 					};
 					55EE37CF18B7057C002A121C = {
@@ -332,7 +343,9 @@
 			files = (
 				55EE37C918B7057C002A121C /* DetailsViewController.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
-				553E4F3D18C309D2004F8312 /* Business.m in Sources */,
+				55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */,
+				55B746EB18DCAECA00F61354 /* Model.m in Sources */,
+				55101D8E18D82A810074B4D2 /* Business.m in Sources */,
 				553E4F3A18C3086C004F8312 /* Item.m in Sources */,
 				55EE37BF18B7057C002A121C /* main.m in Sources */,
 				553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */,
@@ -577,6 +590,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				55101D3B18D81ADE0074B4D2 /* SignModel.xcdatamodel */,
+			);
+			currentVersion = 55101D3B18D81ADE0074B4D2 /* SignModel.xcdatamodel */;
+			path = SignModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 55EE37A718B7057C002A121C /* Project object */;
 }

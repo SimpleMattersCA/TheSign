@@ -7,10 +7,9 @@
 //
 
 @import UIKit;
+#import "Model.h"
 
 @interface DetailsViewController :UIViewController
-
-@property (nonatomic,strong) NSArray *model;
 
 -(void) setBusinessToShow:(NSNumber*) identifier;
 

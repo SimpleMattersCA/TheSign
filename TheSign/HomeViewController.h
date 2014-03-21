@@ -7,10 +7,9 @@
 //
 
 @import UIKit;
+#import "Model.h"
 
 @interface HomeViewController : UICollectionViewController
-
-@property (nonatomic,strong) NSArray *model;
 
 -(void) beaconActivatedWithMajor:(NSNumber*)major;
 -(void) beaconActivatedWithMajor:(NSNumber*)major withMinor:(NSNumber*)minor;

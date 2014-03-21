@@ -8,8 +8,8 @@
 
 #import "AppDelegate.h"
 #import "DetailsViewController.h"
-#import "HomeViewController.h"
 #import "Business.h"
+#import "Model.h"
 #import "Parse/Parse.h"
 
 @import UIKit.UINavigationController;
@@ -17,12 +17,10 @@
 
 
 
-
 @interface AppDelegate() <UIApplicationDelegate,CLLocationManagerDelegate>
+
 @property (strong) CLLocationManager *locationManager;
 
-@property NSArray *businesses;
-@property NSArray *items;
 @end
 
 
@@ -35,35 +33,18 @@ NSNumber *detectedBeaconMajor;
 
 @implementation AppDelegate
 
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
     [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
                   clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
-    
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
-    [self refreshModel];
 
-    
-    
-    
- /*   UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
-    if (notification)
-    {
-        UINavigationController *navigation=(UINavigationController*)self.window.rootViewController.parentViewController;
-        DetailsViewController *details =
-        [navigation.storyboard instantiateViewControllerWithIdentifier:@"DetailsView"];
-        [details setBusinessToShow:detectedBeaconMajor];
-        [navigation pushViewController:details animated:NO];
-        
-        // Process the received notification
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
-        
-        
-    }*/
     [self.window makeKeyAndVisible];
 
     [self prepareForBeacons];
-
 
     // Override point for customization after application launch.
     return YES;
@@ -79,39 +60,10 @@ NSNumber *detectedBeaconMajor;
         [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
         
     }
-    
-
 }
 
--(void)refreshModel
-{
-    if(!_model)
-    {
-        Business *b0=[[Business alloc] init];
-      //  b0.name=@"Simple Matters";
-      //  b0.welcomeText=@"The fuck is that?";
-        
-        PFQuery *query = [PFQuery queryWithClassName:@"Stores"];
-        [query getObjectInBackgroundWithId:@"u7Vhj0pw4d" block:^(PFObject *store, NSError *error)
-        {
-            b0.name=store[@"name"];
-            b0.welcomeText=store[@"Description"];
-        }];
-            
-        Business *b1=[[Business alloc] init];
-        b1.name=@"Apple";
-        b1.welcomeText=@"Welcome to Apple Store";
-     
-    
-        Business *b2=[[Business alloc] init];
-        b2.name=@"Microsoft";
-        b2.welcomeText=@"Welcome to Microsoft Store";
-    
-        _businesses=[[NSArray alloc]initWithObjects:b0,b1,b2, nil];
-    
-        _model=_businesses;
-    }
-}
+
+
 
 
 - (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
@@ -208,8 +160,9 @@ NSNumber *detectedBeaconMajor;
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
         
         
+        
         UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.alertBody = [NSString stringWithFormat:@"Store detected: %@",((Business*)self.model[[closest.major integerValue]]).name];
+        notification.alertBody = [NSString stringWithFormat:@"Store detected: %@",[[Model sharedModel] getBusinessNameByBusinessID:[closest.major integerValue]]];
         NSDictionary *infoDict = [NSDictionary dictionaryWithObject:closest.major forKey:@"BeaconMajor"];
 
         notification.userInfo=infoDict;
@@ -254,5 +207,6 @@ NSNumber *detectedBeaconMajor;
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
 
 @end
