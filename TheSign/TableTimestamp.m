@@ -1,19 +1,17 @@
 //
-//  Business.m
+//  TableTimestamp.m
 //  TheSign
 //
 //  Created by Andrey Chudnovskiy on 2014-03-23.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-#import "Business.h"
+#import "TableTimestamp.h"
 
 
-@implementation Business
+@implementation TableTimestamp
 
-@dynamic name;
-@dynamic uid;
-@dynamic welcomeText;
-@dynamic logo;
+@dynamic tableName;
+@dynamic timeStamp;
 
 @end

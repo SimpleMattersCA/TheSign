@@ -9,6 +9,28 @@
 #import "Model.h"
 #import "Parse/Parse.h"
 #import "Business.h"
+#import "TableTimestamp.h"
+
+#define CD_BUSINESS (@"Business")
+#define CD_BUSINESS_ID (@"uid")
+#define CD_BUSINESS_NAME (@"name")
+#define CD_BUSINESS_LOGO (@"logo")
+#define CD_BUSINESS_WELCOMETEXT (@"welcomeText")
+
+#define CD_TIMESTAMP (@"TableTimestamp")
+#define CD_TIMESTAMP_TABLENAME (@"tableName")
+#define CD_TIMESTAMP_DATE (@"timeStamp")
+
+#define PARSE_BUSINESS (@"Business")
+#define PARSE_BUSINESS_ID (@"uid")
+#define PARSE_BUSINESS_NAME (@"name")
+#define PARSE_BUSINESS_LOGO (@"logo")
+#define PARSE_BUSINESS_WELCOMETEXT (@"welcomeText")
+
+#define PARSE_TIMESTAMP (@"UpdateTimestamps")
+#define PARSE_TIMESTAMP_TABLENAME (@"TableName")
+#define PARSE_TIMESTAMP_DATE (@"TimeStamp")
+
 
 @import QuartzCore.QuartzCore;
 @import CoreData;
@@ -18,6 +40,29 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+
+
+-(NSString *)getCoreDataNameByParseName:(NSString*)cloudEntityName
+{
+    NSString *entityName=@"";
+    if([cloudEntityName isEqualToString:PARSE_BUSINESS])
+        entityName=CD_BUSINESS;
+    else if([cloudEntityName isEqualToString:PARSE_TIMESTAMP])
+        entityName=CD_TIMESTAMP;
+    return entityName;
+
+}
+
+-(NSString *)getParseNameByCoreDataName:(NSString*)entityName
+{
+    NSString *cloudEntityName=@"";
+    if([entityName isEqualToString:CD_BUSINESS])
+        cloudEntityName=PARSE_BUSINESS;
+    else if([entityName isEqualToString:CD_TIMESTAMP])
+        cloudEntityName=PARSE_TIMESTAMP;
+    return cloudEntityName;
+}
+
 
 +(Model*)sharedModel
 {
@@ -33,61 +78,83 @@
 {
     if (self = [super init])
     {
-        if([self checkModel])
-            [self pullFromCloud];
-        else
-            [self pullFromCoreData];
+     //   [self deleteModel];
+        [self checkModel];
+        [self pullFromCoreData];
+
     }
     return self;
 }
 -(BOOL)checkModel
 {
     //pull from cloud for
-    
+    PFQuery *query = [PFQuery queryWithClassName:PARSE_TIMESTAMP];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+    {
+        if (!error)
+        {
+            for (PFObject *object in objects)
+            {
+                NSDate *timestamp=[self getUpdateTimestampForTable:object[PARSE_TIMESTAMP_TABLENAME]];
+                if(![timestamp isEqualToDate:object[PARSE_TIMESTAMP_DATE]])
+                {
+                    [self pullFromCloud:[self getCoreDataNameByParseName:object[PARSE_TIMESTAMP_TABLENAME]]];
+                }
+            }
+        }
+        else
+        {
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+    }];
+
     return NO;
 }
 
 -(void)pullFromCloud
 {
-    [self pullFromCloud:@"Business"];
+    [self pullFromCloud:CD_BUSINESS];
+    [self pullFromCloud:CD_TIMESTAMP];
+
 }
 -(void)pullFromCoreData
 {
-    [self pullFromCoreData:@"Business"];
+    [self pullFromCoreData:CD_BUSINESS];
 }
 -(void)deleteModel
 {
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"SignModel.sqlite"];
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
- //   [self deleteModel:@"Business"];
+ //   [self deleteEntity:@"Business"];
 }
 
 -(void)pullFromCloud:(NSString*)entityName
 {
- 
-    PFQuery *query = [PFQuery queryWithClassName:entityName];
+    NSString *cloudEntityName=[self getParseNameByCoreDataName:entityName];
+    
+    PFQuery *query = [PFQuery queryWithClassName:cloudEntityName];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
     {
         if (!error)
         {
-            [self deleteModel];
+            [self deleteEntity:entityName];
             // NSLog(@"Successfully retrieved %lu .", (unsigned long)objects.count);
             NSInteger i=0;
             for (PFObject *object in objects)
             {
-                if([entityName isEqualToString:@"Business"])
+                if([entityName isEqualToString:CD_BUSINESS])
                 {
-                        Business *business = [NSEntityDescription insertNewObjectForEntityForName:@"Business"
+                    Business *business = [NSEntityDescription insertNewObjectForEntityForName:CD_BUSINESS
                                                                 inManagedObjectContext:self.managedObjectContext];
-                        business.name=object[@"name"];
-                        business.welcomeText=object[@"welcomeText"];
-                        business.uid=object[@"uid"];
+                    business.name=object[PARSE_BUSINESS_NAME];
+                    business.welcomeText=object[PARSE_BUSINESS_WELCOMETEXT];
+                    business.uid=object[PARSE_BUSINESS_ID];
                 
-                     PFFile *logo=object[@"logo"];
-                    [logo getDataInBackgroundWithBlock:^(NSData *logoFile, NSError *error) {
-                        if (!error) {
-                            
-                            
+                    PFFile *logo=object[PARSE_BUSINESS_LOGO];
+                    [logo getDataInBackgroundWithBlock:^(NSData *logoFile, NSError *error)
+                    {
+                        if (!error)
+                        {
                             business.logo = logoFile;
                             if(i==objects.count-1)
                             {
@@ -96,12 +163,17 @@
                             }
                         }
                     }];
-                   
                 }
                 i++;
+                
+                if([entityName isEqualToString:CD_TIMESTAMP])
+                {
+                    TableTimestamp *timeStamp = [NSEntityDescription insertNewObjectForEntityForName:CD_TIMESTAMP
+                                                                       inManagedObjectContext:self.managedObjectContext];
+                    timeStamp.timeStamp=object[PARSE_TIMESTAMP_DATE];
+                    timeStamp.tableName=object[PARSE_TIMESTAMP_TABLENAME];
+                }
             }
-            
-            
         }
         else
         {
@@ -111,20 +183,17 @@
 }
 
 
-
--(void)deleteModel:(NSString*)entityName
+//deleting all objects from CoreData for a specific entity
+-(void)deleteEntity:(NSString*)entityName
 {
-    if([entityName isEqualToString:@"Business"])
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+    NSError *error;
+    NSArray *objects = [self.managedObjectContext executeFetchRequest:request error:&error];
+    for (NSManagedObject *object in objects)
     {
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Business"];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"uid" ascending:YES]];
-        NSError *error;
-        NSArray *businesses = [self.managedObjectContext executeFetchRequest:request error:&error];
-        for (Business *business in businesses)
-        {
-            [self.managedObjectContext deleteObject:business];
-        }
+        [self.managedObjectContext deleteObject:object];
     }
+    
     [self saveContext];
 }
 
@@ -132,10 +201,10 @@
 
 -(void)pullFromCoreData:(NSString*)entityName
 {
-    if([entityName isEqualToString:@"Business"])
+    if([entityName isEqualToString:CD_BUSINESS])
     {
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Business"];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"uid" ascending:YES]];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:CD_BUSINESS];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:CD_BUSINESS_ID ascending:YES]];
         NSError *error;
         NSArray *businessesFromCloud = [self.managedObjectContext executeFetchRequest:request error:&error];
         self.businesses=[[NSArray alloc] initWithArray:businessesFromCloud];
@@ -144,30 +213,55 @@
 
 -(Business*) getBusinessByID:(NSInteger)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Business"];
-    request.predicate=[NSPredicate predicateWithFormat:@"uid=%d",identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:CD_BUSINESS];
+    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", CD_BUSINESS_ID, (long)identifier];
+    request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *business = [self.managedObjectContext executeFetchRequest:request error:&error];
-    return (Business*)business[0];
+    if(business.count==0)
+        return nil;
+    else
+        return (Business*)business[0];
+}
+                   
+-(NSDate*) getUpdateTimestampForTable:(NSString*)tName
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:CD_TIMESTAMP];
+    NSString *predicate = [NSString stringWithFormat: @"%@==\"%@\"", CD_TIMESTAMP_TABLENAME,tName];
+    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    NSError *error;
+    NSArray *timestamp = [self.managedObjectContext executeFetchRequest:request error:&error];
+    if(timestamp.count==0)
+        return nil;
+    else
+        return ((TableTimestamp*)timestamp[0]).timeStamp;
 }
 
 
 -(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Business"];
-    request.predicate=[NSPredicate predicateWithFormat:@"uid=%d",identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:CD_BUSINESS];
+    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", CD_BUSINESS_ID, (long)identifier];
+    request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *business = [self.managedObjectContext executeFetchRequest:request error:&error];
-    return ((Business*)business[0]).welcomeText;
+    if(business.count==0)
+        return nil;
+    else
+        return ((Business*)business[0]).welcomeText;
 }
 
 -(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Business"];
-    request.predicate=[NSPredicate predicateWithFormat:@"uid=%d",identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:CD_BUSINESS];
+    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", CD_BUSINESS_ID, (long)identifier];
+    request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *business = [self.managedObjectContext executeFetchRequest:request error:&error];
-    return ((Business*)business[0]).name;
+    if(business.count==0)
+        return nil;
+    else
+        return ((Business*)business[0]).name;
 }
 
 
@@ -195,12 +289,14 @@
     if (_managedObjectContext != nil) {
         return _managedObjectContext;
     }
-    
+   
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-    if (coordinator != nil) {
-        _managedObjectContext = [[NSManagedObjectContext alloc] init];
-        [_managedObjectContext setPersistentStoreCoordinator:coordinator];
-    }
+        if (coordinator != nil) {
+            _managedObjectContext = [[NSManagedObjectContext alloc] init];
+            [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+        }
+   
+    
     return _managedObjectContext;
 }
 
@@ -253,7 +349,9 @@
          
          */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
+        
+
+        //abort();
     }
     
     return _persistentStoreCoordinator;

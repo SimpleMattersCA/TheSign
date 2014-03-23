@@ -21,7 +21,8 @@
 		553E4F3A18C3086C004F8312 /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F3918C3086C004F8312 /* Item.m */; };
 		553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F4218C714A3004F8312 /* HomeViewController.m */; };
 		55B746EB18DCAECA00F61354 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B746EA18DCAECA00F61354 /* Model.m */; };
-		55C882D418DE678200E1C502 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882D318DE678200E1C502 /* Business.m */; };
+		55C882D718DF72B400E1C502 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882D618DF72B400E1C502 /* Business.m */; };
+		55C882DA18DF72B500E1C502 /* TableTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882D918DF72B500E1C502 /* TableTimestamp.m */; };
 		55EE37B318B7057C002A121C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B218B7057C002A121C /* Foundation.framework */; };
 		55EE37B518B7057C002A121C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B418B7057C002A121C /* CoreGraphics.framework */; };
 		55EE37B718B7057C002A121C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B618B7057C002A121C /* UIKit.framework */; };
@@ -66,8 +67,10 @@
 		553E4F4218C714A3004F8312 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		55B746E918DCAECA00F61354 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		55B746EA18DCAECA00F61354 /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
-		55C882D218DE678200E1C502 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
-		55C882D318DE678200E1C502 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
+		55C882D518DF72B400E1C502 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
+		55C882D618DF72B400E1C502 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
+		55C882D818DF72B500E1C502 /* TableTimestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableTimestamp.h; sourceTree = "<group>"; };
+		55C882D918DF72B500E1C502 /* TableTimestamp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableTimestamp.m; sourceTree = "<group>"; };
 		55EE37AF18B7057C002A121C /* TheSign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSign.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55EE37B218B7057C002A121C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		55EE37B418B7057C002A121C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -139,8 +142,10 @@
 		553E4F4518C71525004F8312 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				55C882D218DE678200E1C502 /* Business.h */,
-				55C882D318DE678200E1C502 /* Business.m */,
+				55C882D518DF72B400E1C502 /* Business.h */,
+				55C882D618DF72B400E1C502 /* Business.m */,
+				55C882D818DF72B500E1C502 /* TableTimestamp.h */,
+				55C882D918DF72B500E1C502 /* TableTimestamp.m */,
 				55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */,
 				553E4F3818C3086C004F8312 /* Item.h */,
 				553E4F3918C3086C004F8312 /* Item.m */,
@@ -341,8 +346,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55C882DA18DF72B500E1C502 /* TableTimestamp.m in Sources */,
 				55EE37C918B7057C002A121C /* DetailsViewController.m in Sources */,
-				55C882D418DE678200E1C502 /* Business.m in Sources */,
+				55C882D718DF72B400E1C502 /* Business.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
 				55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */,
 				55B746EB18DCAECA00F61354 /* Model.m in Sources */,
