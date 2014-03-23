@@ -93,13 +93,19 @@
     {
         if (!error)
         {
+            BOOL needUpdate=NO;
             for (PFObject *object in objects)
             {
                 NSDate *timestamp=[self getUpdateTimestampForTable:object[PARSE_TIMESTAMP_TABLENAME]];
                 if(![timestamp isEqualToDate:object[PARSE_TIMESTAMP_DATE]])
                 {
                     [self pullFromCloud:[self getCoreDataNameByParseName:object[PARSE_TIMESTAMP_TABLENAME]]];
+                    needUpdate=YES;
                 }
+            }
+            if(needUpdate)
+            {
+                [self pullFromCloud:CD_TIMESTAMP];
             }
         }
         else
@@ -169,7 +175,7 @@
                 if([entityName isEqualToString:CD_TIMESTAMP])
                 {
                     TableTimestamp *timeStamp = [NSEntityDescription insertNewObjectForEntityForName:CD_TIMESTAMP
-                                                                       inManagedObjectContext:self.managedObjectContext];
+                                                                              inManagedObjectContext:self.managedObjectContext];
                     timeStamp.timeStamp=object[PARSE_TIMESTAMP_DATE];
                     timeStamp.tableName=object[PARSE_TIMESTAMP_TABLENAME];
                 }
