@@ -154,7 +154,7 @@ NSNumber *detectedBeaconMajor;
     {
         detectedBeaconMinor =closest.minor;
         detectedBeaconMajor =closest.major;
-        NSLog([detectedBeaconMajor stringValue]);
+       // NSLog([NSString stringWithString:[detectedBeaconMajor stringValue]]);
         //CLearing notification center and lock screen notificaitons. Yeah, it's that weird
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];

@@ -12,7 +12,6 @@
 #import "Model.h"
 
 @interface DetailsViewController ()
-@property (weak, nonatomic) IBOutlet UILabel* outputText;
 @property (weak, nonatomic) IBOutlet UITextView* outputDescription;
 @property (strong,nonatomic) NSNumber* businessID;
 @property (strong,nonatomic) Business* business;
@@ -53,8 +52,9 @@
 
 - (IBAction)showInfo1:(UIButton *)sender {
     
-    
+
 }
+
 
 
 //reaction for closest beacon in range

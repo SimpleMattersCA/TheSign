@@ -18,10 +18,10 @@
 		028F57D018D670BB00372167 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2AB18D6694B007173FA /* Parse.framework */; };
 		55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */; };
 		55101D3E18D823ED0074B4D2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55101D3D18D823ED0074B4D2 /* CoreData.framework */; };
-		55101D8E18D82A810074B4D2 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 55101D8D18D82A810074B4D2 /* Business.m */; };
 		553E4F3A18C3086C004F8312 /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F3918C3086C004F8312 /* Item.m */; };
 		553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F4218C714A3004F8312 /* HomeViewController.m */; };
 		55B746EB18DCAECA00F61354 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B746EA18DCAECA00F61354 /* Model.m */; };
+		55C882D418DE678200E1C502 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882D318DE678200E1C502 /* Business.m */; };
 		55EE37B318B7057C002A121C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B218B7057C002A121C /* Foundation.framework */; };
 		55EE37B518B7057C002A121C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B418B7057C002A121C /* CoreGraphics.framework */; };
 		55EE37B718B7057C002A121C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B618B7057C002A121C /* UIKit.framework */; };
@@ -60,14 +60,14 @@
 		0283E2B318D66AB6007173FA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		55101D3B18D81ADE0074B4D2 /* SignModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SignModel.xcdatamodel; sourceTree = "<group>"; };
 		55101D3D18D823ED0074B4D2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		55101D8C18D82A810074B4D2 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
-		55101D8D18D82A810074B4D2 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
 		553E4F3818C3086C004F8312 /* Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
 		553E4F3918C3086C004F8312 /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
 		553E4F4118C714A3004F8312 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		553E4F4218C714A3004F8312 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		55B746E918DCAECA00F61354 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		55B746EA18DCAECA00F61354 /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
+		55C882D218DE678200E1C502 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
+		55C882D318DE678200E1C502 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
 		55EE37AF18B7057C002A121C /* TheSign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSign.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55EE37B218B7057C002A121C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		55EE37B418B7057C002A121C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -139,9 +139,9 @@
 		553E4F4518C71525004F8312 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				55C882D218DE678200E1C502 /* Business.h */,
+				55C882D318DE678200E1C502 /* Business.m */,
 				55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */,
-				55101D8C18D82A810074B4D2 /* Business.h */,
-				55101D8D18D82A810074B4D2 /* Business.m */,
 				553E4F3818C3086C004F8312 /* Item.h */,
 				553E4F3918C3086C004F8312 /* Item.m */,
 			);
@@ -342,10 +342,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				55EE37C918B7057C002A121C /* DetailsViewController.m in Sources */,
+				55C882D418DE678200E1C502 /* Business.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
 				55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */,
 				55B746EB18DCAECA00F61354 /* Model.m in Sources */,
-				55101D8E18D82A810074B4D2 /* Business.m in Sources */,
 				553E4F3A18C3086C004F8312 /* Item.m in Sources */,
 				55EE37BF18B7057C002A121C /* main.m in Sources */,
 				553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */,

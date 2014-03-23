@@ -27,6 +27,6 @@
 
 - (NSURL *)applicationDocumentsDirectory;
 
-- (void) refreshModel;
+- (void) pullFromCloud;
 
 @end

@@ -10,6 +10,7 @@
 #import "Parse/Parse.h"
 #import "Business.h"
 
+@import QuartzCore.QuartzCore;
 @import CoreData;
 
 @implementation Model
@@ -33,38 +34,73 @@
     if (self = [super init])
     {
         if([self checkModel])
-            [self refreshModel];
+            [self pullFromCloud];
         else
-            [self updateModel];
+            [self pullFromCoreData];
     }
     return self;
 }
 -(BOOL)checkModel
 {
-    
+    //pull from cloud for
     
     return NO;
 }
 
--(void)refreshModel
+-(void)pullFromCloud
+{
+    [self pullFromCloud:@"Business"];
+}
+-(void)pullFromCoreData
+{
+    [self pullFromCoreData:@"Business"];
+}
+-(void)deleteModel
+{
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"SignModel.sqlite"];
+    [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
+ //   [self deleteModel:@"Business"];
+}
+
+-(void)pullFromCloud:(NSString*)entityName
 {
  
-    PFQuery *query = [PFQuery queryWithClassName:@"Stores"];
+    PFQuery *query = [PFQuery queryWithClassName:entityName];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
     {
         if (!error)
         {
             [self deleteModel];
-           // NSLog(@"Successfully retrieved %lu .", (unsigned long)objects.count);
+            // NSLog(@"Successfully retrieved %lu .", (unsigned long)objects.count);
+            NSInteger i=0;
             for (PFObject *object in objects)
             {
-                Business *business = [NSEntityDescription insertNewObjectForEntityForName:@"Business"
+                if([entityName isEqualToString:@"Business"])
+                {
+                        Business *business = [NSEntityDescription insertNewObjectForEntityForName:@"Business"
                                                                 inManagedObjectContext:self.managedObjectContext];
-                business.name=object[@"StoreName"];
-                business.welcomeText=object[@"Description"];
+                        business.name=object[@"name"];
+                        business.welcomeText=object[@"welcomeText"];
+                        business.uid=object[@"uid"];
+                
+                     PFFile *logo=object[@"logo"];
+                    [logo getDataInBackgroundWithBlock:^(NSData *logoFile, NSError *error) {
+                        if (!error) {
+                            
+                            
+                            business.logo = logoFile;
+                            if(i==objects.count-1)
+                            {
+                                [self saveContext];
+                                [self pullFromCoreData:entityName];
+                            }
+                        }
+                    }];
+                   
+                }
+                i++;
             }
-            [self saveContext];
-            [self updateModel];
+            
             
         }
         else
@@ -74,27 +110,36 @@
     }];
 }
 
--(void)deleteModel
+
+
+-(void)deleteModel:(NSString*)entityName
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Business"];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"uid" ascending:YES]];
-    NSError *error;
-    NSArray *businesses = [self.managedObjectContext executeFetchRequest:request error:&error];
-    for (Business *business in businesses)
+    if([entityName isEqualToString:@"Business"])
     {
-         [self.managedObjectContext deleteObject:business];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Business"];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"uid" ascending:YES]];
+        NSError *error;
+        NSArray *businesses = [self.managedObjectContext executeFetchRequest:request error:&error];
+        for (Business *business in businesses)
+        {
+            [self.managedObjectContext deleteObject:business];
+        }
     }
     [self saveContext];
-   
 }
 
--(void)updateModel
+
+
+-(void)pullFromCoreData:(NSString*)entityName
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Business"];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"uid" ascending:YES]];
-    NSError *error;
-    NSArray *businessesFromCloud = [self.managedObjectContext executeFetchRequest:request error:&error];
-    self.businesses=[[NSArray alloc] initWithArray:businessesFromCloud];
+    if([entityName isEqualToString:@"Business"])
+    {
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Business"];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"uid" ascending:YES]];
+        NSError *error;
+        NSArray *businessesFromCloud = [self.managedObjectContext executeFetchRequest:request error:&error];
+        self.businesses=[[NSArray alloc] initWithArray:businessesFromCloud];
+    }
 }
 
 -(Business*) getBusinessByID:(NSInteger)identifier

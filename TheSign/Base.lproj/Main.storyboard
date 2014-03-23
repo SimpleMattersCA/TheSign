@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Home View Controller-->
+        <!--Home View Controller - Businesses-->
         <scene sceneID="GIt-Qh-pnH">
             <objects>
                 <collectionViewController autoresizesArchivedViewToFullSize="NO" id="xUr-r2-t73" customClass="HomeViewController" sceneMemberID="viewController">
@@ -26,16 +26,14 @@
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="100" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" restorationIdentifier="title" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fae-Ee-grJ">
-                                            <rect key="frame" x="0.0" y="33" width="100" height="34"/>
+                                        <imageView userInteractionEnabled="NO" tag="100" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xnf-e4-oNG">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                        </imageView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <segue destination="vXZ-lx-hvc" kind="push" identifier="ListToBusiness" id="S90-N3-Wqc"/>
                                 </connections>
@@ -46,7 +44,10 @@
                             <outlet property="delegate" destination="xUr-r2-t73" id="ZfB-fo-Nun"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" id="2ar-xq-zV0"/>
+                    <navigationItem key="navigationItem" title="Businesses" id="2ar-xq-zV0"/>
+                    <connections>
+                        <outlet property="navigationBar" destination="2ar-xq-zV0" id="RUH-qM-vHW"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jSa-6v-QFu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -58,6 +59,7 @@
                 <navigationController definesPresentationContext="YES" id="Vng-uz-zPE" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="01J-Nh-qmh">
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.56996712419999995" green="0.85973159889999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <connections>
                         <segue destination="xUr-r2-t73" kind="relationship" relationship="rootViewController" id="H2o-AV-ITB"/>
@@ -103,6 +105,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="tPA-XC-T4M"/>
                     <connections>
+                        <outlet property="navigationBar" destination="tPA-XC-T4M" id="sHg-nA-3HX"/>
                         <outlet property="outputDescription" destination="Q4p-lf-7AY" id="eTd-5l-86D"/>
                     </connections>
                 </viewController>

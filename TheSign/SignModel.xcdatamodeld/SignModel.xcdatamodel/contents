@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5063" systemVersion="13C64" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Business" representedClassName="Business" syncable="YES">
+        <attribute name="logo" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uid" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="welcomeText" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Business" positionX="-2358" positionY="-17" width="128" height="28"/>
+        <element name="Business" positionX="-2358" positionY="-17" width="128" height="105"/>
     </elements>
 </model>

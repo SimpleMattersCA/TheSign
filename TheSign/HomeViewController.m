@@ -15,6 +15,8 @@
 
 @property (nonatomic, strong) NSArray * businesses;
 
+@property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
+
 @end
 
 @implementation HomeViewController
@@ -92,8 +94,11 @@
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     
     
-    UILabel *businessTitle = (UILabel *)[cell viewWithTag:100];
-    businessTitle.text= ((Business*)self.businesses[indexPath.row]).name;
+    //UILabel *businessTitle = (UILabel *)[cell viewWithTag:100];
+    UIImageView *businessLogo = (UIImageView *)[cell viewWithTag:100];
+    UIImage *image = [UIImage imageWithData:((Business*)self.businesses[indexPath.row]).logo];
+    
+    businessLogo.image= image;
     
     return cell;
 }
