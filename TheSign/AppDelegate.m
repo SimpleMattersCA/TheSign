@@ -66,7 +66,7 @@ NSNumber *detectedBeaconMajor;
 
 
 
-- (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
+/*- (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
 {
     switch (state) {
         case CLRegionStateInside:
@@ -88,7 +88,7 @@ NSNumber *detectedBeaconMajor;
     }
 
   
-}
+}*/
 
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
@@ -156,8 +156,8 @@ NSNumber *detectedBeaconMajor;
         detectedBeaconMajor =closest.major;
        // NSLog([NSString stringWithString:[detectedBeaconMajor stringValue]]);
         //CLearing notification center and lock screen notificaitons. Yeah, it's that weird
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+       // [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+       // [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
         
         
         
@@ -167,7 +167,7 @@ NSNumber *detectedBeaconMajor;
 
         notification.userInfo=infoDict;
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-        
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
         
         if(![detectedBeaconMinor isEqual:closest.minor])
         {

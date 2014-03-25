@@ -56,21 +56,4 @@
 }
 
 
-
-//reaction for closest beacon in range
--(void) beaconActivatedWithMajor:(NSNumber*)major
-{
-}
-
--(void) beaconActivatedWithMajor:(NSNumber*)major withMinor:(NSNumber*)minor;
-{
-    //Beacon specific reaction
-}
-
--(void) beaconLeft
-{
-    
-}
-
-
 @end

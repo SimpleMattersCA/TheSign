@@ -73,22 +73,6 @@
     }
     return _businesses;
 }
-
-//reaction for closest beacon in range
--(void) beaconActivatedWithMajor:(NSNumber*)major
-{
-}
-
--(void) beaconActivatedWithMajor:(NSNumber*)major withMinor:(NSNumber*)minor;
-{
-    //Beacon specific reaction
-}
-
--(void) beaconLeft
-{
-   
-}
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"ListToBusiness"]){

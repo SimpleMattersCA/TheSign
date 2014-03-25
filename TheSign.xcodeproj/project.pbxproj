@@ -23,7 +23,6 @@
 		55B746EB18DCAECA00F61354 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B746EA18DCAECA00F61354 /* Model.m */; };
 		55C882D718DF72B400E1C502 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882D618DF72B400E1C502 /* Business.m */; };
 		55C882DA18DF72B500E1C502 /* TableTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882D918DF72B500E1C502 /* TableTimestamp.m */; };
-		55C882DC18DFEAE300E1C502 /* mask.png in Resources */ = {isa = PBXBuildFile; fileRef = 55C882DB18DFEAE300E1C502 /* mask.png */; };
 		55EE37B318B7057C002A121C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B218B7057C002A121C /* Foundation.framework */; };
 		55EE37B518B7057C002A121C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B418B7057C002A121C /* CoreGraphics.framework */; };
 		55EE37B718B7057C002A121C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B618B7057C002A121C /* UIKit.framework */; };
@@ -72,7 +71,6 @@
 		55C882D618DF72B400E1C502 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
 		55C882D818DF72B500E1C502 /* TableTimestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableTimestamp.h; sourceTree = "<group>"; };
 		55C882D918DF72B500E1C502 /* TableTimestamp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableTimestamp.m; sourceTree = "<group>"; };
-		55C882DB18DFEAE300E1C502 /* mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mask.png; sourceTree = "<group>"; };
 		55EE37AF18B7057C002A121C /* TheSign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSign.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55EE37B218B7057C002A121C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		55EE37B418B7057C002A121C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -214,7 +212,6 @@
 		55EE37B918B7057C002A121C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				55C882DB18DFEAE300E1C502 /* mask.png */,
 				55EE37BA18B7057C002A121C /* TheSign-Info.plist */,
 				55EE37BB18B7057C002A121C /* InfoPlist.strings */,
 				55EE37BE18B7057C002A121C /* main.m */,
@@ -331,7 +328,6 @@
 				55EE37CB18B7057C002A121C /* Images.xcassets in Resources */,
 				55EE37BD18B7057C002A121C /* InfoPlist.strings in Resources */,
 				55EE37C618B7057C002A121C /* Main.storyboard in Resources */,
-				55C882DC18DFEAE300E1C502 /* mask.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

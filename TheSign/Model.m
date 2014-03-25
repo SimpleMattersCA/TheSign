@@ -32,9 +32,7 @@
 #define PARSE_TIMESTAMP_DATE (@"TimeStamp")
 
 
-@import QuartzCore.QuartzCore;
 @import CoreData;
-@import UIKit;
 
 @implementation Model
 
@@ -132,7 +130,6 @@
 {
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"SignModel.sqlite"];
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
-   [self deleteEntity:@"Business"];
 }
 
 -(void)pullFromCloud:(NSString*)entityName
@@ -145,7 +142,6 @@
         if (!error)
         {
             [self deleteEntity:entityName];
-            // NSLog(@"Successfully retrieved %lu .", (unsigned long)objects.count);
             NSInteger i=0;
             for (PFObject *object in objects)
             {
@@ -162,8 +158,6 @@
                     {
                         if (!error)
                         {
-                            //UIImage *logoImage=[UIImage imageWithData:logoFile];
-                         //   business.logo =UIImagePNGRepresentation([self maskImageIcon:logoImage]);
                             business.logo = logoFile;
                             if(i==objects.count-1)
                             {
@@ -273,27 +267,6 @@
     else
         return ((Business*)business[0]).name;
 }
-
-- (UIImage*) maskImageIcon:(UIImage *)image {
-    
-    
-    UIImage *maskImage = [UIImage imageNamed: @"mask.png"];
-
-	CGImageRef maskRef = maskImage.CGImage;
-    
-	CGImageRef mask = CGImageMaskCreate(CGImageGetWidth(maskRef),
-                                        CGImageGetHeight(maskRef),
-                                        CGImageGetBitsPerComponent(maskRef),
-                                        CGImageGetBitsPerPixel(maskRef),
-                                        CGImageGetBytesPerRow(maskRef),
-                                        CGImageGetDataProvider(maskRef), NULL, false);
-    
-	CGImageRef masked = CGImageCreateWithMask([image CGImage], mask);
-    UIImage *tImage=[UIImage imageWithCGImage:masked];
-	return tImage;
-    
-}
-
 
 - (void)saveContext
 {

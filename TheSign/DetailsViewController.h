@@ -16,8 +16,4 @@
 -(void) updateViewForBusiness:(NSNumber*) identifier;
 
 
--(void) beaconActivatedWithMajor:(NSNumber*)major;
--(void) beaconActivatedWithMajor:(NSNumber*)major withMinor:(NSNumber*)minor;
--(void) beaconLeft;
-
 @end
