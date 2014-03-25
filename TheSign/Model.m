@@ -34,6 +34,7 @@
 
 @import QuartzCore.QuartzCore;
 @import CoreData;
+@import UIKit;
 
 @implementation Model
 
@@ -131,7 +132,7 @@
 {
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"SignModel.sqlite"];
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
- //   [self deleteEntity:@"Business"];
+   [self deleteEntity:@"Business"];
 }
 
 -(void)pullFromCloud:(NSString*)entityName
@@ -155,12 +156,14 @@
                     business.name=object[PARSE_BUSINESS_NAME];
                     business.welcomeText=object[PARSE_BUSINESS_WELCOMETEXT];
                     business.uid=object[PARSE_BUSINESS_ID];
-                
+
                     PFFile *logo=object[PARSE_BUSINESS_LOGO];
                     [logo getDataInBackgroundWithBlock:^(NSData *logoFile, NSError *error)
                     {
                         if (!error)
                         {
+                            //UIImage *logoImage=[UIImage imageWithData:logoFile];
+                         //   business.logo =UIImagePNGRepresentation([self maskImageIcon:logoImage]);
                             business.logo = logoFile;
                             if(i==objects.count-1)
                             {
@@ -186,6 +189,7 @@
             NSLog(@"Error: %@ %@", error, [error userInfo]);
         }
     }];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self];
 }
 
 
@@ -270,6 +274,25 @@
         return ((Business*)business[0]).name;
 }
 
+- (UIImage*) maskImageIcon:(UIImage *)image {
+    
+    
+    UIImage *maskImage = [UIImage imageNamed: @"mask.png"];
+
+	CGImageRef maskRef = maskImage.CGImage;
+    
+	CGImageRef mask = CGImageMaskCreate(CGImageGetWidth(maskRef),
+                                        CGImageGetHeight(maskRef),
+                                        CGImageGetBitsPerComponent(maskRef),
+                                        CGImageGetBitsPerPixel(maskRef),
+                                        CGImageGetBytesPerRow(maskRef),
+                                        CGImageGetDataProvider(maskRef), NULL, false);
+    
+	CGImageRef masked = CGImageCreateWithMask([image CGImage], mask);
+    UIImage *tImage=[UIImage imageWithCGImage:masked];
+	return tImage;
+    
+}
 
 
 - (void)saveContext
@@ -330,7 +353,11 @@
     
     NSError *error = nil;
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
+                             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+
+    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]) {
         /*
          Replace this implementation with code to handle the error appropriately.
          
