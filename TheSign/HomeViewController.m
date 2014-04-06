@@ -8,12 +8,12 @@
 
 #import "HomeViewController.h"
 #import "Business.h"
-#import "DetailsViewController.h"
+#import "FeaturedViewController.h"
 #import "Model.h"
 
 @interface HomeViewController () <UICollectionViewDataSource>
 
-@property (nonatomic, strong) NSArray * businesses;
+@property (nonatomic, strong, readonly) NSArray * businesses;
 
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
 
@@ -38,7 +38,7 @@
     
     if ([[notification name] isEqualToString:@"pulledNewDataFromCloud"])
     {
-        [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
+        ///[self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
         [self.collectionView reloadData];
     }
 }
@@ -67,22 +67,20 @@
 
 -(NSArray*) businesses
 {
-    if(!_businesses)
-    {
-        _businesses=[Model sharedModel].businesses;
-    }
-    return _businesses;
+    return [Model sharedModel].businesses;
+
 }
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"ListToBusiness"]){
-        if ([segue.destinationViewController isKindOfClass:[DetailsViewController class]])
+    if ([segue.identifier isEqualToString:@"HomeToBusiness"]){
+        if ([segue.destinationViewController isKindOfClass:[FeaturedViewController class]])
         {
             NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
             NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
             
-            DetailsViewController *dest = (DetailsViewController *)segue.destinationViewController;
-            NSNumber *businessID=[[NSNumber alloc] initWithInteger:indexPath.row];
+            FeaturedViewController *dest = (FeaturedViewController *)segue.destinationViewController;
+            [NSNumber numberWithInt:indexPath.row];
+            NSNumber *businessID=[NSNumber numberWithInt:indexPath.row];
             
             [dest setBusinessToShow:businessID];
         }
@@ -95,16 +93,16 @@
     
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     
+    Business*  cellBusiness=(Business*)self.businesses[indexPath.row];
     
-    //UILabel *businessTitle = (UILabel *)[cell viewWithTag:100];
+    UILabel *businessTitle = (UILabel *)[cell viewWithTag:50];
+    businessTitle.text=cellBusiness.name;
     UIImageView *businessLogo = (UIImageView *)[cell viewWithTag:100];
     CALayer *imageLayer = businessLogo.layer;
     imageLayer.cornerRadius=cell.frame.size.width/2;
     imageLayer.borderWidth=3;
     imageLayer.masksToBounds=YES;
-    
-    UIImage *image = [UIImage imageWithData:((Business*)self.businesses[indexPath.row]).logo];
-    
+    UIImage *image = [UIImage imageWithData:cellBusiness.logo];
     businessLogo.image= image;
    
     return cell;

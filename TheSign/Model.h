@@ -9,6 +9,8 @@
 @import UIKit;
 #import "Business.h"
 
+@class Business;
+
 @interface Model : NSObject 
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;

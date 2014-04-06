@@ -5,20 +5,22 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uid" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="welcomeText" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="feature" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Featured" inverseName="featuredBy" inverseEntity="Featured" syncable="YES"/>
     </entity>
-    <entity name="Featured" syncable="YES">
+    <entity name="Featured" representedClassName="Featured" syncable="YES">
         <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="videoUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="featuredBy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Business" inverseName="feature" inverseEntity="Business" syncable="YES"/>
     </entity>
     <entity name="TableTimestamp" representedClassName="TableTimestamp" syncable="YES">
         <attribute name="tableName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="timeStamp" optional="YES" attributeType="Date" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Business" positionX="-2358" positionY="-17" width="128" height="105"/>
-        <element name="TableTimestamp" positionX="-2358" positionY="9" width="128" height="73"/>
-        <element name="Featured" positionX="-2349" positionY="18" width="128" height="103"/>
+        <element name="Business" positionX="-2448" positionY="-10" width="128" height="118"/>
+        <element name="TableTimestamp" positionX="-2504" positionY="-171" width="128" height="73"/>
+        <element name="Featured" positionX="-2243" positionY="-193" width="128" height="118"/>
     </elements>
 </model>

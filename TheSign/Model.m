@@ -9,7 +9,18 @@
 #import "Model.h"
 #import "Parse/Parse.h"
 #import "Business.h"
+#import "Featured.h"
 #import "TableTimestamp.h"
+#import "Featured.h"
+@import CoreData;
+
+
+typedef NS_ENUM(NSInteger, DownloadedItemType) {
+    Downloaded_BusinessLogo,
+    Downloaded_FeaturedDeal
+};
+
+
 
 #define CD_BUSINESS (@"Business")
 #define CD_BUSINESS_ID (@"uid")
@@ -17,22 +28,34 @@
 #define CD_BUSINESS_LOGO (@"logo")
 #define CD_BUSINESS_WELCOMETEXT (@"welcomeText")
 
-#define CD_TIMESTAMP (@"TableTimestamp")
-#define CD_TIMESTAMP_TABLENAME (@"tableName")
-#define CD_TIMESTAMP_DATE (@"timeStamp")
-
 #define PARSE_BUSINESS (@"Business")
 #define PARSE_BUSINESS_ID (@"uid")
 #define PARSE_BUSINESS_NAME (@"name")
 #define PARSE_BUSINESS_LOGO (@"logo")
 #define PARSE_BUSINESS_WELCOMETEXT (@"welcomeText")
 
+#define CD_FEATURED (@"Featured")
+#define CD_FEATURED_TITLE (@"title")
+#define CD_FEATURED_DETAILS (@"details")
+#define CD_FEATURED_VIDEO (@"videoUrl")
+#define CD_FEATURED_IMAGE (@"image")
+#define CD_FEATURED_BUSINESS (@"featuredBy")
+
+#define PARSE_FEATURED (@"Info")
+#define PARSE_FEATURED_TITLE (@"featured")
+#define PARSE_FEATURED_DETAILS (@"description")
+#define PARSE_FEATURED_VIDEO (@"video")
+#define PARSE_FEATURED_IMAGE (@"picture")
+#define PARSE_FEATURED_BUSINESS (@"BusinessID")
+
+#define CD_TIMESTAMP (@"TableTimestamp")
+#define CD_TIMESTAMP_TABLENAME (@"tableName")
+#define CD_TIMESTAMP_DATE (@"timeStamp")
+
 #define PARSE_TIMESTAMP (@"UpdateTimestamps")
 #define PARSE_TIMESTAMP_TABLENAME (@"TableName")
 #define PARSE_TIMESTAMP_DATE (@"TimeStamp")
 
-
-@import CoreData;
 
 @implementation Model
 
@@ -41,11 +64,19 @@
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
 
+#pragma mark - Static boolean flags that totally need to be replaced
+//terrible coding ahead
+static bool featuredImageDownloaded;
+static bool featuredBusinessDownloaded;
+//end of terrible coding
+
 -(NSString *)getCoreDataNameByParseName:(NSString*)cloudEntityName
 {
     NSString *entityName=@"";
     if([cloudEntityName isEqualToString:PARSE_BUSINESS])
         entityName=CD_BUSINESS;
+    if([cloudEntityName isEqualToString:PARSE_FEATURED])
+        entityName=CD_FEATURED;
     else if([cloudEntityName isEqualToString:PARSE_TIMESTAMP])
         entityName=CD_TIMESTAMP;
     return entityName;
@@ -57,10 +88,13 @@
     NSString *cloudEntityName=@"";
     if([entityName isEqualToString:CD_BUSINESS])
         cloudEntityName=PARSE_BUSINESS;
+    if([entityName isEqualToString:CD_FEATURED])
+        cloudEntityName=PARSE_FEATURED;
     else if([entityName isEqualToString:CD_TIMESTAMP])
         cloudEntityName=PARSE_TIMESTAMP;
     return cloudEntityName;
 }
+
 
 
 +(Model*)sharedModel
@@ -77,13 +111,26 @@
 {
     if (self = [super init])
     {
-     //   [self deleteModel];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(itemPulledFromCloud:)
+                                                     name:@"itemPulledFromCloud"
+                                                   object:nil];
+        
+
+      //  [self deleteModel];
         [self checkModel];
         [self pullFromCoreData];
 
     }
     return self;
 }
+
+
+
+/*!
+ 
+ */
 -(BOOL)checkModel
 {
     //pull from cloud for
@@ -96,11 +143,11 @@
             for (PFObject *object in objects)
             {
                 NSDate *timestamp=[self getUpdateTimestampForTable:object[PARSE_TIMESTAMP_TABLENAME]];
-                if(![timestamp isEqualToDate:object[PARSE_TIMESTAMP_DATE]])
-                {
+            //    if(![timestamp isEqualToDate:object[PARSE_TIMESTAMP_DATE]])
+            //    {
                     [self pullFromCloud:[self getCoreDataNameByParseName:object[PARSE_TIMESTAMP_TABLENAME]]];
                     needUpdate=YES;
-                }
+            //    }
             }
             if(needUpdate)
             {
@@ -118,19 +165,54 @@
 
 -(void)pullFromCloud
 {
+    //do it through the array
     [self pullFromCloud:CD_BUSINESS];
+    [self pullFromCloud:CD_FEATURED];
     [self pullFromCloud:CD_TIMESTAMP];
 
 }
 -(void)pullFromCoreData
 {
+    //do it through array
     [self pullFromCoreData:CD_BUSINESS];
+    [self pullFromCoreData:CD_FEATURED];
+    [self pullFromCoreData:CD_TIMESTAMP];
 }
 -(void)deleteModel
 {
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"SignModel.sqlite"];
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
 }
+
+
+-(void)itemPulledFromCloud:(NSNotification *) notification
+{
+    bool readyToSave=NO;
+    NSString *entity=@"";
+    DownloadedItemType type=[((NSNumber*)notification.userInfo[@"DownloadedItem"]) integerValue];
+    
+    if(type==Downloaded_BusinessLogo)
+    {
+        entity=CD_BUSINESS;
+        readyToSave=YES;
+    } else if(type==Downloaded_FeaturedDeal)
+    {
+         entity=CD_FEATURED;
+        if (featuredBusinessDownloaded && featuredImageDownloaded)
+            readyToSave=YES;
+       
+    }
+    
+    if(readyToSave)
+    {
+        [self saveContext];
+        [self pullFromCoreData:entity];
+    }
+}
+
+
+
+
 
 -(void)pullFromCloud:(NSString*)entityName
 {
@@ -142,7 +224,6 @@
         if (!error)
         {
             [self deleteEntity:entityName];
-            NSInteger i=0;
             for (PFObject *object in objects)
             {
                 if([entityName isEqualToString:CD_BUSINESS])
@@ -152,22 +233,61 @@
                     business.name=object[PARSE_BUSINESS_NAME];
                     business.welcomeText=object[PARSE_BUSINESS_WELCOMETEXT];
                     business.uid=object[PARSE_BUSINESS_ID];
-
+                    
                     PFFile *logo=object[PARSE_BUSINESS_LOGO];
                     [logo getDataInBackgroundWithBlock:^(NSData *logoFile, NSError *error)
                     {
                         if (!error)
                         {
                             business.logo = logoFile;
-                            if(i==objects.count-1)
-                            {
-                                [self saveContext];
-                                [self pullFromCoreData:entityName];
-                            }
+                            [self postLocalNotificationForItemDownloadForType:Downloaded_BusinessLogo];
                         }
+                        else
+                            NSLog(@"%@",[error localizedDescription]);
                     }];
                 }
-                i++;
+               
+                
+                if([entityName isEqualToString:CD_FEATURED])
+                {
+                    Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:CD_FEATURED
+                                                                              inManagedObjectContext:self.managedObjectContext];
+                    deal.title=object[PARSE_FEATURED_TITLE];
+                    deal.details=object[PARSE_FEATURED_DETAILS];
+                    deal.videoUrl=object[PARSE_FEATURED_VIDEO];
+                    
+                    PFFile *image=object[PARSE_FEATURED_IMAGE];
+                    featuredImageDownloaded=NO;
+                    [image getDataInBackgroundWithBlock:^(NSData *imageFile, NSError *error)
+                     {
+                         if (!error)
+                         {
+                             deal.image = imageFile;
+                             featuredImageDownloaded=YES;
+                             [self postLocalNotificationForItemDownloadForType:Downloaded_FeaturedDeal];
+                         }
+                         else
+                             NSLog(@"%@",[error localizedDescription]);
+                     }];
+
+                    PFObject *business = object[PARSE_FEATURED_BUSINESS];
+                    featuredBusinessDownloaded=NO;
+                    [business fetchIfNeededInBackgroundWithBlock:^(PFObject *retrievedBusiness, NSError *error) {
+                        if (!error)
+                        {
+                            Business *linkedBusiness=[self getBusinessByID:[(NSNumber*)(retrievedBusiness[PARSE_BUSINESS_ID]) integerValue]];
+                            deal.featuredBy = linkedBusiness;
+                            
+#pragma mark - not very safe adding deal to business before it was saved context
+                            [linkedBusiness addFeatureObject:deal];
+                            featuredBusinessDownloaded=YES;
+                            [self postLocalNotificationForItemDownloadForType:Downloaded_FeaturedDeal];
+                        }
+                        else
+                            NSLog(@"%@",[error localizedDescription]);
+                    }];
+                }
+                
                 
                 if([entityName isEqualToString:CD_TIMESTAMP])
                 {
@@ -186,6 +306,11 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self];
 }
 
+-(void)postLocalNotificationForItemDownloadForType:(DownloadedItemType) type
+{
+    NSDictionary* dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:type] forKey:@"DownloadedItem"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"itemPulledFromCloud" object:self userInfo:dict];
+}
 
 //deleting all objects from CoreData for a specific entity
 -(void)deleteEntity:(NSString*)entityName
@@ -362,6 +487,10 @@
     
     return _persistentStoreCoordinator;
 }
+
+
+
+
 
 #pragma mark - Application's Documents directory
 
