@@ -118,7 +118,7 @@ static bool featuredBusinessDownloaded;
                                                    object:nil];
         
 
-      //  [self deleteModel];
+        [self deleteModel];
         [self checkModel];
         [self pullFromCoreData];
 
@@ -207,6 +207,7 @@ static bool featuredBusinessDownloaded;
     {
         [self saveContext];
         [self pullFromCoreData:entity];
+        [self postLocalNotificationForCoreDataRefresh:entity];
     }
 }
 
@@ -303,13 +304,18 @@ static bool featuredBusinessDownloaded;
             NSLog(@"Error: %@ %@", error, [error userInfo]);
         }
     }];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self];
 }
 
 -(void)postLocalNotificationForItemDownloadForType:(DownloadedItemType) type
 {
     NSDictionary* dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:type] forKey:@"DownloadedItem"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"itemPulledFromCloud" object:self userInfo:dict];
+}
+
+-(void)postLocalNotificationForCoreDataRefresh:(NSString*) entityName
+{
+    NSDictionary* dict = [NSDictionary dictionaryWithObject:entityName forKey:@"Entity"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
 }
 
 //deleting all objects from CoreData for a specific entity

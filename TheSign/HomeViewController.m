@@ -9,7 +9,6 @@
 #import "HomeViewController.h"
 #import "Business.h"
 #import "FeaturedViewController.h"
-#import "Model.h"
 
 @interface HomeViewController () <UICollectionViewDataSource>
 
@@ -25,7 +24,8 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-       
+        self.collectionView.delegate = self;
+        self.collectionView.dataSource = self;
     }
     return self;
 }
@@ -38,8 +38,10 @@
     
     if ([[notification name] isEqualToString:@"pulledNewDataFromCloud"])
     {
-        ///[self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
-        [self.collectionView reloadData];
+        //[self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
+        if([[notification.userInfo objectForKey:@"Entity"] isEqual:@"Business"])
+            [self.collectionView reloadData];
+        
     }
 }
 
@@ -61,6 +63,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    NSInteger count=self.businesses.count;
     return self.businesses.count;
 }
 

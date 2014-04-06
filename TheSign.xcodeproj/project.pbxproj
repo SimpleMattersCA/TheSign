@@ -18,6 +18,7 @@
 		55101D3E18D823ED0074B4D2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55101D3D18D823ED0074B4D2 /* CoreData.framework */; };
 		553371CE18EA962500CC84F2 /* FeaturedDealCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 553371CD18EA962500CC84F2 /* FeaturedDealCell.m */; };
 		553371D018F0CF0900CC84F2 /* FeaturedDealCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 553371CF18F0CF0900CC84F2 /* FeaturedDealCell.xib */; };
+		553371D318F1D31500CC84F2 /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 553371D218F1D31500CC84F2 /* SWRevealViewController.m */; };
 		553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F4218C714A3004F8312 /* HomeViewController.m */; };
 		55B746EB18DCAECA00F61354 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B746EA18DCAECA00F61354 /* Model.m */; };
 		55C882DA18DF72B500E1C502 /* TableTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882D918DF72B500E1C502 /* TableTimestamp.m */; };
@@ -63,6 +64,8 @@
 		553371CC18EA962500CC84F2 /* FeaturedDealCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedDealCell.h; sourceTree = "<group>"; };
 		553371CD18EA962500CC84F2 /* FeaturedDealCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedDealCell.m; sourceTree = "<group>"; };
 		553371CF18F0CF0900CC84F2 /* FeaturedDealCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FeaturedDealCell.xib; sourceTree = "<group>"; };
+		553371D118F1D31500CC84F2 /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SWRevealViewController.h; path = "3rd Party/SWRevealViewController.h"; sourceTree = "<group>"; };
+		553371D218F1D31500CC84F2 /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SWRevealViewController.m; path = "3rd Party/SWRevealViewController.m"; sourceTree = "<group>"; };
 		553E4F4118C714A3004F8312 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		553E4F4218C714A3004F8312 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		55B746E918DCAECA00F61354 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
@@ -128,6 +131,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		553371D418F1D35C00CC84F2 /* 3rd Party */ = {
+			isa = PBXGroup;
+			children = (
+				553371D118F1D31500CC84F2 /* SWRevealViewController.h */,
+				553371D218F1D31500CC84F2 /* SWRevealViewController.m */,
+			);
+			name = "3rd Party";
+			sourceTree = "<group>";
+		};
 		553E4F4418C714D1004F8312 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -207,6 +219,7 @@
 				553E4F4418C714D1004F8312 /* Controller */,
 				553E4F4518C71525004F8312 /* Model */,
 				55EE37C418B7057C002A121C /* Main.storyboard */,
+				553371D418F1D35C00CC84F2 /* 3rd Party */,
 				553371CF18F0CF0900CC84F2 /* FeaturedDealCell.xib */,
 				55EE37CA18B7057C002A121C /* Images.xcassets */,
 				55EE37B918B7057C002A121C /* Supporting Files */,
@@ -363,6 +376,7 @@
 				55C882E218E7D75700E1C502 /* Featured.m in Sources */,
 				55C882DF18E3F94F00E1C502 /* FeaturedViewController.m in Sources */,
 				553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */,
+				553371D318F1D31500CC84F2 /* SWRevealViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -98,6 +98,9 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
+                                <connections>
+                                    <segue destination="vXZ-lx-hvc" kind="push" identifier="BusinessToDetails" id="80c-af-4vG"/>
+                                </connections>
                             </collectionViewCell>
                         </cells>
                         <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" reuseIdentifier="BusinessInfo" id="OCn-cJ-fpj">
@@ -118,7 +121,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hJZ-9d-zJe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-306" y="-844"/>
+            <point key="canvasLocation" x="-300" y="-844"/>
         </scene>
         <!--Details View Controller-->
         <scene sceneID="ufC-wZ-h7g">
