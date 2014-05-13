@@ -6,13 +6,12 @@
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
+
 #import "Model.h"
-#import "Parse/Parse.h"
-#import "Business.h"
-#import "Featured.h"
-#import "TableTimestamp.h"
-#import "Featured.h"
-@import CoreData;
+
+//All table names, columns names are defined there
+#import "Parse_CoreData_Header.h"
+
 
 
 typedef NS_ENUM(NSInteger, DownloadedItemType) {
@@ -22,42 +21,12 @@ typedef NS_ENUM(NSInteger, DownloadedItemType) {
 
 
 
-#define CD_BUSINESS (@"Business")
-#define CD_BUSINESS_ID (@"uid")
-#define CD_BUSINESS_NAME (@"name")
-#define CD_BUSINESS_LOGO (@"logo")
-#define CD_BUSINESS_WELCOMETEXT (@"welcomeText")
-
-#define PARSE_BUSINESS (@"Business")
-#define PARSE_BUSINESS_ID (@"uid")
-#define PARSE_BUSINESS_NAME (@"name")
-#define PARSE_BUSINESS_LOGO (@"logo")
-#define PARSE_BUSINESS_WELCOMETEXT (@"welcomeText")
-
-#define CD_FEATURED (@"Featured")
-#define CD_FEATURED_TITLE (@"title")
-#define CD_FEATURED_DETAILS (@"details")
-#define CD_FEATURED_VIDEO (@"videoUrl")
-#define CD_FEATURED_IMAGE (@"image")
-#define CD_FEATURED_BUSINESS (@"featuredBy")
-
-#define PARSE_FEATURED (@"Info")
-#define PARSE_FEATURED_TITLE (@"featured")
-#define PARSE_FEATURED_DETAILS (@"description")
-#define PARSE_FEATURED_VIDEO (@"video")
-#define PARSE_FEATURED_IMAGE (@"picture")
-#define PARSE_FEATURED_BUSINESS (@"BusinessID")
-
-#define CD_TIMESTAMP (@"TableTimestamp")
-#define CD_TIMESTAMP_TABLENAME (@"tableName")
-#define CD_TIMESTAMP_DATE (@"timeStamp")
-
-#define PARSE_TIMESTAMP (@"UpdateTimestamps")
-#define PARSE_TIMESTAMP_TABLENAME (@"TableName")
-#define PARSE_TIMESTAMP_DATE (@"TimeStamp")
-
-
 @implementation Model
+
+//all the tables from coredata that we are dealing with
+NSArray *tables;
+
+
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -70,30 +39,29 @@ static bool featuredImageDownloaded;
 static bool featuredBusinessDownloaded;
 //end of terrible coding
 
--(NSString *)getCoreDataNameByParseName:(NSString*)cloudEntityName
-{
-    NSString *entityName=@"";
-    if([cloudEntityName isEqualToString:PARSE_BUSINESS])
-        entityName=CD_BUSINESS;
-    if([cloudEntityName isEqualToString:PARSE_FEATURED])
-        entityName=CD_FEATURED;
-    else if([cloudEntityName isEqualToString:PARSE_TIMESTAMP])
-        entityName=CD_TIMESTAMP;
-    return entityName;
 
+#pragma mark - the backbone of model initialization
+- (id)init
+{
+    if (self = [super init])
+    {
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(itemPulledFromCloud:)
+                                                     name:@"itemPulledFromCloud"
+                                                   object:nil];
+        
+        tables=[[NSArray alloc]initWithObjects:CD_BUSINESS,CD_FEATURED,CD_TAG,CD_TAGCLASS, CD_TAGSET,nil];
+        
+        //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
+        //self deleteModel];
+        [self checkModel];
+        [self pullFromCoreData];
+        
+    }
+    return self;
 }
 
--(NSString *)getParseNameByCoreDataName:(NSString*)entityName
-{
-    NSString *cloudEntityName=@"";
-    if([entityName isEqualToString:CD_BUSINESS])
-        cloudEntityName=PARSE_BUSINESS;
-    if([entityName isEqualToString:CD_FEATURED])
-        cloudEntityName=PARSE_FEATURED;
-    else if([entityName isEqualToString:CD_TIMESTAMP])
-        cloudEntityName=PARSE_TIMESTAMP;
-    return cloudEntityName;
-}
 
 
 
@@ -107,30 +75,10 @@ static bool featuredBusinessDownloaded;
     return sharedModelObj;
 }
 
-- (id)init
-{
-    if (self = [super init])
-    {
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(itemPulledFromCloud:)
-                                                     name:@"itemPulledFromCloud"
-                                                   object:nil];
-        
-
-        [self deleteModel];
-        [self checkModel];
-        [self pullFromCoreData];
-
-    }
-    return self;
-}
 
 
 
-/*!
- 
- */
+
 -(BOOL)checkModel
 {
     //pull from cloud for
@@ -143,11 +91,11 @@ static bool featuredBusinessDownloaded;
             for (PFObject *object in objects)
             {
                 NSDate *timestamp=[self getUpdateTimestampForTable:object[PARSE_TIMESTAMP_TABLENAME]];
-            //    if(![timestamp isEqualToDate:object[PARSE_TIMESTAMP_DATE]])
-            //    {
+                if(![timestamp isEqualToDate:object[PARSE_TIMESTAMP_DATE]])
+                {
                     [self pullFromCloud:[self getCoreDataNameByParseName:object[PARSE_TIMESTAMP_TABLENAME]]];
                     needUpdate=YES;
-            //    }
+                }
             }
             if(needUpdate)
             {
@@ -185,6 +133,49 @@ static bool featuredBusinessDownloaded;
 }
 
 
+
+
+//getting a core data table name for a given table name from Parse
+-(NSString *)getCoreDataNameByParseName:(NSString*)cloudEntityName
+{
+    NSString *entityName=@"";
+    if([cloudEntityName isEqualToString:PARSE_BUSINESS])
+        entityName=CD_BUSINESS;
+    if([cloudEntityName isEqualToString:PARSE_FEATURED])
+        entityName=CD_FEATURED;
+    else if([cloudEntityName isEqualToString:PARSE_TIMESTAMP])
+        entityName=CD_TIMESTAMP;
+    else if([cloudEntityName isEqualToString:PARSE_TAG])
+        entityName=CD_TAG;
+    else if([cloudEntityName isEqualToString:PARSE_TAGCLASS])
+        entityName=CD_TAGCLASS;
+    else if([cloudEntityName isEqualToString:PARSE_TAGSET])
+        entityName=CD_TAGSET;
+    return entityName;
+    
+}
+
+//getting a Parse table name for a given table name from Core Data
+-(NSString *)getParseNameByCoreDataName:(NSString*)entityName
+{
+    NSString *cloudEntityName=@"";
+    if([entityName isEqualToString:CD_BUSINESS])
+        cloudEntityName=PARSE_BUSINESS;
+    if([entityName isEqualToString:CD_FEATURED])
+        cloudEntityName=PARSE_FEATURED;
+    else if([entityName isEqualToString:CD_TIMESTAMP])
+        cloudEntityName=PARSE_TIMESTAMP;
+    else if([entityName isEqualToString:CD_TAG])
+        cloudEntityName=PARSE_TAG;
+    else if([entityName isEqualToString:CD_TAGSET])
+        cloudEntityName=PARSE_TAGSET;
+    else if([entityName isEqualToString:CD_TAGCLASS])
+        cloudEntityName=PARSE_TAGCLASS;
+    return cloudEntityName;
+}
+
+
+//items that are downloaded assynchroniously
 -(void)itemPulledFromCloud:(NSNotification *) notification
 {
     bool readyToSave=NO;
@@ -215,6 +206,72 @@ static bool featuredBusinessDownloaded;
 
 
 
+- (void)createBusinessFromParseObject:(PFObject *)object
+{
+    Business *business = [NSEntityDescription insertNewObjectForEntityForName:CD_BUSINESS
+                                                       inManagedObjectContext:self.managedObjectContext];
+    business.name=object[PARSE_BUSINESS_NAME];
+    business.welcomeText=object[PARSE_BUSINESS_WELCOMETEXT];
+    business.uid=object[PARSE_BUSINESS_ID];
+    
+    PFFile *logo=object[PARSE_BUSINESS_LOGO];
+    //image needs to be downloaded assynchroniously
+    [logo getDataInBackgroundWithBlock:^(NSData *logoFile, NSError *error)
+     {
+         if (!error)
+         {
+             business.logo = logoFile;
+             [self postLocalNotificationForItemDownloadForType:Downloaded_BusinessLogo];
+         }
+         else
+             NSLog(@"%@",[error localizedDescription]);
+     }];
+}
+
+
+
+- (void)createFeaturedFromParseObject:(PFObject *)object
+{
+    Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:CD_FEATURED
+                                                   inManagedObjectContext:self.managedObjectContext];
+    deal.title=object[PARSE_FEATURED_TITLE];
+    deal.details=object[PARSE_FEATURED_DETAILS];
+    deal.videoUrl=object[PARSE_FEATURED_VIDEO];
+    
+    PFFile *image=object[PARSE_FEATURED_IMAGE];
+    featuredImageDownloaded=NO;
+    [image getDataInBackgroundWithBlock:^(NSData *imageFile, NSError *error)
+     {
+         if (!error)
+         {
+             deal.image = imageFile;
+             featuredImageDownloaded=YES;
+             [self postLocalNotificationForItemDownloadForType:Downloaded_FeaturedDeal];
+         }
+         else
+             NSLog(@"%@",[error localizedDescription]);
+     }];
+    
+    PFObject *business = object[PARSE_FEATURED_BUSINESS];
+    featuredBusinessDownloaded=NO;
+    [business fetchIfNeededInBackgroundWithBlock:^(PFObject *retrievedBusiness, NSError *error) {
+        if (!error)
+        {
+            Business *linkedBusiness=[self getBusinessByID:[(NSNumber*)(retrievedBusiness[PARSE_BUSINESS_ID]) integerValue]];
+            deal.featuredBy = linkedBusiness;
+            
+#pragma mark - not very safe adding deal to business before it was saved context
+            [linkedBusiness addFeatureObject:deal];
+            featuredBusinessDownloaded=YES;
+            [self postLocalNotificationForItemDownloadForType:Downloaded_FeaturedDeal];
+        }
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }];
+}
+
+
+//The method for pulling data from Parse based on the requested table name
 -(void)pullFromCloud:(NSString*)entityName
 {
     NSString *cloudEntityName=[self getParseNameByCoreDataName:entityName];
@@ -224,70 +281,22 @@ static bool featuredBusinessDownloaded;
     {
         if (!error)
         {
+            //delete entity from coredata, so we can create a new one
             [self deleteEntity:entityName];
+            //go through the objects we got from Parse
             for (PFObject *object in objects)
             {
                 if([entityName isEqualToString:CD_BUSINESS])
                 {
-                    Business *business = [NSEntityDescription insertNewObjectForEntityForName:CD_BUSINESS
-                                                                inManagedObjectContext:self.managedObjectContext];
-                    business.name=object[PARSE_BUSINESS_NAME];
-                    business.welcomeText=object[PARSE_BUSINESS_WELCOMETEXT];
-                    business.uid=object[PARSE_BUSINESS_ID];
-                    
-                    PFFile *logo=object[PARSE_BUSINESS_LOGO];
-                    [logo getDataInBackgroundWithBlock:^(NSData *logoFile, NSError *error)
-                    {
-                        if (!error)
-                        {
-                            business.logo = logoFile;
-                            [self postLocalNotificationForItemDownloadForType:Downloaded_BusinessLogo];
-                        }
-                        else
-                            NSLog(@"%@",[error localizedDescription]);
-                    }];
+                    [self createBusinessFromParseObject:object];
                 }
                
                 
                 if([entityName isEqualToString:CD_FEATURED])
                 {
-                    Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:CD_FEATURED
-                                                                              inManagedObjectContext:self.managedObjectContext];
-                    deal.title=object[PARSE_FEATURED_TITLE];
-                    deal.details=object[PARSE_FEATURED_DETAILS];
-                    deal.videoUrl=object[PARSE_FEATURED_VIDEO];
-                    
-                    PFFile *image=object[PARSE_FEATURED_IMAGE];
-                    featuredImageDownloaded=NO;
-                    [image getDataInBackgroundWithBlock:^(NSData *imageFile, NSError *error)
-                     {
-                         if (!error)
-                         {
-                             deal.image = imageFile;
-                             featuredImageDownloaded=YES;
-                             [self postLocalNotificationForItemDownloadForType:Downloaded_FeaturedDeal];
-                         }
-                         else
-                             NSLog(@"%@",[error localizedDescription]);
-                     }];
-
-                    PFObject *business = object[PARSE_FEATURED_BUSINESS];
-                    featuredBusinessDownloaded=NO;
-                    [business fetchIfNeededInBackgroundWithBlock:^(PFObject *retrievedBusiness, NSError *error) {
-                        if (!error)
-                        {
-                            Business *linkedBusiness=[self getBusinessByID:[(NSNumber*)(retrievedBusiness[PARSE_BUSINESS_ID]) integerValue]];
-                            deal.featuredBy = linkedBusiness;
-                            
-#pragma mark - not very safe adding deal to business before it was saved context
-                            [linkedBusiness addFeatureObject:deal];
-                            featuredBusinessDownloaded=YES;
-                            [self postLocalNotificationForItemDownloadForType:Downloaded_FeaturedDeal];
-                        }
-                        else
-                            NSLog(@"%@",[error localizedDescription]);
-                    }];
+                    [self createFeaturedFromParseObject:object];
                 }
+                
                 
                 
                 if([entityName isEqualToString:CD_TIMESTAMP])
@@ -334,6 +343,7 @@ static bool featuredBusinessDownloaded;
 
 
 
+//Since for now we use the list of businesses in memory as a starting point to get any data, we are storing the list of businesses in the array accessible everywhere around the app
 -(void)pullFromCoreData:(NSString*)entityName
 {
     if([entityName isEqualToString:CD_BUSINESS])
@@ -412,6 +422,7 @@ static bool featuredBusinessDownloaded;
         }
     }
 }
+
 
 #pragma mark - Core Data stack
 

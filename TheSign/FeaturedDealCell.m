@@ -22,9 +22,12 @@
 
 -(void) showDealInfo
 {
-    _dealTextLabel.text=_dealText;
-
-
+    _dealTextLabel.text=_deal.title;
+    if(_isRight)
+        _dealTextLabel.textAlignment=NSTextAlignmentRight;
+    else
+        _dealTextLabel.textAlignment=NSTextAlignmentLeft;
+    [self roundCornersOnView:self];
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
@@ -35,9 +38,30 @@
         // self.contentView for content
         // self.backgroundView for the cell background
         // self.selectedBackgroundView for the selected cell background
+        
     }
     return self;
 }
+
+-(UIView *)roundCornersOnView:(UIView *)view
+{
+    CGFloat radius=28;
+    
+    UIRectCorner corner; //holds the corner
+    if(_isRight)
+        corner = UIRectCornerBottomRight | UIRectCornerTopRight;
+    else
+        corner = UIRectCornerBottomLeft | UIRectCornerTopLeft;
+    UIView *roundedView = view;
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:roundedView.bounds byRoundingCorners:corner cornerRadii:CGSizeMake(radius, radius)];
+    CAShapeLayer *maskLayer = [CAShapeLayer layer];
+    maskLayer.frame = roundedView.bounds;
+    maskLayer.path = maskPath.CGPath;
+    roundedView.layer.mask = maskLayer;
+    return roundedView;
+    
+}
+
 
 
 - (id)initWithFrame:(CGRect)frame {
@@ -45,8 +69,6 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-      //  _dealColor=[UIColor colorWithRed:48/255.0f green:109/255.0f blue:226/255.0f alpha:1.0f];
-     //   _dealTextLabel.text=_dealText;
     }
     return self;
 

@@ -7,12 +7,11 @@
 //
 
 #import "HomeViewController.h"
-#import "Business.h"
 #import "FeaturedViewController.h"
 
 @interface HomeViewController () <UICollectionViewDataSource>
 
-@property (nonatomic, strong, readonly) NSArray * businesses;
+@property (nonatomic, weak, readonly) NSArray * businesses;
 
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
 
@@ -63,7 +62,6 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    NSInteger count=self.businesses.count;
     return self.businesses.count;
 }
 
@@ -82,10 +80,9 @@
             NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
             
             FeaturedViewController *dest = (FeaturedViewController *)segue.destinationViewController;
-            [NSNumber numberWithInt:indexPath.row];
-            NSNumber *businessID=[NSNumber numberWithInt:indexPath.row];
+//            NSNumber *businessID=[NSNumber numberWithLong:indexPath.row];
             
-            [dest setBusinessToShow:businessID];
+            [dest setBusinessToShow:self.businesses[indexPath.row]];
         }
     }
 }

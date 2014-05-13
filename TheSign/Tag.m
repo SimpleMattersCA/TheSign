@@ -1,21 +1,21 @@
 //
-//  Business.m
+//  Tag.m
 //  TheSign
 //
 //  Created by Andrey Chudnovskiy on 2014-05-13.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-#import "Business.h"
-#import "Featured.h"
+#import "Tag.h"
+#import "TagSet.h"
 
 
-@implementation Business
+@implementation Tag
 
-@dynamic logo;
+@dynamic details;
 @dynamic name;
 @dynamic uid;
-@dynamic welcomeText;
-@dynamic feature;
+@dynamic fromSet;
+@dynamic fromClass;
 
 @end

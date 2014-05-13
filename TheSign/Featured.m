@@ -2,7 +2,7 @@
 //  Featured.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-03-29.
+//  Created by Andrey Chudnovskiy on 2014-05-13.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
@@ -12,10 +12,11 @@
 
 @implementation Featured
 
-@dynamic title;
 @dynamic details;
-@dynamic videoUrl;
 @dynamic image;
+@dynamic title;
+@dynamic videoUrl;
 @dynamic featuredBy;
+@dynamic featuredTagSet;
 
 @end

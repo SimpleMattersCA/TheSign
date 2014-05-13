@@ -7,9 +7,13 @@
 //
 
 @import UIKit;
+@import CoreData;
 #import "Business.h"
+#import "Parse/Parse.h"
+#import "Business.h"
+#import "Featured.h"
+#import "TableTimestamp.h"
 
-@class Business;
 
 @interface Model : NSObject 
 

@@ -6,12 +6,14 @@
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
+
 @import UIKit;
+#import "Model.h"
 
-@interface FeaturedViewController : UICollectionViewController
+@interface FeaturedViewController : UIViewController
 
 
--(void) setBusinessToShow:(NSNumber*) identifier;
+-(void) setBusinessToShow:(Business*) business;
 
 
 @end

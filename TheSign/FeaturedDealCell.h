@@ -7,13 +7,27 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Model.h"
+
+@protocol ScrollingCellDelegate;
 
 @interface FeaturedDealCell : UICollectionViewCell
 
-@property (nonatomic, strong) NSString *dealText;
-@property (nonatomic, strong) UIColor *dealColor;
-@property (nonatomic, strong) NSNumber *order;
+@property (nonatomic) Boolean isRight;
+@property (nonatomic, strong) Featured* deal;
+@property (nonatomic,weak) id<ScrollingCellDelegate> delegate;
+
 
 -(void)showDealInfo;
 
 @end
+
+@protocol ScrollingCellDelegate <NSObject>
+-(void)scrollingCellDidBeginPulling:(FeaturedDealCell *)cell;
+-(void)scrollingCell:(FeaturedDealCell *)cell didChangePullOffset:(CGFloat)offset;
+-(void)scrollingCellDidEndPulling:(FeaturedDealCell *)cell;
+@end
+
+
+
+

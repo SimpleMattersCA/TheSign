@@ -1,26 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5063" systemVersion="13C64" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13C1021" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Business" representedClassName="Business" syncable="YES">
         <attribute name="logo" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="uid" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="uid" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="welcomeText" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="feature" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Featured" inverseName="featuredBy" inverseEntity="Featured" syncable="YES"/>
     </entity>
     <entity name="Featured" representedClassName="Featured" syncable="YES">
         <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
         <attribute name="videoUrl" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="featuredBy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Business" inverseName="feature" inverseEntity="Business" syncable="YES"/>
+        <relationship name="featuredTagSet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TagSet" inverseName="taggedFeature" inverseEntity="TagSet" syncable="YES"/>
     </entity>
     <entity name="TableTimestamp" representedClassName="TableTimestamp" syncable="YES">
-        <attribute name="tableName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="timeStamp" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="tableName" attributeType="String" syncable="YES"/>
+        <attribute name="timeStamp" attributeType="Date" syncable="YES"/>
+    </entity>
+    <entity name="Tag" representedClassName="Tag" syncable="YES">
+        <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="uid" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="fromClass" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TagClass" inverseName="tagsInClass" inverseEntity="TagClass" syncable="YES"/>
+        <relationship name="fromSet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TagSet" inverseName="tagsInSet" inverseEntity="TagSet" syncable="YES"/>
+    </entity>
+    <entity name="TagClass" representedClassName="TagClass" syncable="YES">
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="uid" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="tagsInClass" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="fromClass" inverseEntity="Tag" syncable="YES"/>
+    </entity>
+    <entity name="TagSet" representedClassName="TagSet" syncable="YES">
+        <attribute name="weight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="taggedFeature" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Featured" inverseName="featuredTagSet" inverseEntity="Featured" syncable="YES"/>
+        <relationship name="tagsInSet" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="fromSet" inverseEntity="Tag" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Business" positionX="-2448" positionY="-10" width="128" height="118"/>
-        <element name="TableTimestamp" positionX="-2504" positionY="-171" width="128" height="73"/>
-        <element name="Featured" positionX="-2243" positionY="-193" width="128" height="118"/>
+        <element name="Business" positionX="-2160" positionY="-333" width="128" height="118"/>
+        <element name="Featured" positionX="-2403" positionY="-216" width="128" height="133"/>
+        <element name="TableTimestamp" positionX="-2691" positionY="-225" width="128" height="73"/>
+        <element name="Tag" positionX="-2151" positionY="-64" width="128" height="118"/>
+        <element name="TagClass" positionX="-1946" positionY="-79" width="128" height="88"/>
+        <element name="TagSet" positionX="-2385" positionY="-9" width="128" height="88"/>
     </elements>
 </model>

@@ -1,17 +1,19 @@
 //
-//  TableTimestamp.m
+//  TagSet.m
 //  TheSign
 //
 //  Created by Andrey Chudnovskiy on 2014-05-13.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-#import "TableTimestamp.h"
+#import "TagSet.h"
+#import "Featured.h"
 
 
-@implementation TableTimestamp
+@implementation TagSet
 
-@dynamic tableName;
-@dynamic timeStamp;
+@dynamic weight;
+@dynamic tagsInSet;
+@dynamic taggedFeature;
 
 @end
