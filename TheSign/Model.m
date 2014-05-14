@@ -14,18 +14,38 @@
 
 
 
-typedef NS_ENUM(NSInteger, DownloadedItemType) {
-    Downloaded_BusinessLogo,
-    Downloaded_FeaturedDeal
-};
+//typedef NS_ENUM(NSInteger, DownloadedItemType) {
+ //   Downloaded_BusinessLogo,
+ //   Downloaded_FeaturedDeal
+//};
 
 
 
 @implementation Model
 
 //all the tables from coredata that we are dealing with
-NSArray *tables;
+//NSArray *tables;
+//hashtable for items that are being downloaded assynchronysly. Key - objectID, Value - downloading item(column name)
+NSMutableDictionary *downloadingItems;
 
+//all the tables from coredata that we are dealing with.
+NSArray *parseTableNames;
+//all the tables from Parse that we are dealing with.
+NSArray *coreDataTableNames;
+
+//hashtable for converting Core Data Names into Parse Names
+NSDictionary *coreDataToParseNames;
+//hashtable for column Names For Core Data Tables. Key- column name, value - Table Name
+NSDictionary *coreDataColumnNames;
+
+//hashtable for converting Parse Names into Core Data Names
+NSDictionary *parseToCoreDataNames;
+//hashtable for column Names For Parse Tables. Key- column name, value - Table Name
+NSDictionary *parseColumnNames;
+
+
+//array of column names for items that are going to be downloaded assynchronysly (gosh I hate this word)
+NSArray *parseDownloadableItems;
 
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -34,9 +54,12 @@ NSArray *tables;
 
 
 #pragma mark - Static boolean flags that totally need to be replaced
+
+
+
 //terrible coding ahead
-static bool featuredImageDownloaded;
-static bool featuredBusinessDownloaded;
+//static bool featuredImageDownloaded;
+//static bool featuredBusinessDownloaded;
 //end of terrible coding
 
 
@@ -51,7 +74,71 @@ static bool featuredBusinessDownloaded;
                                                      name:@"itemPulledFromCloud"
                                                    object:nil];
         
-        tables=[[NSArray alloc]initWithObjects:CD_BUSINESS,CD_FEATURED,CD_TAG,CD_TAGCLASS, CD_TAGSET,nil];
+        //tables=[[NSArray alloc]initWithObjects:CD_BUSINESS,CD_FEATURED,CD_TAG,CD_TAGCLASS, CD_TAGSET,nil];
+
+        coreDataTableNames=[NSArray arrayWithObjects:CD_BUSINESS,CD_FEATURED,CD_TAG,CD_TAGCLASS,CD_TAGSET,CD_TIMESTAMP, nil];
+        
+        parseTableNames=[NSArray arrayWithObjects:PARSE_BUSINESS,PARSE_FEATURED,PARSE_TAG,PARSE_TAGCLASS,PARSE_TAGSET,PARSE_TIMESTAMP, nil];
+        coreDataToParseNames=[NSDictionary dictionaryWithObjects:parseTableNames forKeys:coreDataTableNames];
+        parseToCoreDataNames=[NSDictionary dictionaryWithObjects:coreDataTableNames forKeys:parseTableNames];
+        
+        coreDataColumnNames=[NSDictionary dictionaryWithObjectsAndKeys:
+                             CD_BUSINESS,CD_BUSINESS_ID,
+                             CD_BUSINESS,CD_BUSINESS_NAME,
+                             CD_BUSINESS,CD_BUSINESS_LOGO,
+                             CD_BUSINESS,CD_BUSINESS_WELCOMETEXT,
+                             
+                             CD_FEATURED,CD_FEATURED_TITLE,
+                             CD_FEATURED,CD_FEATURED_DETAILS,
+                             CD_FEATURED,CD_FEATURED_VIDEO,
+                             CD_FEATURED,CD_FEATURED_IMAGE,
+                             CD_FEATURED,CD_FEATURED_BUSINESS,
+                             
+                             CD_TIMESTAMP,CD_TIMESTAMP_TABLENAME,
+                             CD_TIMESTAMP,CD_TIMESTAMP_DATE,
+                             
+                             CD_TAG,CD_TAG_ID,
+                             CD_TAG,CD_TAG_NAME,
+                             CD_TAG,CD_TAG_DETAILS,
+                             CD_TAG,CD_TAG_CLASS,
+                             CD_TAG,CD_TAG_SET,
+                             
+                             CD_TAGCLASS,CD_TAGCLASS_ID,
+                             CD_TAGCLASS,CD_TAGCLASS_NAME,
+                             
+                             CD_TAGSET,CD_TAGSET_WEIGHT,
+                             nil];
+        
+        parseColumnNames=[NSDictionary dictionaryWithObjectsAndKeys:
+                             PARSE_BUSINESS,PARSE_BUSINESS_ID,
+                             PARSE_BUSINESS,PARSE_BUSINESS_NAME,
+                             PARSE_BUSINESS,PARSE_BUSINESS_LOGO,
+                             PARSE_BUSINESS,PARSE_BUSINESS_WELCOMETEXT,
+                             
+                             PARSE_FEATURED,PARSE_FEATURED_TITLE,
+                             PARSE_FEATURED,PARSE_FEATURED_DETAILS,
+                             PARSE_FEATURED,PARSE_FEATURED_VIDEO,
+                             PARSE_FEATURED,PARSE_FEATURED_IMAGE,
+                             PARSE_FEATURED,PARSE_FEATURED_BUSINESS,
+                             
+                             PARSE_TIMESTAMP,PARSE_TIMESTAMP_TABLENAME,
+                             PARSE_TIMESTAMP,PARSE_TIMESTAMP_DATE,
+                             
+                             PARSE_TAG,PARSE_TAG_ID,
+                             PARSE_TAG,PARSE_TAG_NAME,
+                             PARSE_TAG,PARSE_TAG_DETAILS,
+                             PARSE_TAG,PARSE_TAG_CLASS,
+                             PARSE_TAG,PARSE_TAG_SET,
+                             
+                             PARSE_TAGCLASS,PARSE_TAGCLASS_ID,
+                             PARSE_TAGCLASS,PARSE_TAGCLASS_NAME,
+                             
+                             PARSE_TAGSET,PARSE_TAGSET_WEIGHT,
+                             nil];
+        
+        downloadingItems=[[NSMutableDictionary alloc] init];
+        
+        parseDownloadableItems=[NSArray arrayWithObjects:PARSE_BUSINESS_LOGO,PARSE_FEATURED_IMAGE,PARSE_FEATURED_BUSINESS,PARSE_TAG_CLASS,PARSE_TAG_SET, nil];
         
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
         //self deleteModel];
@@ -87,20 +174,15 @@ static bool featuredBusinessDownloaded;
     {
         if (!error)
         {
-            BOOL needUpdate=NO;
             for (PFObject *object in objects)
             {
                 NSDate *timestamp=[self getUpdateTimestampForTable:object[PARSE_TIMESTAMP_TABLENAME]];
                 if(![timestamp isEqualToDate:object[PARSE_TIMESTAMP_DATE]])
                 {
-                    [self pullFromCloud:[self getCoreDataNameByParseName:object[PARSE_TIMESTAMP_TABLENAME]]];
-                    needUpdate=YES;
+                    [self pullFromCloud:parseToCoreDataNames[PARSE_TIMESTAMP_TABLENAME]];
                 }
             }
-            if(needUpdate)
-            {
-                [self pullFromCloud:CD_TIMESTAMP];
-            }
+            [self pullFromCloud:CD_TIMESTAMP];
         }
         else
         {
@@ -135,69 +217,24 @@ static bool featuredBusinessDownloaded;
 
 
 
-//getting a core data table name for a given table name from Parse
--(NSString *)getCoreDataNameByParseName:(NSString*)cloudEntityName
-{
-    NSString *entityName=@"";
-    if([cloudEntityName isEqualToString:PARSE_BUSINESS])
-        entityName=CD_BUSINESS;
-    if([cloudEntityName isEqualToString:PARSE_FEATURED])
-        entityName=CD_FEATURED;
-    else if([cloudEntityName isEqualToString:PARSE_TIMESTAMP])
-        entityName=CD_TIMESTAMP;
-    else if([cloudEntityName isEqualToString:PARSE_TAG])
-        entityName=CD_TAG;
-    else if([cloudEntityName isEqualToString:PARSE_TAGCLASS])
-        entityName=CD_TAGCLASS;
-    else if([cloudEntityName isEqualToString:PARSE_TAGSET])
-        entityName=CD_TAGSET;
-    return entityName;
-    
-}
-
-//getting a Parse table name for a given table name from Core Data
--(NSString *)getParseNameByCoreDataName:(NSString*)entityName
-{
-    NSString *cloudEntityName=@"";
-    if([entityName isEqualToString:CD_BUSINESS])
-        cloudEntityName=PARSE_BUSINESS;
-    if([entityName isEqualToString:CD_FEATURED])
-        cloudEntityName=PARSE_FEATURED;
-    else if([entityName isEqualToString:CD_TIMESTAMP])
-        cloudEntityName=PARSE_TIMESTAMP;
-    else if([entityName isEqualToString:CD_TAG])
-        cloudEntityName=PARSE_TAG;
-    else if([entityName isEqualToString:CD_TAGSET])
-        cloudEntityName=PARSE_TAGSET;
-    else if([entityName isEqualToString:CD_TAGCLASS])
-        cloudEntityName=PARSE_TAGCLASS;
-    return cloudEntityName;
-}
 
 
 //items that are downloaded assynchroniously
 -(void)itemPulledFromCloud:(NSNotification *) notification
 {
-    bool readyToSave=NO;
-    NSString *entity=@"";
-    DownloadedItemType type=[((NSNumber*)notification.userInfo[@"DownloadedItem"]) integerValue];
+
+    NSString *itemDownloaded=notification.userInfo[@"DownloadedItem"];
+    NSString *parseTableNameForDownloadedItem=parseColumnNames[itemDownloaded];
+    NSString *entity=parseToCoreDataNames[parseTableNameForDownloadedItem];
     
-    if(type==Downloaded_BusinessLogo)
-    {
-        entity=CD_BUSINESS;
-        readyToSave=YES;
-    } else if(type==Downloaded_FeaturedDeal)
-    {
-         entity=CD_FEATURED;
-        if (featuredBusinessDownloaded && featuredImageDownloaded)
-            readyToSave=YES;
-       
-    }
+    //check which table downloaded completely, only then selectevely update the table.
     
-    if(readyToSave)
+    
+    if(downloadingItems.count==0)
     {
         [self saveContext];
-        [self pullFromCoreData:entity];
+        [self pullFromCoreData];
+        //[self pullFromCoreData:entity];
         [self postLocalNotificationForCoreDataRefresh:entity];
     }
 }
@@ -215,13 +252,16 @@ static bool featuredBusinessDownloaded;
     business.uid=object[PARSE_BUSINESS_ID];
     
     PFFile *logo=object[PARSE_BUSINESS_LOGO];
+    [downloadingItems setObject:PARSE_BUSINESS_LOGO forKey:object.objectId];
     //image needs to be downloaded assynchroniously
     [logo getDataInBackgroundWithBlock:^(NSData *logoFile, NSError *error)
      {
          if (!error)
          {
              business.logo = logoFile;
-             [self postLocalNotificationForItemDownloadForType:Downloaded_BusinessLogo];
+             [downloadingItems removeObjectForKey:object.objectId];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"itemPulledFromCloud" object:self
+                                                              userInfo:[NSDictionary dictionaryWithObject: PARSE_BUSINESS_LOGO forKey:@"DownloadedItem"]];
          }
          else
              NSLog(@"%@",[error localizedDescription]);
@@ -239,21 +279,23 @@ static bool featuredBusinessDownloaded;
     deal.videoUrl=object[PARSE_FEATURED_VIDEO];
     
     PFFile *image=object[PARSE_FEATURED_IMAGE];
-    featuredImageDownloaded=NO;
+    [downloadingItems setObject:PARSE_FEATURED_IMAGE forKey:object.objectId];
     [image getDataInBackgroundWithBlock:^(NSData *imageFile, NSError *error)
      {
          if (!error)
          {
              deal.image = imageFile;
-             featuredImageDownloaded=YES;
-             [self postLocalNotificationForItemDownloadForType:Downloaded_FeaturedDeal];
+             [downloadingItems removeObjectForKey:object.objectId];
+             [[NSNotificationCenter defaultCenter] postNotificationName:@"itemPulledFromCloud"
+                                                                 object:self
+                                                              userInfo:[NSDictionary dictionaryWithObject: PARSE_FEATURED_IMAGE forKey:@"DownloadedItem"]];
          }
          else
              NSLog(@"%@",[error localizedDescription]);
      }];
     
     PFObject *business = object[PARSE_FEATURED_BUSINESS];
-    featuredBusinessDownloaded=NO;
+    [downloadingItems setObject:PARSE_FEATURED_BUSINESS forKey:object.objectId];
     [business fetchIfNeededInBackgroundWithBlock:^(PFObject *retrievedBusiness, NSError *error) {
         if (!error)
         {
@@ -262,8 +304,8 @@ static bool featuredBusinessDownloaded;
             
 #pragma mark - not very safe adding deal to business before it was saved context
             [linkedBusiness addFeatureObject:deal];
-            featuredBusinessDownloaded=YES;
-            [self postLocalNotificationForItemDownloadForType:Downloaded_FeaturedDeal];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"itemPulledFromCloud" object:self
+                                                              userInfo:[NSDictionary dictionaryWithObject: PARSE_FEATURED_BUSINESS forKey:@"DownloadedItem"]];
         }
         else
             NSLog(@"%@",[error localizedDescription]);
@@ -274,8 +316,7 @@ static bool featuredBusinessDownloaded;
 //The method for pulling data from Parse based on the requested table name
 -(void)pullFromCloud:(NSString*)entityName
 {
-    NSString *cloudEntityName=[self getParseNameByCoreDataName:entityName];
-    
+    NSString *cloudEntityName=parseToCoreDataNames[entityName];
     PFQuery *query = [PFQuery queryWithClassName:cloudEntityName];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
     {
@@ -315,11 +356,6 @@ static bool featuredBusinessDownloaded;
     }];
 }
 
--(void)postLocalNotificationForItemDownloadForType:(DownloadedItemType) type
-{
-    NSDictionary* dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:type] forKey:@"DownloadedItem"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"itemPulledFromCloud" object:self userInfo:dict];
-}
 
 -(void)postLocalNotificationForCoreDataRefresh:(NSString*) entityName
 {

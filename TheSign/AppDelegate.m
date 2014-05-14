@@ -160,7 +160,8 @@ NSNumber *detectedBeaconMajor;
        // [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
         
         NSDictionary* dict = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:closest.major,closest.minor, nil] forKeys:[NSArray arrayWithObjects:@"major",@"minor", nil]];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
+        //change the local notifacation name and add corresponding logic to handle new beacon detection inside the app
+     //   [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
         
         
         UILocalNotification *notification = [[UILocalNotification alloc] init];
