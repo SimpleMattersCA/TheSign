@@ -8,9 +8,8 @@
 
 #import "AppDelegate.h"
 #import "DetailsViewController.h"
-#import "Business.h"
 #import "Model.h"
-#import "Parse/Parse.h"
+#import "InsightEngine.h"
 
 @import UIKit.UINavigationController;
 @import CoreLocation;
@@ -146,7 +145,7 @@ NSNumber *detectedBeaconMajor;
 
 // Delegate method from the CLLocationManagerDelegate protocol.
 - (void)locationManager:(CLLocationManager *)manager
-        didRangeBeacons:(NSArray *)beacons
+        didRangeBeacons:(NSArray *)beacons 
                inRegion:(CLBeaconRegion *)region {
     
     CLBeacon *closest=(CLBeacon*)[beacons firstObject];
@@ -154,26 +153,32 @@ NSNumber *detectedBeaconMajor;
     {
         detectedBeaconMinor =closest.minor;
         detectedBeaconMajor =closest.major;
-       // NSLog([NSString stringWithString:[detectedBeaconMajor stringValue]]);
+
         //CLearing notification center and lock screen notificaitons. Yeah, it's that weird
-       // [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
-       // [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
         
-        NSDictionary* dict = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:closest.major,closest.minor, nil] forKeys:[NSArray arrayWithObjects:@"major",@"minor", nil]];
-        //change the local notifacation name and add corresponding logic to handle new beacon detection inside the app
+        
+        
+               //change the local notifacation name and add corresponding logic to handle new beacon detection inside the app (don't forget to change notificaitonName
+       // NSDictionary* dict = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:closest.major,closest.minor, nil] forKeys:[NSArray arrayWithObjects:@"major",@"minor", nil]];
      //   [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
         
         
-        UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.alertBody = [NSString stringWithFormat:@"Store detected: %@",[[Model sharedModel] getBusinessNameByBusinessID:[closest.major integerValue]]];
-        NSDictionary *infoDict = [NSDictionary dictionaryWithObject:closest.major forKey:@"BeaconMajor"];
-
-        notification.userInfo=infoDict;
-        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
         
+        
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.alertBody = [InsightEngine generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor];
+        NSDictionary *infoDict = [NSDictionary dictionaryWithObject:closest.major forKey:@"BeaconMajor"];
+        notification.userInfo=infoDict;
+        if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""])
+        {
+            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+        }
         if(![detectedBeaconMinor isEqual:closest.minor])
         {
+            [[Model sharedModel] recordBeaconDetectedOn:[NSDate date] withMajor:closest.major andMinor:closest.minor];
                 //beacon specific logic
         }
     }

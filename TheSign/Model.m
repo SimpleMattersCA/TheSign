@@ -14,10 +14,7 @@
 
 
 
-//typedef NS_ENUM(NSInteger, DownloadedItemType) {
- //   Downloaded_BusinessLogo,
- //   Downloaded_FeaturedDeal
-//};
+
 
 
 
@@ -165,7 +162,7 @@ NSArray *parseDownloadableItems;
 
 
 
-
+//check if we need to pull data from parse based on comparing timestamps of the tables.
 -(BOOL)checkModel
 {
     //pull from cloud for
@@ -195,18 +192,13 @@ NSArray *parseDownloadableItems;
 
 -(void)pullFromCloud
 {
-    //do it through the array
-    [self pullFromCloud:CD_BUSINESS];
-    [self pullFromCloud:CD_FEATURED];
-    [self pullFromCloud:CD_TIMESTAMP];
-
+    for (NSString* tableName in coreDataTableNames)
+        [self pullFromCloud:tableName];
 }
 -(void)pullFromCoreData
 {
-    //do it through array
-    [self pullFromCoreData:CD_BUSINESS];
-    [self pullFromCoreData:CD_FEATURED];
-    [self pullFromCoreData:CD_TIMESTAMP];
+    for (NSString* tableName in coreDataTableNames)
+        [self pullFromCoreData:tableName];
 }
 -(void)deleteModel
 {
@@ -300,7 +292,58 @@ NSArray *parseDownloadableItems;
         if (!error)
         {
             Business *linkedBusiness=[self getBusinessByID:[(NSNumber*)(retrievedBusiness[PARSE_BUSINESS_ID]) integerValue]];
-            deal.featuredBy = linkedBusiness;
+            deal.parentBusiness = linkedBusiness;
+            
+#pragma mark - not very safe adding deal to business before it was saved context
+            [linkedBusiness addFeaturedOffersObject:deal];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"itemPulledFromCloud" object:self
+                                                              userInfo:[NSDictionary dictionaryWithObject: PARSE_FEATURED_BUSINESS forKey:@"DownloadedItem"]];
+        }
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }];
+}
+
+
+- (void)createTagFromParseObject:(PFObject *)object
+{
+    
+    Tag *tag =[NSEntityDescription insertNewObjectForEntityForName:CD_TAG inManagedObjectContext:self.managedObjectContext];
+    tag.uid=object[PARSE_TAG_ID];
+    tag.name=object[PARSE_TAG_NAME];
+    tag.details=object[PARSE_TAG_DETAILS];
+    
+    PFObject* tagSet=object[PARSE_TAG_SET];
+    [downloadingItems setObject:PARSE_TAG_SET forKey:object.objectId];
+    [tagSet fetchIfNeededInBackgroundWithBlock:^(PFObject *retrievedTagSet, NSError *error) {
+        if (!error)
+        {
+            tag.fromSet=retrievedTagSet;
+            //now you gotta add the linked object of the tagset from core data and got help you so it already exist
+            
+            //TagSet *linkedTagSet=[self getBusinessByID:[(NSNumber*)(retrievedBusiness[PARSE_BUSINESS_ID]) integerValue]];
+            
+          //  deal.parentBusiness = linkedBusiness;
+            
+#pragma mark - not very safe adding deal to business before it was saved context
+            [linkedBusiness addFeaturedOffersObject:deal];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"itemPulledFromCloud" object:self
+                                                              userInfo:[NSDictionary dictionaryWithObject: PARSE_FEATURED_BUSINESS forKey:@"DownloadedItem"]];
+        }
+        else
+            NSLog(@"%@",[error localizedDescription]);
+
+        
+    }
+
+    
+    PFObject *business = object[PARSE_FEATURED_BUSINESS];
+    [downloadingItems setObject:PARSE_FEATURED_BUSINESS forKey:object.objectId];
+    [business fetchIfNeededInBackgroundWithBlock:^(PFObject *retrievedBusiness, NSError *error) {
+        if (!error)
+        {
+            Business *linkedBusiness=[self getBusinessByID:[(NSNumber*)(retrievedBusiness[PARSE_BUSINESS_ID]) integerValue]];
+            deal.parentBusiness = linkedBusiness;
             
 #pragma mark - not very safe adding deal to business before it was saved context
             [linkedBusiness addFeatureObject:deal];
@@ -311,6 +354,8 @@ NSArray *parseDownloadableItems;
             NSLog(@"%@",[error localizedDescription]);
     }];
 }
+
+
 
 
 //The method for pulling data from Parse based on the requested table name
@@ -336,6 +381,11 @@ NSArray *parseDownloadableItems;
                 if([entityName isEqualToString:CD_FEATURED])
                 {
                     [self createFeaturedFromParseObject:object];
+                }
+                
+                if([entityName isEqualToString:CD_TAG])
+                {
+                    [self createTagFromParseObject:object];
                 }
                 
                 
@@ -445,6 +495,49 @@ NSArray *parseDownloadableItems;
         return ((Business*)business[0]).name;
 }
 
+//Getting array of Featured objects by beacon's major and minor. The idea is that optionally the offer can be attached to a specific beacon, but it doesn't have to so we first check if there are offers with such major and minor id's and if not, we check only by major
+-(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:CD_FEATURED];
+
+    NSString *predicateMajor = [NSString stringWithFormat: @"(%@==%d)", CD_FEATURED_MAJOR, major.integerValue];
+    NSString *predicateMinor = [NSString stringWithFormat: @"(%@==%d)", CD_FEATURED_MINOR, minor.integerValue];
+    
+    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor]];
+    NSError *error;
+    NSArray *featured = [self.managedObjectContext executeFetchRequest:request error:&error];
+    
+    //if there are no offers tied directly to the beacon we try to find all the offers for the business
+    if(featured.count==0)
+    {
+        request.predicate=[NSPredicate predicateWithFormat:predicateMajor];
+        featured = [self.managedObjectContext executeFetchRequest:request error:&error];
+    }
+    return featured;
+}
+     
+     
+     
+     
+-(void) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor
+{
+    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:CD_STATISTICS
+                                                       inManagedObjectContext:self.managedObjectContext];
+    newStat.major=major;
+    newStat.minor=minor;
+    newStat.date=date;
+    [self saveContext];
+    
+    PFObject *newStatistics = [PFObject objectWithClassName:PARSE_STATISTICS];
+    newStatistics[PARSE_STATISTICS_MAJOR] = major;
+    newStatistics[PARSE_STATISTICS_MINOR] = minor;
+    newStatistics[PARSE_STATISTICS_DATE] = date;
+    
+#pragma mark - do a callback with processing the result of the save
+    [newStatistics saveEventually];
+}
+     
+     
 - (void)saveContext
 {
     NSError *error = nil;

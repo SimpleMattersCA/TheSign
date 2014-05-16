@@ -2,7 +2,7 @@
 //  Business.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-05-13.
+//  Created by Andrey Chudnovskiy on 2014-05-15.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
@@ -16,6 +16,8 @@
 @dynamic name;
 @dynamic uid;
 @dynamic welcomeText;
-@dynamic feature;
+@dynamic workingHoursStart;
+@dynamic workingHoursEnd;
+@dynamic featuredOffers;
 
 @end

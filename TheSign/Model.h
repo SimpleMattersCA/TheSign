@@ -13,6 +13,11 @@
 #import "Business.h"
 #import "Featured.h"
 #import "TableTimestamp.h"
+#import "Tag.h"
+#import "TagClass.h"
+#import "TagSet.h"
+#import "TagClass.h"
+#import "Statistics.h"
 
 
 @interface Model : NSObject 
@@ -26,8 +31,11 @@
 -(Business*) getBusinessByID:(NSInteger)identifier;
 -(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
 -(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
+//return the array of offers for a detected beacon
+-(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
 
 
+-(void) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor;
 
 + (Model*) sharedModel;
 

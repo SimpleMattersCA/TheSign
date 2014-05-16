@@ -18,16 +18,19 @@
 		55101D3E18D823ED0074B4D2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55101D3D18D823ED0074B4D2 /* CoreData.framework */; };
 		553371CE18EA962500CC84F2 /* FeaturedDealCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 553371CD18EA962500CC84F2 /* FeaturedDealCell.m */; };
 		553371D018F0CF0900CC84F2 /* FeaturedDealCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 553371CF18F0CF0900CC84F2 /* FeaturedDealCell.xib */; };
-		553BCC591922ADC600FFA0B4 /* Featured.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC581922ADC600FFA0B4 /* Featured.m */; };
-		553BCC5C1922ADC700FFA0B4 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC5B1922ADC700FFA0B4 /* Business.m */; };
 		553BCC5F1922ADC700FFA0B4 /* TagSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC5E1922ADC700FFA0B4 /* TagSet.m */; };
 		553BCC621922ADC700FFA0B4 /* TableTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC611922ADC700FFA0B4 /* TableTimestamp.m */; };
 		553BCC651922ADC700FFA0B4 /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC641922ADC700FFA0B4 /* Tag.m */; };
 		553BCC681922ADC700FFA0B4 /* TagClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC671922ADC700FFA0B4 /* TagClass.m */; };
+		553BCC741924200C00FFA0B4 /* Statistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC731924200C00FFA0B4 /* Statistics.m */; };
 		553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F4218C714A3004F8312 /* HomeViewController.m */; };
 		55B746EB18DCAECA00F61354 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B746EA18DCAECA00F61354 /* Model.m */; };
 		55C882DF18E3F94F00E1C502 /* FeaturedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882DE18E3F94F00E1C502 /* FeaturedViewController.m */; };
 		55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E15FE2191A062B00A8B826 /* InsightEngine.m */; };
+		55E3641B1925469300A30C39 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E3641A1925469300A30C39 /* Business.m */; };
+		55E364211925B2D200A30C39 /* Featured.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E364201925B2D200A30C39 /* Featured.m */; };
+		55E364241925B30B00A30C39 /* Featured.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E364231925B30B00A30C39 /* Featured.m */; };
+		55E364271925B30C00A30C39 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E364261925B30C00A30C39 /* Business.m */; };
 		55EE37B318B7057C002A121C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B218B7057C002A121C /* Foundation.framework */; };
 		55EE37BD18B7057C002A121C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55EE37BB18B7057C002A121C /* InfoPlist.strings */; };
 		55EE37BF18B7057C002A121C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE37BE18B7057C002A121C /* main.m */; };
@@ -72,10 +75,6 @@
 		553371CD18EA962500CC84F2 /* FeaturedDealCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedDealCell.m; sourceTree = "<group>"; };
 		553371CF18F0CF0900CC84F2 /* FeaturedDealCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FeaturedDealCell.xib; sourceTree = "<group>"; };
 		553BCC561922AA8500FFA0B4 /* Parse_CoreData_Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parse_CoreData_Header.h; sourceTree = "<group>"; };
-		553BCC571922ADC600FFA0B4 /* Featured.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Featured.h; sourceTree = "<group>"; };
-		553BCC581922ADC600FFA0B4 /* Featured.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Featured.m; sourceTree = "<group>"; };
-		553BCC5A1922ADC700FFA0B4 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
-		553BCC5B1922ADC700FFA0B4 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
 		553BCC5D1922ADC700FFA0B4 /* TagSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagSet.h; sourceTree = "<group>"; };
 		553BCC5E1922ADC700FFA0B4 /* TagSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagSet.m; sourceTree = "<group>"; };
 		553BCC601922ADC700FFA0B4 /* TableTimestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableTimestamp.h; sourceTree = "<group>"; };
@@ -84,6 +83,8 @@
 		553BCC641922ADC700FFA0B4 /* Tag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tag.m; sourceTree = "<group>"; };
 		553BCC661922ADC700FFA0B4 /* TagClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagClass.h; sourceTree = "<group>"; };
 		553BCC671922ADC700FFA0B4 /* TagClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagClass.m; sourceTree = "<group>"; };
+		553BCC721924200C00FFA0B4 /* Statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Statistics.h; sourceTree = "<group>"; };
+		553BCC731924200C00FFA0B4 /* Statistics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Statistics.m; sourceTree = "<group>"; };
 		553E4F4118C714A3004F8312 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		553E4F4218C714A3004F8312 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		55B746E918DCAECA00F61354 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
@@ -92,6 +93,15 @@
 		55C882DE18E3F94F00E1C502 /* FeaturedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedViewController.m; sourceTree = "<group>"; };
 		55E15FE1191A062B00A8B826 /* InsightEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InsightEngine.h; sourceTree = "<group>"; };
 		55E15FE2191A062B00A8B826 /* InsightEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InsightEngine.m; sourceTree = "<group>"; };
+		55E364151925357100A30C39 /* CommonHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommonHeader.h; sourceTree = "<group>"; };
+		55E364191925469300A30C39 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
+		55E3641A1925469300A30C39 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
+		55E3641F1925B2D200A30C39 /* Featured.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Featured.h; sourceTree = "<group>"; };
+		55E364201925B2D200A30C39 /* Featured.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Featured.m; sourceTree = "<group>"; };
+		55E364221925B30B00A30C39 /* Featured.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Featured.h; sourceTree = "<group>"; };
+		55E364231925B30B00A30C39 /* Featured.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Featured.m; sourceTree = "<group>"; };
+		55E364251925B30C00A30C39 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
+		55E364261925B30C00A30C39 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
 		55EE37AF18B7057C002A121C /* TheSign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSign.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55EE37B218B7057C002A121C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		55EE37B418B7057C002A121C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -166,7 +176,17 @@
 		553E4F4518C71525004F8312 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				55E364251925B30C00A30C39 /* Business.h */,
+				55E364261925B30C00A30C39 /* Business.m */,
+				55E364221925B30B00A30C39 /* Featured.h */,
+				55E364231925B30B00A30C39 /* Featured.m */,
 				55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */,
+				55E3641F1925B2D200A30C39 /* Featured.h */,
+				55E364201925B2D200A30C39 /* Featured.m */,
+				55E364191925469300A30C39 /* Business.h */,
+				55E3641A1925469300A30C39 /* Business.m */,
+				553BCC721924200C00FFA0B4 /* Statistics.h */,
+				553BCC731924200C00FFA0B4 /* Statistics.m */,
 				553BCC661922ADC700FFA0B4 /* TagClass.h */,
 				553BCC671922ADC700FFA0B4 /* TagClass.m */,
 				553BCC631922ADC700FFA0B4 /* Tag.h */,
@@ -175,10 +195,6 @@
 				553BCC611922ADC700FFA0B4 /* TableTimestamp.m */,
 				553BCC5D1922ADC700FFA0B4 /* TagSet.h */,
 				553BCC5E1922ADC700FFA0B4 /* TagSet.m */,
-				553BCC5A1922ADC700FFA0B4 /* Business.h */,
-				553BCC5B1922ADC700FFA0B4 /* Business.m */,
-				553BCC571922ADC600FFA0B4 /* Featured.h */,
-				553BCC581922ADC600FFA0B4 /* Featured.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -272,6 +288,7 @@
 				55E15FE1191A062B00A8B826 /* InsightEngine.h */,
 				55E15FE2191A062B00A8B826 /* InsightEngine.m */,
 				553BCC561922AA8500FFA0B4 /* Parse_CoreData_Header.h */,
+				55E364151925357100A30C39 /* CommonHeader.h */,
 				553E4F4418C714D1004F8312 /* Controller */,
 				553E4F4518C71525004F8312 /* Model */,
 				55EE37C418B7057C002A121C /* Main.storyboard */,
@@ -426,14 +443,17 @@
 			files = (
 				55EE37C918B7057C002A121C /* DetailsViewController.m in Sources */,
 				55F97E1718FDBFAC00E4610D /* FeaturedViewHeader.m in Sources */,
-				553BCC5C1922ADC700FFA0B4 /* Business.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
+				55E364211925B2D200A30C39 /* Featured.m in Sources */,
 				553BCC5F1922ADC700FFA0B4 /* TagSet.m in Sources */,
+				55E364271925B30C00A30C39 /* Business.m in Sources */,
 				55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */,
 				55B746EB18DCAECA00F61354 /* Model.m in Sources */,
 				553371CE18EA962500CC84F2 /* FeaturedDealCell.m in Sources */,
-				553BCC591922ADC600FFA0B4 /* Featured.m in Sources */,
 				55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */,
+				55E364241925B30B00A30C39 /* Featured.m in Sources */,
+				55E3641B1925469300A30C39 /* Business.m in Sources */,
+				553BCC741924200C00FFA0B4 /* Statistics.m in Sources */,
 				55EE37BF18B7057C002A121C /* main.m in Sources */,
 				55C882DF18E3F94F00E1C502 /* FeaturedViewController.m in Sources */,
 				553BCC681922ADC700FFA0B4 /* TagClass.m in Sources */,

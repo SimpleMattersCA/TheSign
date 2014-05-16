@@ -2,7 +2,7 @@
 //  Business.h
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-05-13.
+//  Created by Andrey Chudnovskiy on 2014-05-15.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
@@ -17,14 +17,16 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * uid;
 @property (nonatomic, retain) NSString * welcomeText;
-@property (nonatomic, retain) NSSet *feature;
+@property (nonatomic, retain) NSNumber * workingHoursStart;
+@property (nonatomic, retain) NSNumber * workingHoursEnd;
+@property (nonatomic, retain) NSSet *featuredOffers;
 @end
 
 @interface Business (CoreDataGeneratedAccessors)
 
-- (void)addFeatureObject:(Featured *)value;
-- (void)removeFeatureObject:(Featured *)value;
-- (void)addFeature:(NSSet *)values;
-- (void)removeFeature:(NSSet *)values;
+- (void)addFeaturedOffersObject:(Featured *)value;
+- (void)removeFeaturedOffersObject:(Featured *)value;
+- (void)addFeaturedOffers:(NSSet *)values;
+- (void)removeFeaturedOffers:(NSSet *)values;
 
 @end

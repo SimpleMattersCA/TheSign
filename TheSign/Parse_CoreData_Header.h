@@ -16,12 +16,17 @@
 #define CD_BUSINESS_NAME (@"name")
 #define CD_BUSINESS_LOGO (@"logo")
 #define CD_BUSINESS_WELCOMETEXT (@"welcomeText")
+#define CD_BUSINESS_HOURS_START (@"workingHoursStart")
+#define CD_BUSINESS_HOURS_END (@"workingHoursEnd")
 
 #define PARSE_BUSINESS (@"Business")
 #define PARSE_BUSINESS_ID (@"uid")
 #define PARSE_BUSINESS_NAME (@"name")
 #define PARSE_BUSINESS_LOGO (@"logo")
 #define PARSE_BUSINESS_WELCOMETEXT (@"welcomeText")
+#define PARSE_BUSINESS_HOURS_START (@"workingHoursStart")
+#define PARSE_BUSINESS_HOURS_END (@"workingHoursEnd")
+
 
 //Featured
 #define CD_FEATURED (@"Featured")
@@ -29,7 +34,10 @@
 #define CD_FEATURED_DETAILS (@"details")
 #define CD_FEATURED_VIDEO (@"videoUrl")
 #define CD_FEATURED_IMAGE (@"image")
-#define CD_FEATURED_BUSINESS (@"featuredBy")
+#define CD_FEATURED_BUSINESS (@"parentBusiness")
+#define CD_FEATURED_MAJOR (@"major")
+#define CD_FEATURED_MINOR (@"minor")
+#define CD_FEATURED_ACTIVE (@"active")
 
 #define PARSE_FEATURED (@"Info")
 #define PARSE_FEATURED_TITLE (@"featured")
@@ -37,6 +45,9 @@
 #define PARSE_FEATURED_VIDEO (@"video")
 #define PARSE_FEATURED_IMAGE (@"picture")
 #define PARSE_FEATURED_BUSINESS (@"BusinessID")
+#define PARSE_FEATURED_MAJOR (@"major")
+#define PARSE_FEATURED_MINOR (@"minor")
+#define PARSE_FEATURED_ACTIVE (@"active")
 
 //TimeStamp
 #define CD_TIMESTAMP (@"TableTimestamp")
@@ -77,3 +88,14 @@
 
 #define PARSE_TAGSET (@"TagClass")
 #define PARSE_TAGSET_WEIGHT (@"weight")
+
+//Statistics
+#define CD_STATISTICS (@"Statistics")
+#define CD_STATISTICS_MAJOR (@"major")
+#define CD_STATISTICS_MINOR (@"minor")
+#define CD_STATISTICS_DATE (@"date")
+
+#define PARSE_STATISTICS (@"Statistics")
+#define PARSE_STATISTICS_MAJOR (@"major")
+#define PARSE_STATISTICS_MINOR (@"minor")
+#define PARSE_STATISTICS_DATE (@"date")
