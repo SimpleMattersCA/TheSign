@@ -14,6 +14,7 @@
 @dynamic pObjectID;
 @dynamic tableName;
 @dynamic timeStamp;
+@dynamic order;
 
 +(NSString*) entityName
 {
@@ -79,4 +80,26 @@
     timeStamp.timeStamp=object[[TableTimestamp parseName:TIMESTAMP_DATE]];
     timeStamp.tableName=object[[TableTimestamp parseName:TIMESTAMP_TABLENAME]];
 }
+
++ (NSArray*)getTableNames
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
+    NSError *error;
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
+                                        initWithKey:TIMESTAMP_ORDER ascending:YES];
+    [request setSortDescriptors:@[sortDescriptor]];
+    NSArray *timestamps = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    else
+    {
+        
+        return [timestamps valueForKey:TIMESTAMP_TABLENAME];
+    }
+}
+
 @end

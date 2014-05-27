@@ -38,6 +38,7 @@
         <attribute name="minor" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
     </entity>
     <entity name="TableTimestamp" representedClassName="TableTimestamp" syncable="YES">
+        <attribute name="order" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="tableName" attributeType="String" syncable="YES"/>
         <attribute name="timeStamp" attributeType="Date" syncable="YES"/>
@@ -80,7 +81,7 @@
         <element name="Featured" positionX="-2477" positionY="-396" width="128" height="193"/>
         <element name="Link" positionX="-2754" positionY="-141" width="128" height="88"/>
         <element name="Statistics" positionX="-2738" positionY="-421" width="128" height="88"/>
-        <element name="TableTimestamp" positionX="-2738" positionY="-523" width="128" height="88"/>
+        <element name="TableTimestamp" positionX="-2738" positionY="-523" width="128" height="103"/>
         <element name="Tag" positionX="-2063" positionY="-378" width="128" height="118"/>
         <element name="TagClass" positionX="-1962" positionY="-127" width="128" height="118"/>
         <element name="TagClassConnection" positionX="-2205" positionY="-130" width="128" height="103"/>

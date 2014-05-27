@@ -79,16 +79,18 @@
 {
     //pull from cloud for
     PFQuery *query = [PFQuery queryWithClassName:[TableTimestamp parseName:TIMESTAMP]];
+    [query orderByAscending:TIMESTAMP_ORDER];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
     {
         if (!error)
         {
             for (PFObject *object in objects)
             {
-                NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:object[[TableTimestamp parseName:TIMESTAMP_TABLENAME]]];
-                if(![timestamp isEqualToDate:object[[TableTimestamp parseName:TIMESTAMP_TABLENAME]]])
+                NSString *tableName=object[[TableTimestamp parseName:TIMESTAMP_TABLENAME]];
+                NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName];
+                if(![timestamp isEqualToDate:object[tableName]])
                 {
-                    [self pullFromCloud:parseToCoreDataNames[PARSE_TIMESTAMP_TABLENAME]];
+                    [self pullFromCloud:[[self getClassForEntity:tableName] entityName]];
                 }
             }
             [self pullFromCloud:TIMESTAMP];
@@ -104,8 +106,9 @@
 
 -(void)pullFromCloud
 {
-    for (NSString* tableName in coreDataTableNames)
+    for(NSString *tableName in [TableTimestamp getTableNames])
         [self pullFromCloud:tableName];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"databaseUpdated" object:self];
 
 }

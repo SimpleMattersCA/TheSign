@@ -11,7 +11,6 @@
 
 @implementation InsightEngine
 
-int arch4random_uniform();
 
 +(NSString*)generateWelcomeTextForBeaconWithMajor: (NSNumber*)major andMinor:(NSNumber*)minor
 {
@@ -123,7 +122,7 @@ int arch4random_uniform();
     Featured *result;
     
     //for now, take randomly
-    int offerId=arch4random_uniform()*offerArray.count;
+    int offerId=arc4random_uniform(offerArray.count);
     result=offerArray[offerId];
     
     
@@ -133,7 +132,7 @@ int arch4random_uniform();
 +(NSString*)generateGreeting
 {
     NSArray *greetingOptions=[NSArray arrayWithObjects:@"Hi there!",@"Hello stranger!",@"Hi!",@"Hey!", nil];
-    int random=arch4random_uniform()*greetingOptions.count;
+    int random=arc4random_uniform(greetingOptions.count);
     return greetingOptions[random];
 }
 
