@@ -10,7 +10,7 @@
 
 @interface DetailsViewController ()
 @property (weak, nonatomic) IBOutlet UITextView* outputDescription;
-@property (strong,nonatomic) NSNumber* businessID;
+@property (strong,nonatomic) NSString* businessID;
 @property (strong,nonatomic) Business* business;
 
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
@@ -25,17 +25,16 @@
     [self updateViewForBusiness:self.businessID];
 }
 
--(void) updateViewForBusiness:(NSNumber*)identifier
+-(void) updateViewForBusiness:(NSString*)identifier
 {
     
-    NSInteger i=[identifier integerValue];
-    self.business=[Model sharedModel].businesses[i];
+    self.business=[Business getByID:identifier];
     _navigationBar.title=self.business.name;
     _outputDescription.text=self.business.welcomeText;
 
 }
 
--(void) setBusinessToShow:(NSNumber*) identifier
+-(void) setBusinessToShow:(NSString*) identifier
 {
     self.businessID=identifier;
 }

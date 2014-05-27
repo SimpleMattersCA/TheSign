@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13C1021" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Business" representedClassName="Business" syncable="YES">
-        <attribute name="logo" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="logo" attributeType="Binary" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
-        <attribute name="uid" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="uid" attributeType="Integer 16" indexed="YES" syncable="YES"/>
         <attribute name="welcomeText" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="workingHoursEnd" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="workingHoursStart" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="featuredOffers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Featured" inverseName="parentBusiness" inverseEntity="Featured" syncable="YES"/>
+        <attribute name="workingHoursEnd" optional="YES" attributeType="Integer 16" minValueString="0" maxValueString="24" syncable="YES"/>
+        <attribute name="workingHoursStart" optional="YES" attributeType="Integer 16" minValueString="0" maxValueString="24" syncable="YES"/>
+        <relationship name="featuredOffers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Featured" inverseName="parentBusiness" inverseEntity="Featured" syncable="YES"/>
+        <relationship name="links" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Link" inverseName="parentBusiness" inverseEntity="Link" syncable="YES"/>
     </entity>
-    <entity name="Favourites" syncable="YES">
-        <attribute name="attribute" optional="YES" syncable="YES"/>
+    <entity name="Favourites" representedClassName="Favourites" syncable="YES">
+        <attribute name="recordedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="favouriteOffer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Featured" inverseName="favourited" inverseEntity="Featured" syncable="YES"/>
     </entity>
     <entity name="Featured" representedClassName="Featured" syncable="YES">
         <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="major" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="major" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="minor" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
         <attribute name="videoUrl" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="featuredTagSet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TagSet" inverseName="taggedFeature" inverseEntity="TagSet" syncable="YES"/>
-        <relationship name="parentBusiness" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Business" inverseName="featuredOffers" inverseEntity="Business" syncable="YES"/>
+        <relationship name="favourited" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Favourites" inverseName="favouriteOffer" inverseEntity="Favourites" syncable="YES"/>
+        <relationship name="featuredTagSet" maxCount="1" deletionRule="Nullify" destinationEntity="TagSet" inverseName="taggedFeature" inverseEntity="TagSet" syncable="YES"/>
+        <relationship name="parentBusiness" maxCount="1" deletionRule="Nullify" destinationEntity="Business" inverseName="featuredOffers" inverseEntity="Business" syncable="YES"/>
+    </entity>
+    <entity name="Link" representedClassName="Link" syncable="YES">
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="url" attributeType="String" syncable="YES"/>
+        <relationship name="parentBusiness" maxCount="1" deletionRule="Nullify" destinationEntity="Business" inverseName="links" inverseEntity="Business" syncable="YES"/>
     </entity>
     <entity name="Statistics" representedClassName="Statistics" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
@@ -28,34 +38,53 @@
         <attribute name="minor" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
     </entity>
     <entity name="TableTimestamp" representedClassName="TableTimestamp" syncable="YES">
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="tableName" attributeType="String" syncable="YES"/>
         <attribute name="timeStamp" attributeType="Date" syncable="YES"/>
     </entity>
     <entity name="Tag" representedClassName="Tag" syncable="YES">
         <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
-        <attribute name="uid" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="fromClass" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TagClass" inverseName="tagsInClass" inverseEntity="TagClass" syncable="YES"/>
-        <relationship name="fromSet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TagSet" inverseName="tagsInSet" inverseEntity="TagSet" syncable="YES"/>
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="tagClasses" toMany="YES" deletionRule="Cascade" destinationEntity="TagClassRelation" inverseName="relatedTag" inverseEntity="TagClassRelation" syncable="YES"/>
+        <relationship name="tagSets" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TagSet" inverseName="tagInSet" inverseEntity="TagSet" syncable="YES"/>
     </entity>
     <entity name="TagClass" representedClassName="TagClass" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>
-        <attribute name="uid" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="tagsInClass" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="fromClass" inverseEntity="Tag" syncable="YES"/>
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="controllClassConnection" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TagClassConnection" inverseName="controllClass" inverseEntity="TagClassConnection" syncable="YES"/>
+        <relationship name="relatedClassConnection" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TagClassConnection" inverseName="relatedClass" inverseEntity="TagClassConnection" syncable="YES"/>
+        <relationship name="tagsInClass" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TagClassRelation" inverseName="relatedClass" inverseEntity="TagClassRelation" syncable="YES"/>
+    </entity>
+    <entity name="TagClassConnection" representedClassName="TagClassConnection" syncable="YES">
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="weight" attributeType="Float" minValueString="0" maxValueString="1" defaultValueString="1" syncable="YES"/>
+        <relationship name="controllClass" maxCount="1" deletionRule="Nullify" destinationEntity="TagClass" inverseName="controllClassConnection" inverseEntity="TagClass" syncable="YES"/>
+        <relationship name="relatedClass" maxCount="1" deletionRule="Nullify" destinationEntity="TagClass" inverseName="relatedClassConnection" inverseEntity="TagClass" syncable="YES"/>
+    </entity>
+    <entity name="TagClassRelation" representedClassName="TagClassRelation" syncable="YES">
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="weight" attributeType="Double" defaultValueString="1" syncable="YES"/>
+        <relationship name="relatedClass" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TagClass" inverseName="tagsInClass" inverseEntity="TagClass" syncable="YES"/>
+        <relationship name="relatedTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Tag" inverseName="tagClasses" inverseEntity="Tag" syncable="YES"/>
     </entity>
     <entity name="TagSet" representedClassName="TagSet" syncable="YES">
-        <attribute name="weight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
-        <relationship name="taggedFeature" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Featured" inverseName="featuredTagSet" inverseEntity="Featured" syncable="YES"/>
-        <relationship name="tagsInSet" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="fromSet" inverseEntity="Tag" syncable="YES"/>
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="weight" optional="YES" attributeType="Float" minValueString="0" maxValueString="1" defaultValueString="1" syncable="YES"/>
+        <relationship name="taggedFeature" maxCount="1" deletionRule="Nullify" destinationEntity="Featured" inverseName="featuredTagSet" inverseEntity="Featured" syncable="YES"/>
+        <relationship name="tagInSet" maxCount="1" deletionRule="Nullify" destinationEntity="Tag" inverseName="tagSets" inverseEntity="Tag" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Business" positionX="-2160" positionY="-333" width="128" height="148"/>
-        <element name="Featured" positionX="-2403" positionY="-216" width="128" height="163"/>
-        <element name="Statistics" positionX="-2691" positionY="-90" width="128" height="88"/>
-        <element name="TableTimestamp" positionX="-2691" positionY="-225" width="128" height="73"/>
-        <element name="Tag" positionX="-2151" positionY="-64" width="128" height="118"/>
-        <element name="TagClass" positionX="-1946" positionY="-79" width="128" height="88"/>
-        <element name="TagSet" positionX="-2385" positionY="-9" width="128" height="88"/>
-        <element name="Favourites" positionX="-2484" positionY="-180" width="128" height="60"/>
+        <element name="Business" positionX="-2513" positionY="-144" width="128" height="178"/>
+        <element name="Favourites" positionX="-2450" positionY="-523" width="128" height="73"/>
+        <element name="Featured" positionX="-2477" positionY="-396" width="128" height="193"/>
+        <element name="Link" positionX="-2754" positionY="-141" width="128" height="88"/>
+        <element name="Statistics" positionX="-2738" positionY="-421" width="128" height="88"/>
+        <element name="TableTimestamp" positionX="-2738" positionY="-523" width="128" height="88"/>
+        <element name="Tag" positionX="-2063" positionY="-378" width="128" height="118"/>
+        <element name="TagClass" positionX="-1962" positionY="-127" width="128" height="118"/>
+        <element name="TagClassConnection" positionX="-2205" positionY="-130" width="128" height="103"/>
+        <element name="TagSet" positionX="-2270" positionY="-367" width="128" height="103"/>
+        <element name="TagClassRelation" positionX="-1865" positionY="-369" width="128" height="103"/>
     </elements>
 </model>

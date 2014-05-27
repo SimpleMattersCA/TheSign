@@ -7,17 +7,19 @@
 //
 
 #import "InsightEngine.h"
+#import <stdlib.h>
 
 @implementation InsightEngine
 
+int arch4random_uniform();
 
 +(NSString*)generateWelcomeTextForBeaconWithMajor: (NSNumber*)major andMinor:(NSNumber*)minor
 {
     NSString* result=@"";
-    NSArray* featuredOffers=[[Model sharedModel] getOffersByMajor:major andMinor:minor];
+    Featured* chosenOffer;
+    NSArray* featuredOffers=[Featured getOffersByMajor:major andMinor:minor];
     
 #pragma mark Choose between sentece types not randomly but based on what could be more relevant
-
     
     if(featuredOffers!=nil && featuredOffers.count!=0)
     {
@@ -44,6 +46,7 @@
         {
             
             //1. choose the right offer
+            chosenOffer=[self chooseTheRightOfferFrom:featuredOffers];
             
             //2. prepare the sentence
             
@@ -54,16 +57,86 @@
         else
         {
 #pragma mark - of course this should be smarter than this, treat is as a placeholders
+            //show working hours
             result=[NSString stringWithFormat:@"Sorry but %@ is closed, see you next time!", bTitle];
         }
         
         
-    
+    }
    
     
     
     return result;
 }
+
+
++(NSString*)doWeatherMessageForOffer:(Featured*)deal
+{
+    NSString *result;
+    
+    
+    return result;
+
+}
+
++(NSString*)doStatisticsMessageForOffer:(Featured*)deal
+{
+    NSString *result;
+    
+    
+    return result;
+    
+}
+
+
++(NSString*)doFavouritesMessageForOffer:(Featured*)deal
+{
+    NSString *result;
+    
+    
+    return result;
+    
+}
+    
++(NSString*)doTimeMessageForOffer:(Featured*)deal
+{
+    NSString *result;
+    
+    
+    
+    return result;
+    
+}
+
++(NSString*)doDateMessageForOffer:(Featured*)deal
+{
+    NSString *result;
+    
+    
+    return result;
+    
+}
+
+//returning the most relevant offer for the client at this moment
++(Featured*)chooseTheRightOfferFrom:(NSArray*)offerArray
+{
+    Featured *result;
+    
+    //for now, take randomly
+    int offerId=arch4random_uniform()*offerArray.count;
+    result=offerArray[offerId];
+    
+    
+    return result;
+}
+
++(NSString*)generateGreeting
+{
+    NSArray *greetingOptions=[NSArray arrayWithObjects:@"Hi there!",@"Hello stranger!",@"Hi!",@"Hey!", nil];
+    int random=arch4random_uniform()*greetingOptions.count;
+    return greetingOptions[random];
+}
+
 
 
 

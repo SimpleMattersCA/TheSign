@@ -68,7 +68,7 @@
 
 -(NSArray*) businesses
 {
-    return [Model sharedModel].businesses;
+    return [Business getBusinessesByType:nil];
 
 }
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

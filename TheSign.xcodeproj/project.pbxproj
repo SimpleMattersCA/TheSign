@@ -18,19 +18,21 @@
 		55101D3E18D823ED0074B4D2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55101D3D18D823ED0074B4D2 /* CoreData.framework */; };
 		553371CE18EA962500CC84F2 /* FeaturedDealCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 553371CD18EA962500CC84F2 /* FeaturedDealCell.m */; };
 		553371D018F0CF0900CC84F2 /* FeaturedDealCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 553371CF18F0CF0900CC84F2 /* FeaturedDealCell.xib */; };
-		553BCC5F1922ADC700FFA0B4 /* TagSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC5E1922ADC700FFA0B4 /* TagSet.m */; };
-		553BCC621922ADC700FFA0B4 /* TableTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC611922ADC700FFA0B4 /* TableTimestamp.m */; };
-		553BCC651922ADC700FFA0B4 /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC641922ADC700FFA0B4 /* Tag.m */; };
-		553BCC681922ADC700FFA0B4 /* TagClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC671922ADC700FFA0B4 /* TagClass.m */; };
-		553BCC741924200C00FFA0B4 /* Statistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 553BCC731924200C00FFA0B4 /* Statistics.m */; };
 		553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F4218C714A3004F8312 /* HomeViewController.m */; };
+		5557BAFE1931BB1C00B256FF /* Statistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BAFD1931BB1C00B256FF /* Statistics.m */; };
+		5557BB071931BB1C00B256FF /* Featured.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB061931BB1C00B256FF /* Featured.m */; };
+		5557BB0A1931BB1C00B256FF /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB091931BB1C00B256FF /* Business.m */; };
+		5557BB0D1931BB1C00B256FF /* TagClassConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB0C1931BB1C00B256FF /* TagClassConnection.m */; };
+		5557BB131931BB1D00B256FF /* Favourites.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB121931BB1D00B256FF /* Favourites.m */; };
+		5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB151931BB1D00B256FF /* TableTimestamp.m */; };
+		5557BB191931BB1D00B256FF /* Link.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB181931BB1D00B256FF /* Link.m */; };
+		5557BB201933FC3D00B256FF /* TagSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB1F1933FC3D00B256FF /* TagSet.m */; };
+		5557BB231934306800B256FF /* TagClassRelation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB221934306800B256FF /* TagClassRelation.m */; };
+		5557BB261934306900B256FF /* TagClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB251934306900B256FF /* TagClass.m */; };
+		5557BB291934306900B256FF /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB281934306900B256FF /* Tag.m */; };
 		55B746EB18DCAECA00F61354 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B746EA18DCAECA00F61354 /* Model.m */; };
 		55C882DF18E3F94F00E1C502 /* FeaturedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882DE18E3F94F00E1C502 /* FeaturedViewController.m */; };
 		55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E15FE2191A062B00A8B826 /* InsightEngine.m */; };
-		55E3641B1925469300A30C39 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E3641A1925469300A30C39 /* Business.m */; };
-		55E364211925B2D200A30C39 /* Featured.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E364201925B2D200A30C39 /* Featured.m */; };
-		55E364241925B30B00A30C39 /* Featured.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E364231925B30B00A30C39 /* Featured.m */; };
-		55E364271925B30C00A30C39 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E364261925B30C00A30C39 /* Business.m */; };
 		55EE37B318B7057C002A121C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B218B7057C002A121C /* Foundation.framework */; };
 		55EE37BD18B7057C002A121C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55EE37BB18B7057C002A121C /* InfoPlist.strings */; };
 		55EE37BF18B7057C002A121C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE37BE18B7057C002A121C /* main.m */; };
@@ -74,19 +76,31 @@
 		553371CC18EA962500CC84F2 /* FeaturedDealCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedDealCell.h; sourceTree = "<group>"; };
 		553371CD18EA962500CC84F2 /* FeaturedDealCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedDealCell.m; sourceTree = "<group>"; };
 		553371CF18F0CF0900CC84F2 /* FeaturedDealCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FeaturedDealCell.xib; sourceTree = "<group>"; };
-		553BCC561922AA8500FFA0B4 /* Parse_CoreData_Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parse_CoreData_Header.h; sourceTree = "<group>"; };
-		553BCC5D1922ADC700FFA0B4 /* TagSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagSet.h; sourceTree = "<group>"; };
-		553BCC5E1922ADC700FFA0B4 /* TagSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagSet.m; sourceTree = "<group>"; };
-		553BCC601922ADC700FFA0B4 /* TableTimestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableTimestamp.h; sourceTree = "<group>"; };
-		553BCC611922ADC700FFA0B4 /* TableTimestamp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableTimestamp.m; sourceTree = "<group>"; };
-		553BCC631922ADC700FFA0B4 /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tag.h; sourceTree = "<group>"; };
-		553BCC641922ADC700FFA0B4 /* Tag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tag.m; sourceTree = "<group>"; };
-		553BCC661922ADC700FFA0B4 /* TagClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagClass.h; sourceTree = "<group>"; };
-		553BCC671922ADC700FFA0B4 /* TagClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagClass.m; sourceTree = "<group>"; };
-		553BCC721924200C00FFA0B4 /* Statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Statistics.h; sourceTree = "<group>"; };
-		553BCC731924200C00FFA0B4 /* Statistics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Statistics.m; sourceTree = "<group>"; };
 		553E4F4118C714A3004F8312 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		553E4F4218C714A3004F8312 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		5557BAFC1931BB1C00B256FF /* Statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Statistics.h; path = model/Statistics.h; sourceTree = "<group>"; };
+		5557BAFD1931BB1C00B256FF /* Statistics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Statistics.m; path = model/Statistics.m; sourceTree = "<group>"; };
+		5557BB051931BB1C00B256FF /* Featured.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Featured.h; path = model/Featured.h; sourceTree = "<group>"; };
+		5557BB061931BB1C00B256FF /* Featured.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Featured.m; path = model/Featured.m; sourceTree = "<group>"; };
+		5557BB081931BB1C00B256FF /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Business.h; path = model/Business.h; sourceTree = "<group>"; };
+		5557BB091931BB1C00B256FF /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Business.m; path = model/Business.m; sourceTree = "<group>"; };
+		5557BB0B1931BB1C00B256FF /* TagClassConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TagClassConnection.h; path = model/TagClassConnection.h; sourceTree = "<group>"; };
+		5557BB0C1931BB1C00B256FF /* TagClassConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TagClassConnection.m; path = model/TagClassConnection.m; sourceTree = "<group>"; };
+		5557BB111931BB1C00B256FF /* Favourites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Favourites.h; path = model/Favourites.h; sourceTree = "<group>"; };
+		5557BB121931BB1D00B256FF /* Favourites.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Favourites.m; path = model/Favourites.m; sourceTree = "<group>"; };
+		5557BB141931BB1D00B256FF /* TableTimestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TableTimestamp.h; path = model/TableTimestamp.h; sourceTree = "<group>"; };
+		5557BB151931BB1D00B256FF /* TableTimestamp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableTimestamp.m; path = model/TableTimestamp.m; sourceTree = "<group>"; };
+		5557BB171931BB1D00B256FF /* Link.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Link.h; path = model/Link.h; sourceTree = "<group>"; };
+		5557BB181931BB1D00B256FF /* Link.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Link.m; path = model/Link.m; sourceTree = "<group>"; };
+		5557BB1A1931C28700B256FF /* SignEntityProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SignEntityProtocol.h; sourceTree = "<group>"; };
+		5557BB1E1933FC3D00B256FF /* TagSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TagSet.h; path = model/TagSet.h; sourceTree = "<group>"; };
+		5557BB1F1933FC3D00B256FF /* TagSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TagSet.m; path = model/TagSet.m; sourceTree = "<group>"; };
+		5557BB211934306800B256FF /* TagClassRelation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TagClassRelation.h; path = model/TagClassRelation.h; sourceTree = "<group>"; };
+		5557BB221934306800B256FF /* TagClassRelation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TagClassRelation.m; path = model/TagClassRelation.m; sourceTree = "<group>"; };
+		5557BB241934306900B256FF /* TagClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TagClass.h; path = model/TagClass.h; sourceTree = "<group>"; };
+		5557BB251934306900B256FF /* TagClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TagClass.m; path = model/TagClass.m; sourceTree = "<group>"; };
+		5557BB271934306900B256FF /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Tag.h; path = model/Tag.h; sourceTree = "<group>"; };
+		5557BB281934306900B256FF /* Tag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Tag.m; path = model/Tag.m; sourceTree = "<group>"; };
 		55B746E918DCAECA00F61354 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		55B746EA18DCAECA00F61354 /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
 		55C882DD18E3F94F00E1C502 /* FeaturedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedViewController.h; sourceTree = "<group>"; };
@@ -94,14 +108,6 @@
 		55E15FE1191A062B00A8B826 /* InsightEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InsightEngine.h; sourceTree = "<group>"; };
 		55E15FE2191A062B00A8B826 /* InsightEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InsightEngine.m; sourceTree = "<group>"; };
 		55E364151925357100A30C39 /* CommonHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommonHeader.h; sourceTree = "<group>"; };
-		55E364191925469300A30C39 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
-		55E3641A1925469300A30C39 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
-		55E3641F1925B2D200A30C39 /* Featured.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Featured.h; sourceTree = "<group>"; };
-		55E364201925B2D200A30C39 /* Featured.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Featured.m; sourceTree = "<group>"; };
-		55E364221925B30B00A30C39 /* Featured.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Featured.h; sourceTree = "<group>"; };
-		55E364231925B30B00A30C39 /* Featured.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Featured.m; sourceTree = "<group>"; };
-		55E364251925B30C00A30C39 /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Business.h; sourceTree = "<group>"; };
-		55E364261925B30C00A30C39 /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Business.m; sourceTree = "<group>"; };
 		55EE37AF18B7057C002A121C /* TheSign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSign.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55EE37B218B7057C002A121C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		55EE37B418B7057C002A121C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -176,25 +182,30 @@
 		553E4F4518C71525004F8312 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				55E364251925B30C00A30C39 /* Business.h */,
-				55E364261925B30C00A30C39 /* Business.m */,
-				55E364221925B30B00A30C39 /* Featured.h */,
-				55E364231925B30B00A30C39 /* Featured.m */,
+				5557BB1A1931C28700B256FF /* SignEntityProtocol.h */,
 				55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */,
-				55E3641F1925B2D200A30C39 /* Featured.h */,
-				55E364201925B2D200A30C39 /* Featured.m */,
-				55E364191925469300A30C39 /* Business.h */,
-				55E3641A1925469300A30C39 /* Business.m */,
-				553BCC721924200C00FFA0B4 /* Statistics.h */,
-				553BCC731924200C00FFA0B4 /* Statistics.m */,
-				553BCC661922ADC700FFA0B4 /* TagClass.h */,
-				553BCC671922ADC700FFA0B4 /* TagClass.m */,
-				553BCC631922ADC700FFA0B4 /* Tag.h */,
-				553BCC641922ADC700FFA0B4 /* Tag.m */,
-				553BCC601922ADC700FFA0B4 /* TableTimestamp.h */,
-				553BCC611922ADC700FFA0B4 /* TableTimestamp.m */,
-				553BCC5D1922ADC700FFA0B4 /* TagSet.h */,
-				553BCC5E1922ADC700FFA0B4 /* TagSet.m */,
+				5557BB271934306900B256FF /* Tag.h */,
+				5557BB281934306900B256FF /* Tag.m */,
+				5557BB241934306900B256FF /* TagClass.h */,
+				5557BB251934306900B256FF /* TagClass.m */,
+				5557BB211934306800B256FF /* TagClassRelation.h */,
+				5557BB221934306800B256FF /* TagClassRelation.m */,
+				5557BB081931BB1C00B256FF /* Business.h */,
+				5557BB091931BB1C00B256FF /* Business.m */,
+				5557BB051931BB1C00B256FF /* Featured.h */,
+				5557BB061931BB1C00B256FF /* Featured.m */,
+				5557BB111931BB1C00B256FF /* Favourites.h */,
+				5557BB121931BB1D00B256FF /* Favourites.m */,
+				5557BB171931BB1D00B256FF /* Link.h */,
+				5557BB181931BB1D00B256FF /* Link.m */,
+				5557BB141931BB1D00B256FF /* TableTimestamp.h */,
+				5557BB151931BB1D00B256FF /* TableTimestamp.m */,
+				5557BB0B1931BB1C00B256FF /* TagClassConnection.h */,
+				5557BB0C1931BB1C00B256FF /* TagClassConnection.m */,
+				5557BB1E1933FC3D00B256FF /* TagSet.h */,
+				5557BB1F1933FC3D00B256FF /* TagSet.m */,
+				5557BAFC1931BB1C00B256FF /* Statistics.h */,
+				5557BAFD1931BB1C00B256FF /* Statistics.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -287,7 +298,6 @@
 				55B746EA18DCAECA00F61354 /* Model.m */,
 				55E15FE1191A062B00A8B826 /* InsightEngine.h */,
 				55E15FE2191A062B00A8B826 /* InsightEngine.m */,
-				553BCC561922AA8500FFA0B4 /* Parse_CoreData_Header.h */,
 				55E364151925357100A30C39 /* CommonHeader.h */,
 				553E4F4418C714D1004F8312 /* Controller */,
 				553E4F4518C71525004F8312 /* Model */,
@@ -441,26 +451,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5557BB291934306900B256FF /* Tag.m in Sources */,
 				55EE37C918B7057C002A121C /* DetailsViewController.m in Sources */,
+				5557BB231934306800B256FF /* TagClassRelation.m in Sources */,
+				5557BB191931BB1D00B256FF /* Link.m in Sources */,
+				5557BB0A1931BB1C00B256FF /* Business.m in Sources */,
 				55F97E1718FDBFAC00E4610D /* FeaturedViewHeader.m in Sources */,
+				5557BB0D1931BB1C00B256FF /* TagClassConnection.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
-				55E364211925B2D200A30C39 /* Featured.m in Sources */,
-				553BCC5F1922ADC700FFA0B4 /* TagSet.m in Sources */,
-				55E364271925B30C00A30C39 /* Business.m in Sources */,
 				55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */,
+				5557BB261934306900B256FF /* TagClass.m in Sources */,
+				5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */,
 				55B746EB18DCAECA00F61354 /* Model.m in Sources */,
 				553371CE18EA962500CC84F2 /* FeaturedDealCell.m in Sources */,
 				55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */,
-				55E364241925B30B00A30C39 /* Featured.m in Sources */,
-				55E3641B1925469300A30C39 /* Business.m in Sources */,
-				553BCC741924200C00FFA0B4 /* Statistics.m in Sources */,
 				55EE37BF18B7057C002A121C /* main.m in Sources */,
 				55C882DF18E3F94F00E1C502 /* FeaturedViewController.m in Sources */,
-				553BCC681922ADC700FFA0B4 /* TagClass.m in Sources */,
-				553BCC651922ADC700FFA0B4 /* Tag.m in Sources */,
-				553BCC621922ADC700FFA0B4 /* TableTimestamp.m in Sources */,
 				553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */,
+				5557BB071931BB1C00B256FF /* Featured.m in Sources */,
+				5557BB201933FC3D00B256FF /* TagSet.m in Sources */,
+				5557BAFE1931BB1C00B256FF /* Statistics.m in Sources */,
 				55F97E1A18FDBFC300E4610D /* FeaturedViewFooter.m in Sources */,
+				5557BB131931BB1D00B256FF /* Favourites.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

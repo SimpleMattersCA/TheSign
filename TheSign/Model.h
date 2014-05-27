@@ -18,6 +18,12 @@
 #import "TagSet.h"
 #import "TagClass.h"
 #import "Statistics.h"
+#import "TagClassRelation.h"
+#import "TagClassConnection.h"
+#import "Link.h"
+#import "Favourites.h"
+
+#import "Parse_CoreData_Header.h"
 
 
 @interface Model : NSObject 
@@ -26,21 +32,25 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-@property (nonatomic, strong) NSArray* businesses;
+//@property (nonatomic, strong) NSArray* businesses;
 
--(Business*) getBusinessByID:(NSInteger)identifier;
--(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
--(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
+//-(Business*) getBusinessByID:(NSInteger)identifier;
+//-(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
+//-(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
 //return the array of offers for a detected beacon
--(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
+//-(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
 
 
--(void) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor;
+//-(void) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor;
+
+-(void)postLocalNotificationForCoreDataRefresh:(NSString*) entityName;
 
 + (Model*) sharedModel;
 
 - (NSURL *)applicationDocumentsDirectory;
 
 - (void) pullFromCloud;
+
+-(void) saveContext;
 
 @end

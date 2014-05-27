@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, SentenceType) {
     Frequency,
     
     //based on what was marked as favourite
-    Favourites
+    History
 };
 
 @interface InsightEngine : NSObject

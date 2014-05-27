@@ -178,7 +178,7 @@ NSNumber *detectedBeaconMajor;
         }
         if(![detectedBeaconMinor isEqual:closest.minor])
         {
-            [[Model sharedModel] recordBeaconDetectedOn:[NSDate date] withMajor:closest.major andMinor:closest.minor];
+            [Statistics recordBeaconDetectedOn:[NSDate date] withMajor:closest.major andMinor:closest.minor];
                 //beacon specific logic
         }
     }

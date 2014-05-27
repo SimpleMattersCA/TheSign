@@ -13,7 +13,7 @@
 
 -(void) setBusinessToShow:(NSNumber*) identifier;
 
--(void) updateViewForBusiness:(NSNumber*) identifier;
+-(void) updateViewForBusiness:(NSString*) identifier;
 
 
 @end

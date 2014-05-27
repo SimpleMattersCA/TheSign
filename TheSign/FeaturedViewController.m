@@ -218,7 +218,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.business.feature.count;
+    return self.business.featuredOffers.count;
 }
 
 
@@ -257,7 +257,7 @@
     FeaturedDealCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FeaturedDeal" forIndexPath:indexPath];
 
     // TODO: pulling only active deals, there gonna be some sort of a filter
-    Featured*  deal=self.business.feature.allObjects[indexPath.row];
+    Featured*  deal=self.business.featuredOffers.allObjects[indexPath.row];
     cell.deal=deal;
     bool isRight=indexPath.row%2==0?YES:NO;
     cell.isRight=isRight;
