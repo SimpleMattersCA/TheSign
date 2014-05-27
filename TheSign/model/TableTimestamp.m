@@ -19,6 +19,10 @@
 {
     return TIMESTAMP;
 }
++(NSString*) parseEntityName
+{
+    return [self parseName:[self entityName]];
+}
 
 +(TableTimestamp*) getByID:(NSString*)identifier
 {

@@ -11,11 +11,10 @@
 
 #import "SignEntityProtocol.h"
 
-#define TAGCLASS (@"TagClass")
-#define TAGCLASS_NAME (@"name")
-#define TAGCLASS_CONTROLCLASS (@"controllClassConnection")
-#define TAGCLASS_RELATEDCLASS (@"relatedClassConnection")
-#define TAGCLASS_TAGS (@"tagsInClass")
+#define TAGCLASSRELATION (@"TagClass")
+#define TAGCLASSRELATION_WEIGHT (@"weight")
+#define TAGCLASSRELATION_TAG (@"relatedTag")
+#define TAGCLASSRELATION_CLASS (@"relatedClass")
 
 @class Tag, TagClass;
 

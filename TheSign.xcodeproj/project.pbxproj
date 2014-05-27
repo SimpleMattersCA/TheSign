@@ -184,6 +184,18 @@
 			children = (
 				5557BB1A1931C28700B256FF /* SignEntityProtocol.h */,
 				55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */,
+				5557BB111931BB1C00B256FF /* Favourites.h */,
+				5557BB121931BB1D00B256FF /* Favourites.m */,
+				5557BAFC1931BB1C00B256FF /* Statistics.h */,
+				5557BAFD1931BB1C00B256FF /* Statistics.m */,
+				5557BB2A1934588A00B256FF /* Parse */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		5557BB2A1934588A00B256FF /* Parse */ = {
+			isa = PBXGroup;
+			children = (
 				5557BB271934306900B256FF /* Tag.h */,
 				5557BB281934306900B256FF /* Tag.m */,
 				5557BB241934306900B256FF /* TagClass.h */,
@@ -194,8 +206,6 @@
 				5557BB091931BB1C00B256FF /* Business.m */,
 				5557BB051931BB1C00B256FF /* Featured.h */,
 				5557BB061931BB1C00B256FF /* Featured.m */,
-				5557BB111931BB1C00B256FF /* Favourites.h */,
-				5557BB121931BB1D00B256FF /* Favourites.m */,
 				5557BB171931BB1D00B256FF /* Link.h */,
 				5557BB181931BB1D00B256FF /* Link.m */,
 				5557BB141931BB1D00B256FF /* TableTimestamp.h */,
@@ -204,10 +214,8 @@
 				5557BB0C1931BB1C00B256FF /* TagClassConnection.m */,
 				5557BB1E1933FC3D00B256FF /* TagSet.h */,
 				5557BB1F1933FC3D00B256FF /* TagSet.m */,
-				5557BAFC1931BB1C00B256FF /* Statistics.h */,
-				5557BAFD1931BB1C00B256FF /* Statistics.m */,
 			);
-			name = Model;
+			name = Parse;
 			sourceTree = "<group>";
 		};
 		55BB339D18FEF63C009C346D /* FeaturedViewController Group */ = {

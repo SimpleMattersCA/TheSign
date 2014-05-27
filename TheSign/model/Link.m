@@ -21,6 +21,10 @@
     return LINK;
 }
 
++(NSString*) parseEntityName
+{
+    return [self parseName:[self entityName]];
+}
 
 +(Link*) getByID:(NSString*)identifier
 {

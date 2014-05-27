@@ -30,6 +30,11 @@
     return FEATURED;
 }
 
++(NSString*) parseEntityName
+{
+    return [self parseName:[self entityName]];
+}
+
 +(Featured*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];

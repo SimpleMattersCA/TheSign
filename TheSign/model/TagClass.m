@@ -23,6 +23,10 @@
 {
     return TAGCLASS;
 }
++(NSString*) parseEntityName
+{
+    return [self parseName:[self entityName]];
+}
 
 +(NSString*)parseName:(NSString*)coreDataName
 {

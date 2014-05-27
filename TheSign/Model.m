@@ -20,37 +20,19 @@
 #import "TableTimestamp.h"
 
 
-//All table names, columns names are defined there
-
-
-
-
-
-
-
 @implementation Model
 
 //all the tables from coredata that we are dealing with
 //NSArray *tables;
-//hashtable for items that are being downloaded assynchronysly. Key - objectID, Value - downloading item(column name)
-//NSMutableDictionary *downloadingItems;
 
 //all the tables from Parse that we are dealing with.
-NSArray *coreDataTableNames;
+//NSArray *coreDataTableNames;
 
-
-
-//array of column names for items that are going to be downloaded assynchronysly (gosh I hate this word)
-NSArray *parseDownloadableItems;
 
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-
-
-#pragma mark - Static boolean flags that totally need to be replaced
-
 
 
 #pragma mark - the backbone of model initialization
@@ -66,12 +48,11 @@ NSArray *parseDownloadableItems;
         
         //tables=[[NSArray alloc]initWithObjects:CD_BUSINESS,CD_FEATURED,CD_TAG,CD_TAGCLASS, CD_TAGSET,nil];
 
-        coreDataTableNames=[NSArray arrayWithObjects:BUSINESS,FEATURED,TAG,TAGCLASS,TAGSET,IMESTAMP, nil];
+//        coreDataTableNames=[NSArray arrayWithObjects:BUSINESS,FEATURED,TAG,TAGCLASS,TAGSET,IMESTAMP, nil];
         
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
         //self deleteModel];
         [self checkModel];
-        [self pullFromCoreData];
         
     }
     return self;
@@ -97,20 +78,20 @@ NSArray *parseDownloadableItems;
 -(BOOL)checkModel
 {
     //pull from cloud for
-    PFQuery *query = [PFQuery queryWithClassName:PARSE_TIMESTAMP];
+    PFQuery *query = [PFQuery queryWithClassName:[TableTimestamp parseName:TIMESTAMP]];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
     {
         if (!error)
         {
             for (PFObject *object in objects)
             {
-                NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:object[PARSE_TIMESTAMP_TABLENAME]];
-                if(![timestamp isEqualToDate:object[PARSE_TIMESTAMP_DATE]])
+                NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:object[[TableTimestamp parseName:TIMESTAMP_TABLENAME]]];
+                if(![timestamp isEqualToDate:object[[TableTimestamp parseName:TIMESTAMP_TABLENAME]]])
                 {
                     [self pullFromCloud:parseToCoreDataNames[PARSE_TIMESTAMP_TABLENAME]];
                 }
             }
-            [self pullFromCloud:CD_TIMESTAMP];
+            [self pullFromCloud:TIMESTAMP];
         }
         else
         {
@@ -125,60 +106,46 @@ NSArray *parseDownloadableItems;
 {
     for (NSString* tableName in coreDataTableNames)
         [self pullFromCloud:tableName];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"databaseUpdated" object:self];
+
 }
--(void)pullFromCoreData
-{
-    for (NSString* tableName in coreDataTableNames)
-        [self pullFromCoreData:tableName];
-}
+
 -(void)deleteModel
 {
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"SignModel.sqlite"];
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
 }
 
-
-
-
-
-
-//items that are downloaded assynchroniously
--(void)itemPulledFromCloud:(NSNotification *) notification
+-(Class)getClassForEntity:(NSString*)entityName
 {
-
-   // NSString *itemDownloaded=notification.userInfo[@"DownloadedItem"];
-  //  NSString *parseTableNameForDownloadedItem=parseColumnNames[itemDownloaded];
-  //  NSString *entity=parseToCoreDataNames[parseTableNameForDownloadedItem];
-    
-    //check which table downloaded completely, only then selectevely update the table.
-    
-    
-
-    [self saveContext];
-    [self pullFromCoreData];
-    //[self pullFromCoreData:entity];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"databaseUpdated" object:self];
-    
+    if([entityName isEqualToString:BUSINESS])
+        return [Business class];
+    if([entityName isEqualToString:LINK])
+        return [Link class];
+    if([entityName isEqualToString:FEATURED])
+        return [Featured class];
+    if([entityName isEqualToString:TAG])
+        return [Tag class];
+    if([entityName isEqualToString:TAGCLASS])
+        return [TagClass class];
+    if([entityName isEqualToString:TAGSET])
+        return [TagSet class];
+    if([entityName isEqualToString:TAGCLASSCONNECTION])
+        return [TagClassConnection class];
+    if([entityName isEqualToString:TAGCLASSRELATION])
+        return [TagClassRelation class];
+    if([entityName isEqualToString:TIMESTAMP])
+        return [TableTimestamp class];
+    return nil;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 //The method for pulling data from Parse based on the requested table name
 -(void)pullFromCloud:(NSString*)entityName
 {
-    NSString *cloudEntityName=parseToCoreDataNames[entityName];
+    Class targetClass=[self getClassForEntity:entityName];
+    NSString *cloudEntityName=[targetClass parseEntityName];
     PFQuery *query = [PFQuery queryWithClassName:cloudEntityName];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
     {
@@ -189,29 +156,9 @@ NSArray *parseDownloadableItems;
             //go through the objects we got from Parse
             for (PFObject *object in objects)
             {
-                if([entityName isEqualToString:CD_BUSINESS])
-                {
-                    [Business createBusinessFromParseObject:object];
-                }
-               
-                
-                if([entityName isEqualToString:CD_FEATURED])
-                {
-                    [Featured createFeaturedFromParseObject:object];
-                }
-                
-                if([entityName isEqualToString:CD_TAG])
-                {
-                    [Tag createTagFromParseObject:object];
-                }
-                
-                
-                
-                if([entityName isEqualToString:CD_TIMESTAMP])
-                {
-                
-                }
+                [targetClass createFromParseObject:object];
             }
+            [self saveContext];
         }
         else
         {
@@ -242,35 +189,6 @@ NSArray *parseDownloadableItems;
 }
 
 
-
-//Since for now we use the list of businesses in memory as a starting point to get any data, we are storing the list of businesses in the array accessible everywhere around the app
--(void)pullFromCoreData:(NSString*)entityName
-{
-    if([entityName isEqualToString:CD_BUSINESS])
-    {
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:CD_BUSINESS];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:CD_BUSINESS_ID ascending:YES]];
-        NSError *error;
-        NSArray *businessesFromCloud = [self.managedObjectContext executeFetchRequest:request error:&error];
-        self.businesses=[[NSArray alloc] initWithArray:businessesFromCloud];
-    }
-}
-
-
-                   
-
-
-
-
-
-
-
-
-     
-     
-     
-
-     
 - (void)saveContext
 {
     NSError *error = nil;

@@ -17,4 +17,6 @@
 +(instancetype) getByID:(NSString*)objectId;
 +(void)createFromParseObject:(PFObject *)object;
 +(NSString*) entityName;
++(NSString*) parseEntityName;
+
 @end

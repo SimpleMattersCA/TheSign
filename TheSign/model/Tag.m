@@ -26,6 +26,11 @@
     return TAG;
 }
 
++(NSString*) parseEntityName
+{
+    return [self parseName:[self entityName]];
+}
+
 +(Tag*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];

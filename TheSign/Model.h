@@ -23,7 +23,6 @@
 #import "Link.h"
 #import "Favourites.h"
 
-#import "Parse_CoreData_Header.h"
 
 
 @interface Model : NSObject 

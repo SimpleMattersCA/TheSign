@@ -29,6 +29,11 @@
 {
     return BUSINESS;
 }
++(NSString*) parseEntityName
+{
+    return [self parseName:[self entityName]];
+}
+
 +(NSString*)parseName:(NSString*)coreDataName
 {
     //so far Parse names for this class are exactly the same as those for CoreData
