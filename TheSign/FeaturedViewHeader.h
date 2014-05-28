@@ -6,9 +6,10 @@
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 #import "Model.h"
 
+@class Business;
 
 @interface FeaturedViewHeader : UICollectionReusableView
 

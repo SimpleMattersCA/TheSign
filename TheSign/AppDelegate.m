@@ -10,6 +10,7 @@
 #import "DetailsViewController.h"
 #import "Model.h"
 #import "InsightEngine.h"
+#import "Statistics.h"
 
 @import UIKit.UINavigationController;
 @import CoreLocation;

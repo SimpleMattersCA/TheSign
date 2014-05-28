@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "Model.h"
 
+@class Featured;
+
 @protocol ScrollingCellDelegate;
 
 @interface FeaturedDealCell : UICollectionViewCell

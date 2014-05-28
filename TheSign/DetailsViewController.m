@@ -7,6 +7,7 @@
 //
 
 #import "DetailsViewController.h"
+#import "Business.h"
 
 @interface DetailsViewController ()
 @property (weak, nonatomic) IBOutlet UITextView* outputDescription;

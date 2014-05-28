@@ -8,6 +8,7 @@
 
 #import "HomeViewController.h"
 #import "FeaturedViewController.h"
+#import "Business.h"
 
 @interface HomeViewController () <UICollectionViewDataSource>
 

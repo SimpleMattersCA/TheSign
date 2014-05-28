@@ -8,6 +8,8 @@
 
 #import "InsightEngine.h"
 #import <stdlib.h>
+#import "Featured.h"
+#import "Business.h"
 
 @implementation InsightEngine
 

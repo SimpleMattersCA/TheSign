@@ -12,6 +12,8 @@
 #import "FeaturedViewHeader.h"
 #import "FeaturedViewFooter.h"
 
+#import "Business.h"
+
 @interface FeaturedViewController () <ScrollingCellDelegate>
 
 //@property (strong,nonatomic) NSNumber* businessID;

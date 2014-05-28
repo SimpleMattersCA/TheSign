@@ -7,7 +7,7 @@
 //
 
 #import "FeaturedViewHeader.h"
-
+#import "Business.h"
 
 @interface FeaturedViewHeader()
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;

@@ -10,6 +10,7 @@
 @import UIKit;
 #import "Model.h"
 
+@class  Business;
 @interface FeaturedViewController : UIViewController
 
 

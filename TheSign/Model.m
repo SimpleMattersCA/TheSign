@@ -14,6 +14,7 @@
 #import "TagSet.h"
 #import "TagClass.h"
 #import "TagClassConnection.h"
+#import "TagClassRelation.h"
 #import "Link.h"
 #import "Statistics.h"
 #import "Favourites.h"

@@ -7,6 +7,7 @@
 //
 
 #import "FeaturedDealCell.h"
+#import "Featured.h"
 @import QuartzCore.QuartzCore;
 @interface FeaturedDealCell()
 
