@@ -52,8 +52,9 @@
 //        coreDataTableNames=[NSArray arrayWithObjects:BUSINESS,FEATURED,TAG,TAGCLASS,TAGSET,IMESTAMP, nil];
         
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
-        [self deleteModel];
-        [self checkModel];
+     //   [self deleteModel];
+        [self performSelectorInBackground:@selector(checkModel) withObject:nil];
+     //   [self checkModel];
         
     }
     return self;
@@ -80,28 +81,28 @@
 {
     //pull from cloud for
     PFQuery *query = [PFQuery queryWithClassName:TableTimestamp.parseEntityName];
-
+    NSError *error;
     [query orderByAscending:TableTimestamp.pOrder];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+    NSArray *objects=[query findObjects:&error];
+    
+    if (!error)
     {
-        if (!error)
+        for (PFObject *object in objects)
         {
-            for (PFObject *object in objects)
+            NSString *tableName=object[TableTimestamp.pTableName];
+            NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName];
+            if(![timestamp isEqualToDate:object[tableName]])
             {
-                NSString *tableName=object[TableTimestamp.pTableName];
-                NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName];
-                if(![timestamp isEqualToDate:object[tableName]])
-                {
-                    [self pullFromCloud:[[self getClassForParseEntity:tableName] entityName]];
-                }
+                [self pullFromCloud:[[self getClassForParseEntity:tableName] entityName]];
             }
-            [self pullFromCloud:TableTimestamp.entityName];
         }
-        else
-        {
-            NSLog(@"Error: %@ %@", error, [error userInfo]);
-        }
-    }];
+        [self pullFromCloud:TableTimestamp.entityName];
+    }
+    else
+    {
+        NSLog(@"Error: %@ %@", error, [error userInfo]);
+    }
+   
 }
 
 -(void)pullFromCloud
@@ -180,12 +181,16 @@
     if (!error)
     {
         //delete entity from coredata, so we can create a new one
+#pragma mark - delete only entries that should be deleted, update those that already there, add new ones. Check by objectId
         [self deleteEntity:entityName];
         //go through the objects we got from Parse
         for (PFObject *object in result)
         {
             [targetClass createFromParseObject:object];
         }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud"
+                                                            object:self
+                                                          userInfo:[NSDictionary dictionaryWithObject:entityName forKey:@"Entity"]];
         [self saveContext];
     }
     else
@@ -195,11 +200,6 @@
 }
 
 
--(void)postLocalNotificationForCoreDataRefresh:(NSString*) entityName
-{
-    NSDictionary* dict = [NSDictionary dictionaryWithObject:entityName forKey:@"Entity"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
-}
 
 //deleting all objects from CoreData for a specific entity
 -(void)deleteEntity:(NSString*)entityName

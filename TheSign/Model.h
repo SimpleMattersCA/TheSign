@@ -30,7 +30,6 @@
 
 //-(void) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor;
 
--(void)postLocalNotificationForCoreDataRefresh:(NSString*) entityName;
 
 + (Model*) sharedModel;
 

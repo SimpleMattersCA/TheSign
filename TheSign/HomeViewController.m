@@ -39,7 +39,7 @@
     if ([[notification name] isEqualToString:@"pulledNewDataFromCloud"])
     {
         //[self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
-        if([[notification.userInfo objectForKey:@"Entity"] isEqual:@"Business"])
+        if([[notification.userInfo objectForKey:@"Entity"] isEqual:Business.entityName])
             [self.collectionView reloadData];
         
     }
