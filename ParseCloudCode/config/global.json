@@ -1,0 +1,11 @@
+{
+    "applications": {
+        "_default": {
+            "link": "sign"
+        }, 
+        "sign": {
+            "applicationId": "sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS", 
+            "masterKey": "DpzOVU1lfp7iRxc7IeBBSPJYcB4Qnp1lJGyLDJih"
+        }
+    }
+}

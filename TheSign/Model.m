@@ -23,14 +23,6 @@
 
 @implementation Model
 
-//all the tables from coredata that we are dealing with
-//NSArray *tables;
-
-//all the tables from Parse that we are dealing with.
-//NSArray *coreDataTableNames;
-
-
-
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
@@ -47,14 +39,9 @@
                                                      name:@"itemPulledFromCloud"
                                                    object:nil];
         
-        //tables=[[NSArray alloc]initWithObjects:CD_BUSINESS,CD_FEATURED,CD_TAG,CD_TAGCLASS, CD_TAGSET,nil];
-
-//        coreDataTableNames=[NSArray arrayWithObjects:BUSINESS,FEATURED,TAG,TAGCLASS,TAGSET,IMESTAMP, nil];
-        
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
      //   [self deleteModel];
         [self performSelectorInBackground:@selector(checkModel) withObject:nil];
-     //   [self checkModel];
         
     }
     return self;
@@ -120,6 +107,7 @@
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
 }
 
+#pragma mark - replace with hashtable
 -(Class)getClassForParseEntity:(NSString*)entityName
 {
     if([entityName isEqualToString:Business.parseEntityName])
@@ -143,7 +131,7 @@
     return nil;
 }
 
-
+#pragma mark - replace with hashtable
 -(Class)getClassForEntity:(NSString*)entityName
 {
     if([entityName isEqualToString:Business.entityName])
