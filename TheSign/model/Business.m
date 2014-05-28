@@ -11,7 +11,6 @@
 
 #import "Model.h"
 
-
 @implementation Business
 
 @dynamic pObjectID;
@@ -25,30 +24,27 @@
 @dynamic links;
 
 
-+(NSString*) entityName
-{
-    return BUSINESS;
-}
-+(NSString*) parseEntityName
-{
-    return [self parseName:[self entityName]];
-}
++(NSString*) entityName {return @"Business";}
++(NSString*) parseEntityName {return @"Business";}
 
-+(NSString*)parseName:(NSString*)coreDataName
-{
-    //so far Parse names for this class are exactly the same as those for CoreData
-    //for cases when they're not, add something like this:
-    //if ([coreDataName isEqual:@"Something"])
-    //    return @"somethingElse";
-    
-    return coreDataName;
-}
++(NSString*)colName {return @"name";}
++(NSString*)colLogo {return @"logo";}
++(NSString*)colUid {return @"uid";}
++(NSString*)colWelcomeText {return @"welcomeText";}
++(NSString*)colWorkingHoursEnd {return @"workingHoursEnd";}
++(NSString*)colWorkingHoursStart {return @"workingHoursStart";}
 
++(NSString*)pName {return Business.colName;}
++(NSString*)pLogo {return Business.colLogo;}
++(NSString*)pUid {return Business.colUid;}
++(NSString*)pWelcomeText {return Business.colWelcomeText;}
++(NSString*)pWorkingHoursEnd {return Business.colWorkingHoursEnd;}
++(NSString*)pWorkingHoursStart {return Business.colWorkingHoursStart;}
 
 +(Business*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%@", OBJECT_ID, identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -64,11 +60,9 @@
 
 +(NSArray*) getBusinessesByType:(NSString*)type
 {
-    if([type isEqual:nil])
+    if(type==nil)
     {
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-        //NSString *predicate = [NSString stringWithFormat: @"%@==%@", OBJECT_ID, identifier];
-        //request.predicate=[NSPredicate predicateWithFormat:predicate];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
         NSError *error;
         NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
         
@@ -85,8 +79,8 @@
 
 +(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", BUSINESS_ID, (long)identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
+    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", Business.colUid, (long)identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -105,8 +99,8 @@
 
 +(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", BUSINESS_ID, (long)identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", Business.colUid, (long)identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -126,14 +120,15 @@
 
 +(void)createFromParseObject:(PFObject *)object
 {
-    Business *business = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
+    Business *business = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    business.pObjectID=object[OBJECT_ID];
-    business.name=object[[Business parseName:BUSINESS_NAME]];
-    business.welcomeText=object[[Business parseName:BUSINESS_NAME]];
-    business.uid=object[[Business parseName:BUSINESS_ID]];
-    
-    PFFile *logo=object[[Business parseName:BUSINESS_LOGO]];
+    business.pObjectID=object.objectId;
+    if(object[Business.pName]!=nil) business.name=object[Business.pName];
+    business.welcomeText=object[Business.pWelcomeText];
+    if(object[Business.pUid]!=nil) business.uid=object[Business.pUid];
+    business.workingHoursStart=object[Business.pWorkingHoursStart];
+    business.workingHoursEnd=object[Business.pWorkingHoursEnd];
+    PFFile *logo=object[Business.pLogo];
     
     NSError *error;
     

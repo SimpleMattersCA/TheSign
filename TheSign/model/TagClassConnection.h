@@ -11,10 +11,7 @@
 
 #import "SignEntityProtocol.h"
 
-#define TAGCLASSCONNECTION (@"TagClassConnection")
-#define TAGCLASSCONNECTION_WEIGHT (@"weight")
-#define TAGCLASSCONNECTION_CONTROLCLASS (@"controllClass")
-#define TAGCLASSCONNECTION_RELATEDCLASS (@"relatedClass")
+
 
 @class TagClass;
 
@@ -24,5 +21,14 @@
 @property (nonatomic, retain) NSNumber * weight;
 @property (nonatomic, retain) TagClass *controllClass;
 @property (nonatomic, retain) TagClass *relatedClass;
+
+
++(NSString*)colWeight;
++(NSString*)colControlClass;
++(NSString*)colRelatedClass;
+
++(NSString*)pWeight;
++(NSString*)pControlClass;
++(NSString*)pRelatedClass;
 
 @end

@@ -11,10 +11,7 @@
 
 #import "SignEntityProtocol.h"
 
-#define TAGCLASSRELATION (@"TagClass")
-#define TAGCLASSRELATION_WEIGHT (@"weight")
-#define TAGCLASSRELATION_TAG (@"relatedTag")
-#define TAGCLASSRELATION_CLASS (@"relatedClass")
+
 
 @class Tag, TagClass;
 
@@ -24,5 +21,13 @@
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) Tag *relatedTag;
 @property (nonatomic, retain) TagClass *relatedClass;
+
++(NSString*)colWeight;
++(NSString*)colTag;
++(NSString*)colClass;
+
++(NSString*)pWeight;
++(NSString*)pTag;
++(NSString*)pClass;
 
 @end

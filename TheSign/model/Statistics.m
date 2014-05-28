@@ -17,7 +17,7 @@
 
 +(NSString*) entityName
 {
-    return STATISTICS;
+    return @"Statistics";
 }
 
 

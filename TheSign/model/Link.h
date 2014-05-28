@@ -11,9 +11,6 @@
 
 #import "SignEntityProtocol.h"
 
-#define LINK (@"Link")
-#define LINK_URL (@"url")
-#define LINK_BUSINESS (@"uid")
 
 @class Business;
 
@@ -22,5 +19,11 @@
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSString * url;
 @property (nonatomic, retain) Business *parentBusiness;
+
++(NSString*)colUrl;
++(NSString*)colParentBusiness;
+
++(NSString*)pUrl;
++(NSString*)pParentBusiness;
 
 @end

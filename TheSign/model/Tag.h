@@ -11,12 +11,6 @@
 
 #import "SignEntityProtocol.h"
 
-#define TAG (@"Tag")
-#define TAG_NAME (@"name")
-#define TAG_DETAILS (@"details")
-#define TAG_CLASS (@"fromClass")
-#define TAG_SET (@"fromSet")
-
 @class TagClassRelation, TagSet;
 
 @interface Tag : NSManagedObject <SignEntityProtocol>
@@ -26,6 +20,13 @@
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSSet *tagClasses;
 @property (nonatomic, retain) NSSet *tagSets;
+
++(NSString*) colName;
++(NSString*) colDetails;
+
++(NSString*) pName;
++(NSString*) pDetails;
+
 @end
 
 @interface Tag (CoreDataGeneratedAccessors)

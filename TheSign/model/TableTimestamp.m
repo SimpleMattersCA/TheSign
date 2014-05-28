@@ -16,19 +16,21 @@
 @dynamic timeStamp;
 @dynamic order;
 
-+(NSString*) entityName
-{
-    return TIMESTAMP;
-}
-+(NSString*) parseEntityName
-{
-    return [self parseName:[self entityName]];
-}
++(NSString*) entityName {return @"TableTimestamp";}
++(NSString*) parseEntityName {return @"UpdateTimestamps";}
+
++(NSString*)colTableName {return @"tableName";}
++(NSString*)colTimeStamp {return @"timeStamp";}
++(NSString*)colOrder {return @"order";}
+
++(NSString*)pTableName {return @"TableName";}
++(NSString*)pTimeStamp {return @"TimeStamp";}
++(NSString*)pOrder {return TableTimestamp.colOrder;}
 
 +(TableTimestamp*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:TIMESTAMP];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%@", OBJECT_ID, identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -41,21 +43,11 @@
     else
         return (TableTimestamp*)result.firstObject;
 }
-+(NSString*)parseName:(NSString*)coreDataName
-{
-    if ([coreDataName isEqual:TIMESTAMP])
-        return @"UpdateTimestamps";
-    if ([coreDataName isEqual:TIMESTAMP_TABLENAME])
-        return @"TableName";
-    if ([coreDataName isEqual:TIMESTAMP_DATE])
-        return @"TimeStamp";
-    return coreDataName;
-}
 
 +(NSDate*) getUpdateTimestampForTable:(NSString*)tName
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    NSString *predicate = [NSString stringWithFormat: @"%@==\"%@\"", TIMESTAMP_TABLENAME,tName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:TableTimestamp.entityName];
+    NSString *predicate = [NSString stringWithFormat: @"%@==\"%@\"", TableTimestamp.colTableName,tName];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *timestamp = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -74,19 +66,20 @@
 
 + (void)createFromParseObject:(PFObject *)object
 {
-    TableTimestamp *timeStamp = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
+    TableTimestamp *timeStamp = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                           inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    timeStamp.pObjectID=object[OBJECT_ID];
-    timeStamp.timeStamp=object[[TableTimestamp parseName:TIMESTAMP_DATE]];
-    timeStamp.tableName=object[[TableTimestamp parseName:TIMESTAMP_TABLENAME]];
+    timeStamp.pObjectID=object.objectId;
+    timeStamp.timeStamp=object[TableTimestamp.pTimeStamp];
+    timeStamp.tableName=object[TableTimestamp.pTableName];
+    timeStamp.order=object[TableTimestamp.pOrder];
 }
 
 + (NSArray*)getTableNames
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:TableTimestamp.entityName];
     NSError *error;
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
-                                        initWithKey:TIMESTAMP_ORDER ascending:YES];
+                                        initWithKey:TableTimestamp.colOrder ascending:YES];
     [request setSortDescriptors:@[sortDescriptor]];
     NSArray *timestamps = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -98,7 +91,7 @@
     else
     {
         
-        return [timestamps valueForKey:TIMESTAMP_TABLENAME];
+        return [timestamps valueForKey:TableTimestamp.colTableName];
     }
 }
 

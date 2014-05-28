@@ -18,19 +18,21 @@
 @dynamic relatedTag;
 @dynamic relatedClass;
 
-+(NSString*) entityName
-{
-    return TAGCLASSRELATION;
-}
-+(NSString*) parseEntityName
-{
-    return [self parseName:[self entityName]];
-}
++(NSString*) entityName {return @"TagClassRelation";}
++(NSString*) parseEntityName {return @"TagClassRelation";}
+
++(NSString*) colWeight {return @"weight";}
++(NSString*) colTag {return @"relatedTag";}
++(NSString*) colClass {return @"relatedClass";}
+
++(NSString*) pWeight {return TagClassRelation.colWeight;}
++(NSString*) pTag {return @"tag";}
++(NSString*) pClass {return @"tagClass";}
 
 +(TagClassRelation*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%@", OBJECT_ID, identifier];
+    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -44,30 +46,21 @@
         return (TagClassRelation*)result.firstObject;
 }
 
-+(NSString*)parseName:(NSString*)coreDataName
-{
-    if ([coreDataName isEqual:TAGCLASSRELATION_TAG])
-        return @"tag";
-    if ([coreDataName isEqual:TAGCLASSRELATION_CLASS])
-        return @"tagClass";
-    return coreDataName;
-}
-
 
 + (void)createFromParseObject:(PFObject *)object
 {
     TagClassRelation *relation = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    relation.pObjectID=object[OBJECT_ID];
-    relation.weight=object[[TagClassRelation parseName:TAGCLASSRELATION_WEIGHT]];
+    relation.pObjectID=object.objectId;
+    if(object[TagClassRelation.pWeight]!=nil) relation.weight=object[TagClassRelation.pWeight];
     
     NSError *error;
     
-    PFObject *retrievedClass=[object[[TagClassRelation parseName:TAGCLASSRELATION_CLASS]] fetchIfNeeded:&error];
+    PFObject *retrievedClass=[object[TagClassRelation.pClass] fetchIfNeeded:&error];
     
     if (!error)
     {
-        TagClass *linkedClass=[TagClass getByID:(NSString*)(retrievedClass[OBJECT_ID])];
+        TagClass *linkedClass=[TagClass getByID:(NSString*)(retrievedClass.objectId)];
         relation.relatedClass = linkedClass;
         [linkedClass addTagsInClassObject:relation];
 
@@ -76,11 +69,11 @@
         NSLog(@"%@",[error localizedDescription]);
     
     
-    PFObject *retrievedTag=[object[[TagClassRelation parseName:TAGCLASSRELATION_TAG]] fetchIfNeeded:&error];
+    PFObject *retrievedTag=[object[TagClassRelation.pTag] fetchIfNeeded:&error];
     
     if (!error)
     {
-        Tag *linkedTag=[Tag getByID:(NSString*)(retrievedTag[OBJECT_ID])];
+        Tag *linkedTag=[Tag getByID:(NSString*)(retrievedTag.objectId)];
         relation.relatedTag = linkedTag;
         [linkedTag addTagClassesObject:relation];
 

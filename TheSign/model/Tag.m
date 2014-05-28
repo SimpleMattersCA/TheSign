@@ -20,21 +20,20 @@
 @dynamic tagClasses;
 @dynamic tagSets;
 
++(NSString*) entityName {return @"Tag";}
++(NSString*) parseEntityName {return @"Tag";}
 
-+(NSString*) entityName
-{
-    return TAG;
-}
++(NSString*) colName {return @"name";}
++(NSString*) colDetails {return @"details";}
 
-+(NSString*) parseEntityName
-{
-    return [self parseName:[self entityName]];
-}
++(NSString*) pName {return Tag.colName;}
++(NSString*) pDetails {return Tag.colDetails;}
+
 
 +(Tag*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%@", OBJECT_ID, identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -48,23 +47,14 @@
         return (Tag*)result.firstObject;
 }
 
-+(NSString*)parseName:(NSString*)coreDataName
-{
-    if ([coreDataName isEqual:TAG_CLASS])
-        return @"class";
-    if ([coreDataName isEqual:TAG_SET])
-        return @"set";
-    return coreDataName;
-}
-
 
 + (void)createFromParseObject:(PFObject *)object
 {
-    Tag *tag = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
+    Tag *tag = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    tag.pObjectID=object[OBJECT_ID];
-    tag.name=object[[Tag parseName:TAG_NAME]];
-    tag.details=object[[Tag parseName:TAG_DETAILS]];
+    tag.pObjectID=object.objectId;
+    if(object[Tag.pName]!=nil) tag.name=object[Tag.pName];
+    tag.details=object[Tag.pDetails];
 }
 
 

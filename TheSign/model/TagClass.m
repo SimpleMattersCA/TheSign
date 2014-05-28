@@ -11,6 +11,7 @@
 #import "TagClassRelation.h"
 #import "Model.h"
 
+
 @implementation TagClass
 
 @dynamic name;
@@ -19,29 +20,17 @@
 @dynamic relatedClassConnection;
 @dynamic tagsInClass;
 
-+(NSString*) entityName
-{
-    return TAGCLASS;
-}
-+(NSString*) parseEntityName
-{
-    return [self parseName:[self entityName]];
-}
++(NSString*) entityName {return @"TagClass";}
++(NSString*) parseEntityName {return @"TagClass";}
 
-+(NSString*)parseName:(NSString*)coreDataName
-{
-    //so far Parse names for this class are exactly the same as those for CoreData
-    //for cases when they're not, add something like this:
-    //if ([coreDataName isEqual:@"Something"])
-    //    return @"somethingElse";
-    
-    return coreDataName;
-}
++(NSString*) colName {return @"name";}
+
++(NSString*) pName {return TagClass.colName;}
 
 +(TagClass*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%@", OBJECT_ID, identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -57,10 +46,10 @@
 
 +(void)createFromParseObject:(PFObject *)object
 {
-    TagClass *tagclass = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
+    TagClass *tagclass = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    tagclass.pObjectID=object[OBJECT_ID];
-    tagclass.name=object[[TagClass parseName:TAGCLASS_NAME]];
+    tagclass.pObjectID=object.objectId;
+    if(object[TagClass.pName]!=nil) tagclass.name=object[TagClass.pName];
 }
 
 @end

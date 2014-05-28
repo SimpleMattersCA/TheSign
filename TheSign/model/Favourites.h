@@ -9,7 +9,7 @@
 @import Foundation;
 @import CoreData;
 
-#define FAVOURITES (@"Favourites")
+#define FAVOURITES ()
 
 @class Featured;
 

@@ -9,7 +9,6 @@
 @import Foundation;
 @import CoreData;
 
-#define STATISTICS (@"Statistics")
 
 
 @interface Statistics : NSManagedObject

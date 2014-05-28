@@ -11,11 +11,6 @@
 
 #import "SignEntityProtocol.h"
 
-#define TAGCLASS (@"TagClass")
-#define TAGCLASS_NAME (@"name")
-#define TAGCLASS_CONTROLCLASS (@"controllClassConnection")
-#define TAGCLASS_RELATEDCLASS (@"relatedClassConnection")
-#define TAGCLASS_TAGS (@"tagsInClass")
 
 
 @class TagClassConnection, TagClassRelation;
@@ -27,6 +22,10 @@
 @property (nonatomic, retain) NSSet *controllClassConnection;
 @property (nonatomic, retain) NSSet *relatedClassConnection;
 @property (nonatomic, retain) NSSet *tagsInClass;
+
++(NSString*) colName;
++(NSString*) pName;
+
 @end
 
 @interface TagClass (CoreDataGeneratedAccessors)

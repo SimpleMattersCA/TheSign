@@ -12,34 +12,28 @@
 
 @implementation TagClassConnection
 
+
 @dynamic pObjectID;
 @dynamic weight;
 @dynamic controllClass;
 @dynamic relatedClass;
 
-+(NSString*)parseName:(NSString*)coreDataName
-{
-    //so far Parse names for this class are exactly the same as those for CoreData
-    //for cases when they're not, add something like this:
-    //if ([coreDataName isEqual:@"Something"])
-    //    return @"somethingElse";
-    return coreDataName;
-}
 
-+(NSString*) entityName
-{
-    return TAGCLASSCONNECTION;
-}
++(NSString*) entityName {return @"TagClassConnection";}
++(NSString*) parseEntityName {return @"TagClassConnection";}
 
-+(NSString*) parseEntityName
-{
-    return [self parseName:[self entityName]];
-}
++(NSString*)colWeight {return @"weight";}
++(NSString*)colControlClass {return @"controllClass";}
++(NSString*)colRelatedClass {return @"relatedClass";}
+
++(NSString*)pWeight {return @"weight";}
++(NSString*)pControlClass {return @"ControlClass";}
++(NSString*)pRelatedClass {return @"RelatedClass";}
 
 +(TagClassConnection*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%@", OBJECT_ID, identifier];
+    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -57,25 +51,24 @@
 {
     TagClassConnection *connection = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    connection.pObjectID=object[OBJECT_ID];
-    connection.weight=object[[TagClassConnection parseName:TAGCLASSCONNECTION_WEIGHT]];
+    connection.pObjectID=object.objectId;
+    if(object[TagClassConnection.pWeight]!=nil) connection.weight=object[TagClassConnection.pWeight];
 
     NSError *error;
-    
-    PFObject *retrievedControlClass=[object[[TagClassConnection parseName:TAGCLASSCONNECTION_CONTROLCLASS]] fetchIfNeeded:&error];
+    PFObject *retrievedControlClass=[object[TagClassConnection.pControlClass] fetchIfNeeded:&error];
     if (!error)
     {
-        TagClass *linkedControlClass=[TagClass getByID:(NSString*)(retrievedControlClass[OBJECT_ID])];
+        TagClass *linkedControlClass=[TagClass getByID:(NSString*)(retrievedControlClass.objectId)];
         connection.controllClass=linkedControlClass;
         [linkedControlClass addControllClassConnectionObject:connection];
     }
     else
         NSLog(@"%@",[error localizedDescription]);
     
-    PFObject *retrievedRelatedClass=[object[[TagClassConnection parseName:TAGCLASSCONNECTION_RELATEDCLASS]] fetchIfNeeded:&error];
+    PFObject *retrievedRelatedClass=[object[TagClassConnection.pRelatedClass] fetchIfNeeded:&error];
     if (!error)
     {
-        TagClass *linkedRelatedClass=[TagClass getByID:(NSString*)(retrievedRelatedClass[OBJECT_ID])];
+        TagClass *linkedRelatedClass=[TagClass getByID:(NSString*)(retrievedRelatedClass.objectId)];
         connection.relatedClass=linkedRelatedClass;
         [linkedRelatedClass addRelatedClassConnectionObject:connection];
     }

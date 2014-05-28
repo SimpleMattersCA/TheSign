@@ -11,10 +11,6 @@
 
 #import "SignEntityProtocol.h"
 
-#define TIMESTAMP (@"TableTimestamp")
-#define TIMESTAMP_TABLENAME (@"tableName")
-#define TIMESTAMP_DATE (@"timeStamp")
-#define TIMESTAMP_ORDER (@"order")
 
 @interface TableTimestamp : NSManagedObject <SignEntityProtocol>
 
@@ -23,6 +19,13 @@
 @property (nonatomic, retain) NSDate * timeStamp;
 @property (nonatomic, retain) NSNumber * order;
 
++(NSString*)colTableName;
++(NSString*)colTimeStamp;
++(NSString*)colOrder;
+
++(NSString*)pTableName;
++(NSString*)pTimeStamp;
++(NSString*)pOrder;
 
 +(NSDate*) getUpdateTimestampForTable:(NSString*)tName;
 + (NSArray*)getTableNames;

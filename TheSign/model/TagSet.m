@@ -19,30 +19,21 @@
 @dynamic tagInSet;
 
 
-+(NSString*) entityName
-{
-    return TAGSET;
-}
++(NSString*) entityName {return @"TagSet";}
++(NSString*) parseEntityName {return @"TagSet";}
 
-+(NSString*) parseEntityName
-{
-    return [self parseName:[self entityName]];
-}
++(NSString*)colWeight {return @"weight";}
++(NSString*)colTaggedFeature {return @"taggedFeature";}
++(NSString*)colTagInSet {return @"tagInSet";}
 
-+(NSString*)parseName:(NSString*)coreDataName
-{
-    //so far Parse names for this class are exactly the same as those for CoreData
-    //for cases when they're not, add something like this:
-    //if ([coreDataName isEqual:@"Something"])
-    //    return @"somethingElse";
-    
-    return coreDataName;
-}
++(NSString*)pWeight {return TagSet.colWeight;}
++(NSString*)pTaggedFeature {return @"DealID";}
++(NSString*)pTagInSet {return @"TagID";}
 
 +(TagSet*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%@", OBJECT_ID, identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -58,10 +49,37 @@
 
 +(void)createFromParseObject:(PFObject *)object
 {
-    TagSet *tagset = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
+    TagSet *tagset = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    tagset.pObjectID=object[OBJECT_ID];
-    tagset.weight=object[[TagSet parseName:TAGSET_WEIGHT]];
+    tagset.pObjectID=object.objectId;
+    tagset.weight=object[TagSet.pWeight];
+    
+    NSError *error;
+    
+    PFObject *retrievedFeatured=[object[TagSet.pTaggedFeature] fetchIfNeeded:&error];
+    
+    if (!error)
+    {
+        Featured *linkedFeatured=[Featured getByID:(NSString*)(retrievedFeatured.objectId)];
+        tagset.taggedFeature = linkedFeatured;
+        [linkedFeatured addFeaturedTagSetsObject:tagset];
+        
+    }
+    else
+        NSLog(@"%@",[error localizedDescription]);
+    
+    
+    PFObject *retrievedTag=[object[TagSet.pTagInSet] fetchIfNeeded:&error];
+    
+    if (!error)
+    {
+        Tag *linkedTag=[Tag getByID:(NSString*)(retrievedTag.objectId)];
+        tagset.tagInSet = linkedTag;
+        [linkedTag addTagSetsObject:tagset];
+    }
+    else
+        NSLog(@"%@",[error localizedDescription]);
+    
 }
 
 @end

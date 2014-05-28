@@ -15,9 +15,14 @@
 @dynamic favouriteOffer;
 @dynamic recordedDate;
 
++(NSString*) entityName
+{
+    return @"Favourites";
+}
+
 +(void) saveFavourite:(Featured*)offer onDate:(NSDate*) date
 {
-    Favourites *newFav = [NSEntityDescription insertNewObjectForEntityForName:FAVOURITES
+    Favourites *newFav = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                         inManagedObjectContext:[Model sharedModel].managedObjectContext];
     newFav.favouriteOffer=offer;
     newFav.recordedDate=date;
@@ -27,9 +32,7 @@
 +(NSArray*) getFavourites
 {
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:FAVOURITES];
-    //NSString *predicate = [NSString stringWithFormat: @"%@==%@", OBJECT_ID, identifier];
-    //request.predicate=[NSPredicate predicateWithFormat:predicate];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
     NSArray *favourites = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     

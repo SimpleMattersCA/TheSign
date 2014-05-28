@@ -11,16 +11,24 @@
 
 #import "SignEntityProtocol.h"
 
-#define TAGSET (@"TagSet")
-#define TAGSET_WEIGHT (@"weight")
+
 
 @class Featured, Tag;
 
-@interface TagSet : NSManagedObject
+@interface TagSet : NSManagedObject <SignEntityProtocol>
 
 @property (nonatomic, retain) NSNumber * weight;
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) Featured *taggedFeature;
 @property (nonatomic, retain) Tag *tagInSet;
+
++(NSString*)colWeight;
++(NSString*)colTaggedFeature;
++(NSString*)colTagInSet;
++(NSString*)pWeight;
++(NSString*)pTaggedFeature;
++(NSString*)pTagInSet;
+
+
 
 @end

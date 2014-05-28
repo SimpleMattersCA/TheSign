@@ -11,14 +11,7 @@
 
 #import "SignEntityProtocol.h"
 
-#define BUSINESS (@"Business")
-#define BUSINESS_ID (@"uid")
-#define BUSINESS_NAME (@"name")
-#define BUSINESS_LOGO (@"logo")
-#define BUSINESS_WELCOMETEXT (@"welcomeText")
-#define BUSINESS_HOURS_START (@"workingHoursStart")
-#define BUSINESS_HOURS_END (@"workingHoursEnd")
-#define BUSINESS_HOURS_END (@"workingHoursEnd")
+
 
 @class Featured,PFObject;
 
@@ -38,6 +31,21 @@
 +(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
 +(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
 +(NSArray*) getBusinessesByType:(NSString*)type;
+
++(NSString*)colName;
++(NSString*)colLogo;
++(NSString*)colUid;
++(NSString*)colWelcomeText;
++(NSString*)colWorkingHoursEnd;
++(NSString*)colWorkingHoursStart;
+
++(NSString*)pName;
++(NSString*)pLogo;
++(NSString*)pUid;
++(NSString*)pWelcomeText;
++(NSString*)pWorkingHoursEnd;
++(NSString*)pWorkingHoursStart;
+
 
 
 @end

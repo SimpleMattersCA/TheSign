@@ -21,24 +21,37 @@
 @dynamic minor;
 @dynamic title;
 @dynamic videoUrl;
-@dynamic favourited;
-@dynamic featuredTagSet;
 @dynamic parentBusiness;
+@dynamic active;
+@dynamic featuredTagSets;
+@dynamic favourited;
 
-+(NSString*) entityName
-{
-    return FEATURED;
-}
++(NSString*) entityName {return @"Featured";}
++(NSString*) parseEntityName {return @"Info";}
 
-+(NSString*) parseEntityName
-{
-    return [self parseName:[self entityName]];
-}
++(NSString*)colDetails {return @"details";}
++(NSString*)colImage {return @"image";}
++(NSString*)colMajor {return @"major";}
++(NSString*)colMinor {return @"minor";}
++(NSString*)colTitle {return @"title";}
++(NSString*)colVideoUrl {return @"videoUrl";}
++(NSString*)colParentBusiness {return @"parentBusiness";}
++(NSString*)colActive {return @"active";}
+
++(NSString*)pDetails {return @"description";}
++(NSString*)pImage {return @"picture";}
++(NSString*)pMajor {return Featured.colMajor;}
++(NSString*)pMinor {return Featured.colMinor;}
++(NSString*)pTitle {return @"featured";}
++(NSString*)pVideoUrl {return @"video";}
++(NSString*)pParentBusiness {return @"BusinessID";}
++(NSString*)pActive {return Featured.colActive;}
+
 
 +(Featured*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%@", OBJECT_ID, identifier];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -52,30 +65,12 @@
         return (Featured*)result.firstObject;
 }
 
-+(NSString*)parseName:(NSString*)coreDataName
-{
-    if ([coreDataName isEqual:FEATURED])
-        return @"Info";
-    if ([coreDataName isEqual:FEATURED_TITLE])
-        return @"featured";
-    if ([coreDataName isEqual:FEATURED_DETAILS])
-        return @"description";
-    if ([coreDataName isEqual:FEATURED_VIDEO])
-        return @"video";
-    if ([coreDataName isEqual:FEATURED_IMAGE])
-        return @"picture";
-    if ([coreDataName isEqual:FEATURED_BUSINESS])
-        return @"BusinessID";
-    return coreDataName;
-}
-
 //Getting array of Featured objects by beacon's major and minor. The idea is that optionally the offer can be attached to a specific beacon, but it doesn't have to so we first check if there are offers with such major and minor id's and if not, we check only by major
 +(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
-    
-    NSString *predicateMajor = [NSString stringWithFormat: @"(%@==%d)", FEATURED_MAJOR, major.integerValue];
-    NSString *predicateMinor = [NSString stringWithFormat: @"(%@==%d)", FEATURED_MINOR, minor.integerValue];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicateMajor = [NSString stringWithFormat: @"(%@==%d)", Featured.colMajor, major.integerValue];
+    NSString *predicateMinor = [NSString stringWithFormat: @"(%@==%d)", Featured.colMinor, minor.integerValue];
     
     request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor]];
     NSError *error;
@@ -99,14 +94,16 @@
 
 + (void)createFromParseObject:(PFObject *)object
 {
-    Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
+    Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    deal.pObjectID=object[OBJECT_ID];
-    deal.title=object[[Featured parseName:FEATURED_TITLE]];
-    deal.details=object[[Featured parseName:FEATURED_DETAILS]];
-    deal.videoUrl=object[[Featured parseName:FEATURED_VIDEO]];
-    
-    PFFile *image=object[[Featured parseName:FEATURED_IMAGE]];
+    deal.pObjectID=object.objectId;
+    if(object[Featured.pTitle]!=nil) deal.title=object[Featured.pTitle];
+    deal.details=object[Featured.pDetails];
+    deal.videoUrl=object[Featured.pVideoUrl];
+    if(object[Featured.pActive]!=nil) deal.active=object[Featured.pActive];
+    if(object[Featured.pMajor]!=nil) deal.major=object[Featured.pMajor];
+    deal.minor=object[Featured.pMinor];
+    PFFile *image=object[Featured.pImage];
     
     NSError *error;
     NSData *pulledImage;
@@ -126,11 +123,11 @@
         return;
     }
     
-    PFObject *retrievedBusiness=[object[[Featured parseName:FEATURED_BUSINESS]] fetchIfNeeded:&error];
+    PFObject *retrievedBusiness=[object[Featured.pParentBusiness] fetchIfNeeded:&error];
     
     if (!error)
     {
-        Business *linkedBusiness=[Business getByID:(NSString*)(retrievedBusiness[OBJECT_ID])];
+        Business *linkedBusiness=[Business getByID:(NSString*)(retrievedBusiness.objectId)];
         deal.parentBusiness = linkedBusiness;
         [linkedBusiness addFeaturedOffersObject:deal];
     }

@@ -18,7 +18,7 @@
 #import "Statistics.h"
 #import "Favourites.h"
 #import "TableTimestamp.h"
-
+#import "Parse/Parse.h"
 
 @implementation Model
 
@@ -51,7 +51,7 @@
 //        coreDataTableNames=[NSArray arrayWithObjects:BUSINESS,FEATURED,TAG,TAGCLASS,TAGSET,IMESTAMP, nil];
         
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
-        //self deleteModel];
+        [self deleteModel];
         [self checkModel];
         
     }
@@ -75,33 +75,32 @@
 
 
 //check if we need to pull data from parse based on comparing timestamps of the tables.
--(BOOL)checkModel
+-(void)checkModel
 {
     //pull from cloud for
-    PFQuery *query = [PFQuery queryWithClassName:[TableTimestamp parseName:TIMESTAMP]];
-    [query orderByAscending:TIMESTAMP_ORDER];
+    PFQuery *query = [PFQuery queryWithClassName:TableTimestamp.parseEntityName];
+
+    [query orderByAscending:TableTimestamp.pOrder];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
     {
         if (!error)
         {
             for (PFObject *object in objects)
             {
-                NSString *tableName=object[[TableTimestamp parseName:TIMESTAMP_TABLENAME]];
+                NSString *tableName=object[TableTimestamp.pTableName];
                 NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName];
                 if(![timestamp isEqualToDate:object[tableName]])
                 {
-                    [self pullFromCloud:[[self getClassForEntity:tableName] entityName]];
+                    [self pullFromCloud:[[self getClassForParseEntity:tableName] entityName]];
                 }
             }
-            [self pullFromCloud:TIMESTAMP];
+            [self pullFromCloud:TableTimestamp.entityName];
         }
         else
         {
             NSLog(@"Error: %@ %@", error, [error userInfo]);
         }
     }];
-
-    return NO;
 }
 
 -(void)pullFromCloud
@@ -119,25 +118,49 @@
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
 }
 
+-(Class)getClassForParseEntity:(NSString*)entityName
+{
+    if([entityName isEqualToString:Business.parseEntityName])
+        return [Business class];
+    if([entityName isEqualToString:Link.parseEntityName])
+        return [Link class];
+    if([entityName isEqualToString:Featured.parseEntityName])
+        return [Featured class];
+    if([entityName isEqualToString:Tag.parseEntityName])
+        return [Tag class];
+    if([entityName isEqualToString:TagClass.parseEntityName])
+        return [TagClass class];
+    if([entityName isEqualToString:TagSet.parseEntityName])
+        return [TagSet class];
+    if([entityName isEqualToString:TagClassConnection.parseEntityName])
+        return [TagClassConnection class];
+    if([entityName isEqualToString:TagClassRelation.parseEntityName])
+        return [TagClassRelation class];
+    if([entityName isEqualToString:TableTimestamp.parseEntityName])
+        return [TableTimestamp class];
+    return nil;
+}
+
+
 -(Class)getClassForEntity:(NSString*)entityName
 {
-    if([entityName isEqualToString:BUSINESS])
+    if([entityName isEqualToString:Business.entityName])
         return [Business class];
-    if([entityName isEqualToString:LINK])
+    if([entityName isEqualToString:Link.entityName])
         return [Link class];
-    if([entityName isEqualToString:FEATURED])
+    if([entityName isEqualToString:Featured.entityName])
         return [Featured class];
-    if([entityName isEqualToString:TAG])
+    if([entityName isEqualToString:Tag.entityName])
         return [Tag class];
-    if([entityName isEqualToString:TAGCLASS])
+    if([entityName isEqualToString:TagClass.entityName])
         return [TagClass class];
-    if([entityName isEqualToString:TAGSET])
+    if([entityName isEqualToString:TagSet.entityName])
         return [TagSet class];
-    if([entityName isEqualToString:TAGCLASSCONNECTION])
+    if([entityName isEqualToString:TagClassConnection.entityName])
         return [TagClassConnection class];
-    if([entityName isEqualToString:TAGCLASSRELATION])
+    if([entityName isEqualToString:TagClassRelation.entityName])
         return [TagClassRelation class];
-    if([entityName isEqualToString:TIMESTAMP])
+    if([entityName isEqualToString:TableTimestamp.entityName])
         return [TableTimestamp class];
     return nil;
 }
@@ -150,24 +173,24 @@
     Class targetClass=[self getClassForEntity:entityName];
     NSString *cloudEntityName=[targetClass parseEntityName];
     PFQuery *query = [PFQuery queryWithClassName:cloudEntityName];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+    NSError *error;
+    NSArray *result=[query findObjects:&error];
+
+    if (!error)
     {
-        if (!error)
+        //delete entity from coredata, so we can create a new one
+        [self deleteEntity:entityName];
+        //go through the objects we got from Parse
+        for (PFObject *object in result)
         {
-            //delete entity from coredata, so we can create a new one
-            [self deleteEntity:entityName];
-            //go through the objects we got from Parse
-            for (PFObject *object in objects)
-            {
-                [targetClass createFromParseObject:object];
-            }
-            [self saveContext];
+            [targetClass createFromParseObject:object];
         }
-        else
-        {
-            NSLog(@"Error: %@ %@", error, [error userInfo]);
-        }
-    }];
+        [self saveContext];
+    }
+    else
+        NSLog(@"Error: %@ %@", error, [error userInfo]);
+    
+
 }
 
 
@@ -198,10 +221,16 @@
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     if (managedObjectContext != nil) {
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
+            NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+            NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+            if(detailedErrors != nil && [detailedErrors count] > 0) {
+                for(NSError* detailedError in detailedErrors) {
+                    NSLog(@"  DetailedError: %@", [detailedError userInfo]);
+                }
+            }
+            else {
+                NSLog(@"  %@", [error userInfo]);
+            }
         }
     }
 }
