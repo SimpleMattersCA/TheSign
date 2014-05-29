@@ -15,9 +15,47 @@
 @dynamic major;
 @dynamic minor;
 
-+(NSString*) entityName
++(NSString*) entityName {return @"Statistics";}
++(NSString*) colMajor {return @"major";}
++(NSString*) colMinor {return @"minor";}
++(NSString*) colDate {return @"date";}
+
+
+
+
++(NSArray*) getStatisticsFrom:(NSDate*) startDate To:(NSDate*) endDate ForMajor:(NSNumber*) major andMinor:(NSNumber*)minor
 {
-    return @"Statistics";
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicateFromDate = [NSString stringWithFormat: @"%@>='%@'", Statistics.colDate, startDate];
+    NSString *predicateToDate = [NSString stringWithFormat: @"%@<='%@'", Statistics.colDate, endDate];
+    
+    NSMutableArray *subPredicates=[NSMutableArray arrayWithObjects:predicateFromDate,predicateToDate, nil];
+    
+    if(major!=nil)
+    {
+        NSString *predicateMajor = [NSString stringWithFormat: @"%@=='%@'", Statistics.colMajor, major];
+        [subPredicates addObject:predicateMajor];
+    }
+    if(minor!=nil)
+    {
+        NSString *predicateMinor = [NSString stringWithFormat: @"%@=='%@'", Statistics.colMinor, minor];
+        [subPredicates addObject:predicateMinor];
+    }
+    
+    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:subPredicates];
+    
+    NSError *error;
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    else
+        return result;
+
+
 }
 
 

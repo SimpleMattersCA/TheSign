@@ -18,7 +18,13 @@
 @property (nonatomic, retain) NSNumber * major;
 @property (nonatomic, retain) NSNumber * minor;
 
++(NSString*) entityName;
++(NSString*) colMajor;
++(NSString*) colMinor;
++(NSString*) colDate;
+
 +(void) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor;
 
++(NSArray*) getStatisticsFrom:(NSDate*) startDate To:(NSDate*) endDate ForMajor:(NSNumber*) major andMinor:(NSNumber*)minor;
 
 @end

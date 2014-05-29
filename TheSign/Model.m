@@ -40,7 +40,7 @@
                                                    object:nil];
         
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
-     //   [self deleteModel];
+      //  [self deleteModel];
         [self performSelectorInBackground:@selector(checkModel) withObject:nil];
         
     }
@@ -78,7 +78,7 @@
         {
             NSString *tableName=object[TableTimestamp.pTableName];
             NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName];
-            if(![timestamp isEqualToDate:object[tableName]])
+            if(![timestamp isEqualToDate:object[TableTimestamp.pTimeStamp]])
             {
                 [self pullFromCloud:[[self getClassForParseEntity:tableName] entityName]];
             }

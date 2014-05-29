@@ -13,10 +13,6 @@
 
 @protocol SignEntityProtocol <NSObject>
 
-
-
-
-//+(NSString*)parseName:(NSString*)coreDataName;
 +(instancetype) getByID:(NSString*)objectId;
 +(void)createFromParseObject:(PFObject *)object;
 +(NSString*) entityName;
