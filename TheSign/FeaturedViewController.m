@@ -14,6 +14,7 @@
 
 #import "Business.h"
 
+# pragma mark - DEPRECATED
 @interface FeaturedViewController () <ScrollingCellDelegate>
 
 //@property (strong,nonatomic) NSNumber* businessID;
@@ -278,13 +279,13 @@
         // TODO: rework preparing detailsviewcontroller, send the whole deal and not the businessID
         if ([segue.destinationViewController isKindOfClass:[DetailsViewController class]])
         {
-            NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
-            NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
+            //NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
+          //  NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
+           //
+          //  DetailsViewController *dest = (DetailsViewController *)segue.destinationViewController;
+          //  NSNumber *businessID=[[NSNumber alloc] initWithInteger:indexPath.row];
             
-            DetailsViewController *dest = (DetailsViewController *)segue.destinationViewController;
-            NSNumber *businessID=[[NSNumber alloc] initWithInteger:indexPath.row];
-            
-            [dest setBusinessToShow:businessID];
+         //   [dest setBusinessToShow:businessID];
         }
     }
 }

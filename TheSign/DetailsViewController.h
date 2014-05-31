@@ -7,13 +7,11 @@
 //
 
 @import UIKit;
-#import "Model.h"
 
+@class Featured;
 @interface DetailsViewController :UIViewController
 
--(void) setBusinessToShow:(NSNumber*) identifier;
-
--(void) updateViewForBusiness:(NSString*) identifier;
+-(void) prepareDealToShow:(Featured*) deal;
 
 
 @end

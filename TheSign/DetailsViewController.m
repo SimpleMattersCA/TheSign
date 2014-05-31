@@ -7,13 +7,14 @@
 //
 
 #import "DetailsViewController.h"
-#import "Business.h"
+#import "Featured.h"
 
 @interface DetailsViewController ()
-@property (weak, nonatomic) IBOutlet UITextView* outputDescription;
-@property (strong,nonatomic) NSString* businessID;
-@property (strong,nonatomic) Business* business;
 
+@property (strong,nonatomic) Featured* deal;
+
+@property (weak, nonatomic) IBOutlet UIImageView *dealImage;
+@property (weak, nonatomic) IBOutlet UITextView* outputDescription;
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
 
 @end
@@ -23,23 +24,20 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self updateViewForBusiness:self.businessID];
+    [self updateViewContent];
 }
 
--(void) updateViewForBusiness:(NSString*)identifier
+-(void) prepareDealToShow:(Featured*) deal
 {
-    
-    self.business=[Business getByID:identifier];
-    _navigationBar.title=self.business.name;
-    _outputDescription.text=self.business.welcomeText;
-
+    self.deal=deal;
 }
 
--(void) setBusinessToShow:(NSString*) identifier
+-(void) updateViewContent
 {
-    self.businessID=identifier;
+    self.dealImage.image=[UIImage imageWithData:self.deal.image];
+    self.outputDescription.text=self.deal.details;
+    self.navigationBar.title=self.deal.title;
 }
-
 
 - (void)didReceiveMemoryWarning
 {

@@ -18,7 +18,6 @@
 @property (nonatomic, weak, readonly) NSArray* businesses;
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
 @property (nonatomic, weak) NSArray* businessTypes;
-
 @end
 
 @implementation BusinessListController
@@ -60,7 +59,9 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"BusinessInfoCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"BusinessInfo"];
     
     self.navigationBar.title=(NSString*)(self.businessTypes.firstObject);
-    [self.tableView setAllowsSelection:YES];
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationBar.backBarButtonItem=backButton;
+    //[self.tableView setAllowsSelection:YES];
    // self.tableView.delegate=self;
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -102,7 +103,8 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     [self performSegueWithIdentifier:@"ShowBusiness" sender:indexPath];
 }
 

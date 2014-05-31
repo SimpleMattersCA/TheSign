@@ -34,6 +34,7 @@
 		55B4AFF31937EE2300C5A71B /* BusinessInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B4AFF11937EE2300C5A71B /* BusinessInfoCell.m */; };
 		55B4AFF41937EE2300C5A71B /* BusinessInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55B4AFF21937EE2300C5A71B /* BusinessInfoCell.xib */; };
 		55B4AFF7193929D200C5A71B /* DealListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B4AFF6193929D200C5A71B /* DealListController.m */; };
+		55B4AFFA193A484400C5A71B /* CustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B4AFF9193A484400C5A71B /* CustomScrollView.m */; };
 		55B746EB18DCAECA00F61354 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B746EA18DCAECA00F61354 /* Model.m */; };
 		55C882DF18E3F94F00E1C502 /* FeaturedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882DE18E3F94F00E1C502 /* FeaturedViewController.m */; };
 		55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E15FE2191A062B00A8B826 /* InsightEngine.m */; };
@@ -112,6 +113,8 @@
 		55B4AFF21937EE2300C5A71B /* BusinessInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BusinessInfoCell.xib; path = View/BusinessInfoCell.xib; sourceTree = "<group>"; };
 		55B4AFF5193929D200C5A71B /* DealListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DealListController.h; path = Controller/DealListController.h; sourceTree = "<group>"; };
 		55B4AFF6193929D200C5A71B /* DealListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DealListController.m; path = Controller/DealListController.m; sourceTree = "<group>"; };
+		55B4AFF8193A484400C5A71B /* CustomScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomScrollView.h; sourceTree = "<group>"; };
+		55B4AFF9193A484400C5A71B /* CustomScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomScrollView.m; sourceTree = "<group>"; };
 		55B746E918DCAECA00F61354 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		55B746EA18DCAECA00F61354 /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
 		55C882DD18E3F94F00E1C502 /* FeaturedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedViewController.h; sourceTree = "<group>"; };
@@ -183,8 +186,6 @@
 			children = (
 				553E4F4118C714A3004F8312 /* HomeViewController.h */,
 				553E4F4218C714A3004F8312 /* HomeViewController.m */,
-				55EE37C718B7057C002A121C /* DetailsViewController.h */,
-				55EE37C818B7057C002A121C /* DetailsViewController.m */,
 				55BB339D18FEF63C009C346D /* FeaturedViewController Group */,
 				55B4AFF01937EE2300C5A71B /* BusinessInfoCell.h */,
 				55B4AFF11937EE2300C5A71B /* BusinessInfoCell.m */,
@@ -192,6 +193,8 @@
 				55B4AFEE1937D53700C5A71B /* BusinessListController.m */,
 				55B4AFF5193929D200C5A71B /* DealListController.h */,
 				55B4AFF6193929D200C5A71B /* DealListController.m */,
+				55EE37C718B7057C002A121C /* DetailsViewController.h */,
+				55EE37C818B7057C002A121C /* DetailsViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -336,6 +339,8 @@
 				55E15FE1191A062B00A8B826 /* InsightEngine.h */,
 				55E15FE2191A062B00A8B826 /* InsightEngine.m */,
 				55E364151925357100A30C39 /* CommonHeader.h */,
+				55B4AFF8193A484400C5A71B /* CustomScrollView.h */,
+				55B4AFF9193A484400C5A71B /* CustomScrollView.m */,
 				553E4F4418C714D1004F8312 /* Controller */,
 				553E4F4518C71525004F8312 /* Model */,
 				559774431936B791008FDD45 /* View */,
@@ -496,6 +501,7 @@
 				5557BB0D1931BB1C00B256FF /* TagClassConnection.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
 				55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */,
+				55B4AFFA193A484400C5A71B /* CustomScrollView.m in Sources */,
 				5557BB261934306900B256FF /* TagClass.m in Sources */,
 				5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */,
 				55B746EB18DCAECA00F61354 /* Model.m in Sources */,

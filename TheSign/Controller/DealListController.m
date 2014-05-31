@@ -9,11 +9,13 @@
 #import "DealListController.h"
 #import "Business.h"
 #import "Featured.h"
+#import "DetailsViewController.h"
 
 @interface DealListController ()
 
 @property (nonatomic) Business* business;
 @property (nonatomic) NSArray* deals;
+@property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
 
 @end
 
@@ -31,7 +33,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.navigationBar.title=self.business.name;
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationBar.backBarButtonItem=backButton;
+
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -59,34 +64,43 @@
     return self.deals.count;
 }
 
-/*
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DealCell" forIndexPath:indexPath];
+    cell.textLabel.text=((Featured*)(self.deals[indexPath.row])).title;
     // Configure the cell...
     
     return cell;
 }
-*/
+
 
 
 -(void) prepareDealsForBusiness:(Business*) business
 {
     self.business=business;
-    self.deals=[Featured getOffersForBusiness:business];
+    self.deals=[business.featuredOffers allObjects];
 }
 
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    if ([segue.identifier isEqualToString:@"ShowDeal"])
+    {
+        if ([segue.destinationViewController isKindOfClass:[DetailsViewController class]])
+        {
+            
+            NSArray *indexPaths = [self.tableView indexPathsForSelectedRows];
+            NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
+            
+            DetailsViewController *dest = (DetailsViewController *)segue.destinationViewController;
+            //NSNumber *businessID=[NSNumber numberWithLong:indexPath.row];
+            [dest prepareDealToShow:self.deals[indexPath.row]];
+        }
+    }
+
 }
-*/
+
 
 @end

@@ -66,11 +66,11 @@
 }
 
 
-+(NSArray*) getOffersForBusiness:(Business*)business
-{
-    NSNumber* major=business.uid;
-    return [self getOffersByMajor:major andMinor:nil];
-}
+//+(NSArray*) getOffersForBusiness:(Business*)business
+//{
+ //   NSNumber* major=business.uid;
+ //   return [self getOffersByMajor:major andMinor:nil];
+//}
 
 //Getting array of Featured objects by beacon's major and minor. The idea is that optionally the offer can be attached to a specific beacon, but it doesn't have to so we first check if there are offers with such major and minor id's and if not, we check only by major
 +(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor

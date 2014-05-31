@@ -96,7 +96,9 @@ NSNumber *detectedBeaconMajor;
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
         DetailsViewController *details =
         [navigation.storyboard instantiateViewControllerWithIdentifier:@"DetailsView"];
-        [details setBusinessToShow:[notification.userInfo objectForKey:@"BeaconMajor"]];
+        
+#warning do a goddamn notificaiton call right
+        //details setBusinessToShow:[notification.userInfo objectForKey:@"BeaconMajor"]];
         [navigation pushViewController:details animated:NO];
         
         // Process the received notification
