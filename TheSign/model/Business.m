@@ -20,6 +20,7 @@
 @dynamic welcomeText;
 @dynamic workingHoursEnd;
 @dynamic workingHoursStart;
+@dynamic businessType;
 @dynamic featuredOffers;
 @dynamic links;
 
@@ -33,6 +34,7 @@
 +(NSString*)colWelcomeText {return @"welcomeText";}
 +(NSString*)colWorkingHoursEnd {return @"workingHoursEnd";}
 +(NSString*)colWorkingHoursStart {return @"workingHoursStart";}
++(NSString*)colBusinessType {return @"businessType";}
 
 +(NSString*)pName {return Business.colName;}
 +(NSString*)pLogo {return Business.colLogo;}
@@ -40,6 +42,7 @@
 +(NSString*)pWelcomeText {return Business.colWelcomeText;}
 +(NSString*)pWorkingHoursEnd {return Business.colWorkingHoursEnd;}
 +(NSString*)pWorkingHoursStart {return Business.colWorkingHoursStart;}
++(NSString*)pBusinessType {return Business.colBusinessType;}
 
 +(Business*) getByID:(NSString*)identifier
 {
@@ -56,6 +59,12 @@
     }
     else
         return (Business*)result.firstObject;
+}
+
++(NSArray*) getBusinessTypes
+{
+    
+    return [NSArray arrayWithObjects:@"Businesses",nil];
 }
 
 +(NSArray*) getBusinessesByType:(NSString*)type
@@ -128,6 +137,8 @@
     if(object[Business.pUid]!=nil) business.uid=object[Business.pUid];
     business.workingHoursStart=object[Business.pWorkingHoursStart];
     business.workingHoursEnd=object[Business.pWorkingHoursEnd];
+    business.businessType=object[Business.pBusinessType];
+    
     PFFile *logo=object[Business.pLogo];
     
     NSError *error;

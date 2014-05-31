@@ -47,6 +47,7 @@
 
 
 +(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
++(NSArray*) getOffersForBusiness:(Business*)business;
 
 @end
 

@@ -176,9 +176,9 @@
         {
             [targetClass createFromParseObject:object];
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud"
-                                                            object:self
-                                                          userInfo:[NSDictionary dictionaryWithObject:entityName forKey:@"Entity"]];
+    //    [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud"
+    //                                                        object:self
+    //                                                      userInfo:[NSDictionary dictionaryWithObject:entityName forKey:@"Entity"]];
         [self saveContext];
     }
     else

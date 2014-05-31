@@ -24,6 +24,7 @@
 @property (nonatomic, retain) NSString * welcomeText;
 @property (nonatomic, retain) NSNumber * workingHoursEnd;
 @property (nonatomic, retain) NSNumber * workingHoursStart;
+@property (nonatomic, retain) NSString * businessType;
 @property (nonatomic, retain) NSSet *featuredOffers;
 @property (nonatomic, retain) NSSet *links;
 
@@ -31,6 +32,7 @@
 +(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
 +(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
 +(NSArray*) getBusinessesByType:(NSString*)type;
++(NSArray*) getBusinessTypes;
 
 +(NSString*)colName;
 +(NSString*)colLogo;
@@ -38,6 +40,7 @@
 +(NSString*)colWelcomeText;
 +(NSString*)colWorkingHoursEnd;
 +(NSString*)colWorkingHoursStart;
++(NSString*)colBusinessType;
 
 +(NSString*)pName;
 +(NSString*)pLogo;
@@ -45,6 +48,7 @@
 +(NSString*)pWelcomeText;
 +(NSString*)pWorkingHoursEnd;
 +(NSString*)pWorkingHoursStart;
++(NSString*)pBusinessType;
 
 
 

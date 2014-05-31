@@ -65,14 +65,25 @@
         return (Featured*)result.firstObject;
 }
 
+
++(NSArray*) getOffersForBusiness:(Business*)business
+{
+    NSNumber* major=business.uid;
+    return [self getOffersByMajor:major andMinor:nil];
+}
+
 //Getting array of Featured objects by beacon's major and minor. The idea is that optionally the offer can be attached to a specific beacon, but it doesn't have to so we first check if there are offers with such major and minor id's and if not, we check only by major
 +(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSString *predicateMajor = [NSString stringWithFormat: @"(%@==%d)", Featured.colMajor, major.integerValue];
-    NSString *predicateMinor = [NSString stringWithFormat: @"(%@==%d)", Featured.colMinor, minor.integerValue];
-    
-    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor]];
+    if(minor!=nil)
+    {
+        NSString *predicateMinor = [NSString stringWithFormat: @"(%@==%d)", Featured.colMinor, minor.integerValue];
+        request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor]];
+    }
+    else
+        request.predicate=[NSPredicate predicateWithFormat:predicateMajor];
     NSError *error;
     NSArray *featured = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -83,10 +94,15 @@
     }
     
     //if there are no offers tied directly to the beacon we try to find all the offers for the business
-    if(featured.count==0)
+    if(featured.count==0 && minor!=nil)
     {
         request.predicate=[NSPredicate predicateWithFormat:predicateMajor];
         featured = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+        if(error)
+        {
+            NSLog(@"%@",[error localizedDescription]);
+            return nil;
+        }
     }
     return featured;
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Business" representedClassName="Business" syncable="YES">
+        <attribute name="businessType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="logo" attributeType="Binary" syncable="YES"/>
         <attribute name="name" attributeType="String" defaultValueString="DefaultBusiness" syncable="YES"/>
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
@@ -77,7 +78,7 @@
         <relationship name="tagInSet" maxCount="1" deletionRule="Nullify" destinationEntity="Tag" inverseName="tagSets" inverseEntity="Tag" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Business" positionX="-2513" positionY="-144" width="128" height="180"/>
+        <element name="Business" positionX="-2513" positionY="-144" width="128" height="195"/>
         <element name="Favourites" positionX="-2450" positionY="-523" width="128" height="73"/>
         <element name="Featured" positionX="-2477" positionY="-396" width="128" height="208"/>
         <element name="Link" positionX="-2754" positionY="-141" width="128" height="88"/>
