@@ -66,6 +66,13 @@
 }
 
 
+-(void) recordFavourite
+{
+    Favourites* newFav=[Favourites saveFavourite:self onDate:[NSDate date]];
+    [self addFavouritedObject:newFav];
+}
+
+
 //+(NSArray*) getOffersForBusiness:(Business*)business
 //{
  //   NSNumber* major=business.uid;
@@ -150,6 +157,7 @@
     else
         NSLog(@"%@",[error localizedDescription]);
 }
+
 
 
 @end

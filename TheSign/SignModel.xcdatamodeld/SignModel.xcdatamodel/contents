@@ -14,7 +14,7 @@
     </entity>
     <entity name="Favourites" representedClassName="Favourites" syncable="YES">
         <attribute name="recordedDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="favouriteOffer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Featured" inverseName="favourited" inverseEntity="Featured" syncable="YES"/>
+        <relationship name="favouriteOffer" maxCount="1" deletionRule="Nullify" destinationEntity="Featured" inverseName="favourited" inverseEntity="Featured" syncable="YES"/>
     </entity>
     <entity name="Featured" representedClassName="Featured" syncable="YES">
         <attribute name="active" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>

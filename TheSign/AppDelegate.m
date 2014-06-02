@@ -45,8 +45,13 @@ NSNumber *detectedBeaconMajor;
     [self.window makeKeyAndVisible];
 
     [self prepareForBeacons];
+    
+    //first-time ever defaults check and set
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"FirstRun"]!=YES)
+    {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FirstRun"];
+    }
 
-    // Override point for customization after application launch.
     return YES;
 }
 

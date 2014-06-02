@@ -38,7 +38,15 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bgG-Uq-wbi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-857" y="-844"/>
+            <point key="canvasLocation" x="-874" y="-546"/>
+        </scene>
+        <!--First Run View Controller-->
+        <scene sceneID="2Fh-IQ-yDp">
+            <objects>
+                <pageViewController storyboardIdentifier="FirstRunView" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="m5A-il-KrU" customClass="FirstRunViewController" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xoS-Dm-Qe6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1098" y="-1263"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="LhJ-vB-pBe">
@@ -54,7 +62,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jr9-Ss-BvP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1380" y="-844"/>
+            <point key="canvasLocation" x="-1397" y="-546"/>
         </scene>
         <!--Deal List Controller-->
         <scene sceneID="0GD-42-jp1">
@@ -89,7 +97,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vxQ-IW-qaw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-310" y="-844"/>
+            <point key="canvasLocation" x="-327" y="-546"/>
         </scene>
         <!--Details View Controller-->
         <scene sceneID="ufC-wZ-h7g">
@@ -138,7 +146,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="199" y="-844"/>
+            <point key="canvasLocation" x="182" y="-546"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>

@@ -20,13 +20,14 @@
     return @"Favourites";
 }
 
-+(void) saveFavourite:(Featured*)offer onDate:(NSDate*) date
++(Favourites*) saveFavourite:(Featured*)offer onDate:(NSDate*) date
 {
     Favourites *newFav = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                         inManagedObjectContext:[Model sharedModel].managedObjectContext];
     newFav.favouriteOffer=offer;
     newFav.recordedDate=date;
     [[Model sharedModel] saveContext];
+    return newFav;
 }
 
 +(NSArray*) getFavourites

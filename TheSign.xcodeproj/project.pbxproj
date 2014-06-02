@@ -35,6 +35,7 @@
 		55B4AFF41937EE2300C5A71B /* BusinessInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55B4AFF21937EE2300C5A71B /* BusinessInfoCell.xib */; };
 		55B4AFF7193929D200C5A71B /* DealListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B4AFF6193929D200C5A71B /* DealListController.m */; };
 		55B4AFFA193A484400C5A71B /* CustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B4AFF9193A484400C5A71B /* CustomScrollView.m */; };
+		55B4AFFD193AA8C900C5A71B /* FirstRunViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B4AFFC193AA8C900C5A71B /* FirstRunViewController.m */; };
 		55B746EB18DCAECA00F61354 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B746EA18DCAECA00F61354 /* Model.m */; };
 		55C882DF18E3F94F00E1C502 /* FeaturedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C882DE18E3F94F00E1C502 /* FeaturedViewController.m */; };
 		55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E15FE2191A062B00A8B826 /* InsightEngine.m */; };
@@ -115,6 +116,8 @@
 		55B4AFF6193929D200C5A71B /* DealListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DealListController.m; path = Controller/DealListController.m; sourceTree = "<group>"; };
 		55B4AFF8193A484400C5A71B /* CustomScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomScrollView.h; sourceTree = "<group>"; };
 		55B4AFF9193A484400C5A71B /* CustomScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomScrollView.m; sourceTree = "<group>"; };
+		55B4AFFB193AA8C900C5A71B /* FirstRunViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FirstRunViewController.h; path = Controller/FirstRunViewController.h; sourceTree = "<group>"; };
+		55B4AFFC193AA8C900C5A71B /* FirstRunViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FirstRunViewController.m; path = Controller/FirstRunViewController.m; sourceTree = "<group>"; };
 		55B746E918DCAECA00F61354 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		55B746EA18DCAECA00F61354 /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
 		55C882DD18E3F94F00E1C502 /* FeaturedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedViewController.h; sourceTree = "<group>"; };
@@ -195,6 +198,8 @@
 				55B4AFF6193929D200C5A71B /* DealListController.m */,
 				55EE37C718B7057C002A121C /* DetailsViewController.h */,
 				55EE37C818B7057C002A121C /* DetailsViewController.m */,
+				55B4AFFB193AA8C900C5A71B /* FirstRunViewController.h */,
+				55B4AFFC193AA8C900C5A71B /* FirstRunViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -508,6 +513,7 @@
 				55B4AFF31937EE2300C5A71B /* BusinessInfoCell.m in Sources */,
 				553371CE18EA962500CC84F2 /* FeaturedDealCell.m in Sources */,
 				55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */,
+				55B4AFFD193AA8C900C5A71B /* FirstRunViewController.m in Sources */,
 				55B4AFEF1937D53700C5A71B /* BusinessListController.m in Sources */,
 				55EE37BF18B7057C002A121C /* main.m in Sources */,
 				55B4AFF7193929D200C5A71B /* DealListController.m in Sources */,

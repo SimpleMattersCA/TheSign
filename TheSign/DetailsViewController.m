@@ -46,7 +46,7 @@
 }
 
 - (IBAction)showInfo1:(UIButton *)sender {
-    
+    [self.deal recordFavourite];
 
 }
 
