@@ -124,8 +124,12 @@
     Featured *result;
     
     //for now, take randomly
-    int offerId=arc4random_uniform(offerArray.count);
-    result=offerArray[offerId];
+    //int offerId=arc4random_uniform(offerArray.count);
+    //result=offerArray[offerId];
+    
+    //get the preference cloud of tags
+    
+    //get tags for the offer
     
     
     return result;

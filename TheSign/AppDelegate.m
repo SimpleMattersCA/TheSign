@@ -11,6 +11,7 @@
 #import "Model.h"
 #import "InsightEngine.h"
 #import "Statistics.h"
+#import "WelcomeScreenViewController.h"
 
 @import UIKit.UINavigationController;
 @import CoreLocation;
@@ -37,7 +38,7 @@ NSNumber *detectedBeaconMajor;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
+
     [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
                   clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
@@ -49,8 +50,20 @@ NSNumber *detectedBeaconMajor;
     //first-time ever defaults check and set
     if([[NSUserDefaults standardUserDefaults] boolForKey:@"FirstRun"]!=YES)
     {
+        UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
+        WelcomeScreenViewController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"WelcomeScreenView"];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FirstRun"];
+        [navigation pushViewController:firstRun animated:YES];
     }
+    
+    
+    
+    
+    
+    UIPageControl *pageControl = [UIPageControl appearance];
+    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
+    pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
+    pageControl.backgroundColor = [UIColor whiteColor];
 
     return YES;
 }
