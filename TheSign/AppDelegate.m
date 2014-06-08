@@ -120,7 +120,7 @@ NSNumber *detectedBeaconMajor;
         [navigation pushViewController:details animated:NO];
         
         // Process the received notification
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+        //[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
 
         //The application received the notification from an inactive state, i.e. the user tapped the "View" button for the alert.
         //If the visible view controller in your view controller stack isn't the one you need then show the right one.
@@ -140,8 +140,7 @@ NSNumber *detectedBeaconMajor;
 -(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
     [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
 
 }
 
@@ -170,38 +169,45 @@ NSNumber *detectedBeaconMajor;
                inRegion:(CLBeaconRegion *)region {
     
     CLBeacon *closest=(CLBeacon*)[beacons firstObject];
-    if ([beacons count] > 0 && (![detectedBeaconMajor isEqual:closest.major]))
+   
+   
+    if ([beacons count] > 0 && (![detectedBeaconMajor isEqual:closest.major] && ![detectedBeaconMinor isEqual:closest.minor]))
     {
         detectedBeaconMinor =closest.minor;
         detectedBeaconMajor =closest.major;
 
         //CLearing notification center and lock screen notificaitons. Yeah, it's that weird
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+        //[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+        //[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
         
+        [[UIApplication sharedApplication] cancelAllLocalNotifications];
+
         
         
                //change the local notifacation name and add corresponding logic to handle new beacon detection inside the app (don't forget to change notificaitonName
        // NSDictionary* dict = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:closest.major,closest.minor, nil] forKeys:[NSArray arrayWithObjects:@"major",@"minor", nil]];
      //   [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
         
-        
+       Statistics* stat=[Statistics recordBeaconDetectedOn:[NSDate date] withMajor:closest.major andMinor:closest.minor];
         
         
         UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.alertBody = [InsightEngine generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor];
-        NSDictionary *infoDict = [NSDictionary dictionaryWithObject:closest.major forKey:@"BeaconMajor"];
+        notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor];
+        
+        
+        
+        NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:closest.major,@"BeaconMajor", nil];
+
+    
         notification.userInfo=infoDict;
         if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""])
         {
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
         }
-        if(![detectedBeaconMinor isEqual:closest.minor])
-        {
-            [Statistics recordBeaconDetectedOn:[NSDate date] withMajor:closest.major andMinor:closest.minor];
-                //beacon specific logic
-        }
+       
+        
+        
     }
 }
 

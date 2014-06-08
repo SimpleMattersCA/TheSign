@@ -83,10 +83,10 @@
 +(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicateMajor = [NSString stringWithFormat: @"(%@==%d)", Featured.colMajor, major.integerValue];
+    NSString *predicateMajor = [NSString stringWithFormat: @"(%@==%ld)", Featured.colMajor, (long)major.integerValue];
     if(minor!=nil)
     {
-        NSString *predicateMinor = [NSString stringWithFormat: @"(%@==%d)", Featured.colMinor, minor.integerValue];
+        NSString *predicateMinor = [NSString stringWithFormat: @"(%@==%ld)", Featured.colMinor, (long)minor.integerValue];
         request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor]];
     }
     else

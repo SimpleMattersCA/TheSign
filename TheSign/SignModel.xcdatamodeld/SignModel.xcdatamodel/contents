@@ -38,6 +38,7 @@
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="major" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="minor" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="openedOffer" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
     </entity>
     <entity name="TableTimestamp" representedClassName="TableTimestamp" syncable="YES">
         <attribute name="order" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
@@ -82,7 +83,7 @@
         <element name="Favourites" positionX="-2450" positionY="-523" width="128" height="73"/>
         <element name="Featured" positionX="-2477" positionY="-396" width="128" height="208"/>
         <element name="Link" positionX="-2754" positionY="-141" width="128" height="88"/>
-        <element name="Statistics" positionX="-2738" positionY="-421" width="128" height="88"/>
+        <element name="Statistics" positionX="-2745" positionY="-385" width="128" height="103"/>
         <element name="TableTimestamp" positionX="-2738" positionY="-523" width="128" height="103"/>
         <element name="Tag" positionX="-2063" positionY="-378" width="128" height="120"/>
         <element name="TagClass" positionX="-1962" positionY="-127" width="128" height="120"/>

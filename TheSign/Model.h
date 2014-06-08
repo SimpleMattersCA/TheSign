@@ -15,6 +15,11 @@
 
 @interface Model : NSObject 
 
+@property NSDate* weatherTimestamp;
+@property NSNumber* currentTemperature;
+@property NSString* currentWeather;
+
+
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
@@ -29,7 +34,6 @@
 
 
 //-(void) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor;
-
 
 + (Model*) sharedModel;
 

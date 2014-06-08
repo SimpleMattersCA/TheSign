@@ -12,21 +12,25 @@
 
 typedef NS_ENUM(NSInteger, SentenceType) {
     //it's hot/cold, would you like some.... Also we should track First snow
-    Weather,
+    S_Weather,
     //we're closing in 30 minutes so you still have a time to check out..
-    Time,
+    S_Time,
     //At the beginning of the winter, summer, fall and spring
-    Season,
+    S_Day,
     //if someone is visitting very often
-    Frequency,
+  //  ST_History,
     
     //based on what was marked as favourite
-    History
+    S_Preference,
 };
 
 @interface InsightEngine : NSObject
 
-+(NSString*)generateWelcomeTextForBeaconWithMajor: (NSNumber*)major andMinor:(NSNumber*)minor;
+
++ (InsightEngine*) sharedInsight;
+
+
+-(NSString*)generateWelcomeTextForBeaconWithMajor: (NSNumber*)major andMinor:(NSNumber*)minor;
 
 
 

@@ -21,6 +21,12 @@
 #import "TableTimestamp.h"
 #import "Parse/Parse.h"
 
+@interface Model()
+
+@property (strong) NSTimer *timer;
+
+@end
+
 @implementation Model
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -40,6 +46,9 @@
                                                      name:@"itemPulledFromCloud"
                                                    object:nil];
         
+        self.timer=[NSTimer scheduledTimerWithTimeInterval:1800 target:self selector:@selector(checkWeather:Temperature:) userInfo:nil repeats:YES];
+        [self.timer setTolerance:600];
+
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
        // [self deleteModel];
         [self performSelectorInBackground:@selector(checkModel) withObject:nil];
@@ -308,6 +317,24 @@
 }
 
 
+-(void)checkWeather
+{
+    PFQuery *query = [PFQuery queryWithClassName:@"WeatherData"];
+    [query orderByDescending:@"createdAt"];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseWeather, NSError *error) {
+        if (!error)
+        {
+            self.currentTemperature=parseWeather[@"currentTemp"];
+            self.currentWeather=parseWeather[@"summary"];
+            self.weatherTimestamp=parseWeather.createdAt;
+        }
+        else
+        {
+            // Log details of the failure
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+    }];
+}
 
 
 

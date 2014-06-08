@@ -18,7 +18,6 @@
 		553371CE18EA962500CC84F2 /* FeaturedDealCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 553371CD18EA962500CC84F2 /* FeaturedDealCell.m */; };
 		553371D018F0CF0900CC84F2 /* FeaturedDealCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 553371CF18F0CF0900CC84F2 /* FeaturedDealCell.xib */; };
 		553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E4F4218C714A3004F8312 /* HomeViewController.m */; };
-		5557BAFE1931BB1C00B256FF /* Statistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BAFD1931BB1C00B256FF /* Statistics.m */; };
 		5557BB0A1931BB1C00B256FF /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB091931BB1C00B256FF /* Business.m */; };
 		5557BB0D1931BB1C00B256FF /* TagClassConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB0C1931BB1C00B256FF /* TagClassConnection.m */; };
 		5557BB131931BB1D00B256FF /* Favourites.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB121931BB1D00B256FF /* Favourites.m */; };
@@ -51,6 +50,7 @@
 		55EE37DC18B7057C002A121C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55EE37DA18B7057C002A121C /* InfoPlist.strings */; };
 		55EE37DE18B7057C002A121C /* TheSignTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE37DD18B7057C002A121C /* TheSignTests.m */; };
 		55EE37F518B88326002A121C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37F418B88326002A121C /* SystemConfiguration.framework */; };
+		55F5699019418DB300D047C1 /* Statistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F5698F19418DB300D047C1 /* Statistics.m */; };
 		55F97E1718FDBFAC00E4610D /* FeaturedViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F97E1618FDBFAC00E4610D /* FeaturedViewHeader.m */; };
 		55F97E1A18FDBFC300E4610D /* FeaturedViewFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F97E1918FDBFC300E4610D /* FeaturedViewFooter.m */; };
 		55F97E1C18FDC1DE00E4610D /* FeaturedHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F97E1B18FDC1DE00E4610D /* FeaturedHeaderView.xib */; };
@@ -85,8 +85,6 @@
 		553371CF18F0CF0900CC84F2 /* FeaturedDealCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FeaturedDealCell.xib; sourceTree = "<group>"; };
 		553E4F4118C714A3004F8312 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		553E4F4218C714A3004F8312 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
-		5557BAFC1931BB1C00B256FF /* Statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Statistics.h; path = model/Statistics.h; sourceTree = "<group>"; };
-		5557BAFD1931BB1C00B256FF /* Statistics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Statistics.m; path = model/Statistics.m; sourceTree = "<group>"; };
 		5557BB081931BB1C00B256FF /* Business.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Business.h; path = model/Business.h; sourceTree = "<group>"; };
 		5557BB091931BB1C00B256FF /* Business.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Business.m; path = model/Business.m; sourceTree = "<group>"; };
 		5557BB0B1931BB1C00B256FF /* TagClassConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TagClassConnection.h; path = model/TagClassConnection.h; sourceTree = "<group>"; };
@@ -146,6 +144,8 @@
 		55EE37DB18B7057C002A121C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		55EE37DD18B7057C002A121C /* TheSignTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TheSignTests.m; sourceTree = "<group>"; };
 		55EE37F418B88326002A121C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		55F5698E19418DB300D047C1 /* Statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Statistics.h; path = model/Statistics.h; sourceTree = "<group>"; };
+		55F5698F19418DB300D047C1 /* Statistics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Statistics.m; path = model/Statistics.m; sourceTree = "<group>"; };
 		55F97E1518FDBFAC00E4610D /* FeaturedViewHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedViewHeader.h; sourceTree = "<group>"; };
 		55F97E1618FDBFAC00E4610D /* FeaturedViewHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedViewHeader.m; sourceTree = "<group>"; };
 		55F97E1818FDBFC300E4610D /* FeaturedViewFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedViewFooter.h; sourceTree = "<group>"; };
@@ -209,9 +209,9 @@
 			isa = PBXGroup;
 			children = (
 				55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */,
+				55F5698E19418DB300D047C1 /* Statistics.h */,
+				55F5698F19418DB300D047C1 /* Statistics.m */,
 				5557BB1A1931C28700B256FF /* SignEntityProtocol.h */,
-				5557BAFC1931BB1C00B256FF /* Statistics.h */,
-				5557BAFD1931BB1C00B256FF /* Statistics.m */,
 				5557BB111931BB1C00B256FF /* Favourites.h */,
 				5557BB121931BB1D00B256FF /* Favourites.m */,
 				5557BB2A1934588A00B256FF /* Parse */,
@@ -519,10 +519,10 @@
 				55B4AFEF1937D53700C5A71B /* BusinessListController.m in Sources */,
 				55EE37BF18B7057C002A121C /* main.m in Sources */,
 				55B4AFF7193929D200C5A71B /* DealListController.m in Sources */,
+				55F5699019418DB300D047C1 /* Statistics.m in Sources */,
 				55C882DF18E3F94F00E1C502 /* FeaturedViewController.m in Sources */,
 				553E4F4318C714A3004F8312 /* HomeViewController.m in Sources */,
 				5557BB201933FC3D00B256FF /* TagSet.m in Sources */,
-				5557BAFE1931BB1C00B256FF /* Statistics.m in Sources */,
 				55F97E1A18FDBFC300E4610D /* FeaturedViewFooter.m in Sources */,
 				5557BB131931BB1D00B256FF /* Favourites.m in Sources */,
 			);
@@ -607,7 +607,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos8.0;
 			};
 			name = Debug;
 		};
