@@ -47,6 +47,7 @@ typedef NS_ENUM(NSInteger, SignWeather) {
     SW_Rain,
     SW_Snow,
     SW_Wind,
+    SW_Fog,
     
     SW_Average
 };
@@ -215,8 +216,11 @@ typedef NS_ENUM(NSInteger, SignPreference) {
     
     //check the date
     SignDay day=[self getRelevantDay];
-    if (day!=SD_Average) [topics addObject:@(day)];
+    if (day!=SD_Average) [topics setObject:@(S_Day) forKey:@(day)];
+    
     //check the time
+    SignTime time=[self getRelevantTime];
+    if (time!=ST_Average) [topics setObject:@(S_Time) forKey:@(time)];
     
     //check the significant weather
     
@@ -225,8 +229,39 @@ typedef NS_ENUM(NSInteger, SignPreference) {
     return type;
 }
 
+-(SignTime) getRelevantTime
+{
+    SignTime time=ST_Average;
+    //get current time
+#error Missing implementation
+    //compare to lunch, morning and evening
+    return time;
+}
+
+-(SignWeather) getRelevantWeather
+{
+    SignWeather weather=SW_Average;
+    
+    //get current weather
+    NSString* curWeather=[[Model sharedModel] currentWeather];
+    NSNumber* curTemperature=[[Model sharedModel] currentTemperature];
+    
+    if(curTemperature.integerValue < 10) weather=SW_Cold;
+    if(curTemperature.integerValue > 25) weather=SW_Hot;
+    
+    if([curWeather isEqualToString:@"rain"]) weather=SW_Rain;
+    if([curWeather isEqualToString:@"wind"]) weather=SW_Wind;
+    if([curWeather isEqualToString:@"snow"]) weather=SW_Snow;
+    if([curWeather isEqualToString:@"fog"]) weather=SW_Fog;
+
+    return weather;
+}
+
+
 -(SignPreference) getRelevantPreference
 {
+#error Missing implementation
+
     //check the preference map the deal
 
 }

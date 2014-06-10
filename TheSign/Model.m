@@ -71,6 +71,26 @@
 }
 
 
+-(void)checkWeather
+{
+    PFQuery *query = [PFQuery queryWithClassName:@"WeatherData"];
+    [query orderByDescending:@"createdAt"];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseWeather, NSError *error) {
+        if (!error)
+        {
+            self.currentTemperature=parseWeather[@"currentTemp"];
+            self.currentWeather=parseWeather[@"summary"];
+            self.weatherTimestamp=parseWeather.createdAt;
+        }
+        else
+        {
+            // Log details of the failure
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+    }];
+}
+
+
 
 
 //check if we need to pull data from parse based on comparing timestamps of the tables.
@@ -317,24 +337,6 @@
 }
 
 
--(void)checkWeather
-{
-    PFQuery *query = [PFQuery queryWithClassName:@"WeatherData"];
-    [query orderByDescending:@"createdAt"];
-    [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseWeather, NSError *error) {
-        if (!error)
-        {
-            self.currentTemperature=parseWeather[@"currentTemp"];
-            self.currentWeather=parseWeather[@"summary"];
-            self.weatherTimestamp=parseWeather.createdAt;
-        }
-        else
-        {
-            // Log details of the failure
-            NSLog(@"Error: %@ %@", error, [error userInfo]);
-        }
-    }];
-}
 
 
 

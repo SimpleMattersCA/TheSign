@@ -15,6 +15,7 @@ Parse.Cloud.httpRequest({
   	var newWeather = new WeatherData();
   	/*console.log(result.currently.temperature);*/
   	newWeather.set("currentTemp",result.currently.temperature);
+  	newWeather.set("apparentTemp",result.currently.apparentTemperature);
   	newWeather.set("summary",result.currently.icon);
   	newWeather.save(null).then(function(message) {
     status.success('Success');
