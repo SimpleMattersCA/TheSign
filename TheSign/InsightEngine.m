@@ -56,6 +56,7 @@ typedef NS_ENUM(NSInteger, SignTime) {
     ST_Morning,
     ST_Lunch,
     ST_Evening,
+    ST_Night,
     
     ST_Average
 };
@@ -233,8 +234,13 @@ typedef NS_ENUM(NSInteger, SignPreference) {
 {
     SignTime time=ST_Average;
     //get current time
-#error Missing implementation
-    //compare to lunch, morning and evening
+    NSDateComponents *nowComp = [[NSCalendar currentCalendar] components:(NSHourCalendarUnit)  fromDate:[NSDate date]];
+    
+    if (nowComp.hour>=7 && nowComp.hour<9) time=ST_Morning;
+    if (nowComp.hour>=12 && nowComp.hour<13) time=ST_Lunch;
+    if (nowComp.hour>=16 && nowComp.hour<20) time=ST_Evening;
+    if (nowComp.hour>=20 && nowComp.hour<23) time=ST_Night;
+    
     return time;
 }
 
