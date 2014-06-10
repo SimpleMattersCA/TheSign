@@ -209,9 +209,9 @@
 			isa = PBXGroup;
 			children = (
 				55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */,
+				5557BB1A1931C28700B256FF /* SignEntityProtocol.h */,
 				55F5698E19418DB300D047C1 /* Statistics.h */,
 				55F5698F19418DB300D047C1 /* Statistics.m */,
-				5557BB1A1931C28700B256FF /* SignEntityProtocol.h */,
 				5557BB111931BB1C00B256FF /* Favourites.h */,
 				5557BB121931BB1D00B256FF /* Favourites.m */,
 				5557BB2A1934588A00B256FF /* Parse */,

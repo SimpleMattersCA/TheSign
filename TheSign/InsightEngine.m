@@ -73,22 +73,60 @@ typedef NS_ENUM(NSInteger, SignPreference) {
 
 @interface InsightEngine()
 
+
+@property NSDate* neYearsEve;
+@property NSDate* familyDay;
+@property NSDate* valentinesDay;
+@property NSDate* stPatricsDay;
+@property NSDate* goodFriday;
+@property NSDate* easterMonday;
+@property NSDate* mothersDay;
+@property NSDate* victoriaDay;
+@property NSDate* fathersDay;
+@property NSDate* canadaDay;
+@property NSDate* labourDay;
+@property NSDate* thanksgiving;
+@property NSDate* halloween;
+@property NSDate* remembrancesDay;
 @property NSDate* christmass;
-@property NSDate* newYear;
-
-
+@property NSDate* boxingDay;
 
 @end
 
 
 @implementation InsightEngine
 
+static NSString* errorWelcomingMessage=@"";
+
+-(void)initializeDates
+{
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *components = [[NSDateComponents alloc] init];
+    [components setYear:2014];
+    
+    
+    
+    
+    [components setDay:1];
+    [components setMonth:1];
+    self.neYearsEve=[calendar dateFromComponents:components];
+    [components setDay:17];
+    [components setMonth:2];
+    self.familyDay=[calendar dateFromComponents:components];
+    
+    [components setDay:25];
+    [components setMonth:12];
+    self.christmass=[calendar dateFromComponents:components];
+    
+    
+
+}
 
 - (id)init
 {
     if (self = [super init])
     {
-        
+        [self initializeDates];
         
     }
     return self;
@@ -140,7 +178,7 @@ typedef NS_ENUM(NSInteger, SignPreference) {
         {
             
             //1. choose the right sentence type and deal
-            SentenceType type=[self chooseTheRightMessageType:chosenOffer];
+            SentenceType type=[self chooseTheRightMessageTypeAndDeal:&chosenOffer];
             
             //2. prepare the sentence
             
@@ -167,17 +205,28 @@ typedef NS_ENUM(NSInteger, SignPreference) {
 }
 
 
--(NSString*)doWeatherMessageForOffer:(Featured*)deal
+-(NSString*)doWeatherMessageForOffer:(Featured*)deal AndConditionType:(SignWeather)type
 {
-    NSString *result;
-    
-    
-    return result;
-
+    switch (type) {
+        case SW_Cold:
+            return @"";
+        case SW_Hot:
+            return @"";
+        case SW_Rain:
+            return @"";
+        case SW_Fog:
+            return @"";
+        case SW_Snow:
+            return @"";
+        case SW_Wind:
+            return @"";
+        default:
+            return errorWelcomingMessage;
+    }
 }
 
 
--(NSString*)doPreferencesMessageForOffer:(Featured*)deal
+-(NSString*)doPreferencesMessageForOffer:(Featured*)deal AndConditionType:(SignPreference)type
 {
     NSString *result;
     
@@ -186,31 +235,44 @@ typedef NS_ENUM(NSInteger, SignPreference) {
     
 }
     
--(NSString*)doTimeMessageForOffer:(Featured*)deal
+-(NSString*)doTimeMessageForOffer:(Featured*)deal AndConditionType:(SignTime)type
 {
-    NSString *result;
-    
-    //morning, lunch, evening
-    
-    return result;
-    
+    switch (type) {
+        case ST_Morning:
+            return @"";
+        case ST_Lunch:
+            return @"";
+        case ST_Evening:
+            return @"";
+        case ST_Night:
+            return @"";
+        default:
+            return errorWelcomingMessage;
+    }
 }
 
--(NSString*)doDateMessageForOffer:(Featured*)deal
+-(NSString*)doDateMessageForOffer:(Featured*)deal AndConditionType:(SignDay)type
 {
-    NSString *result;
-    
-    
-    return result;
-    
+    switch (type) {
+        case SD_Monday:
+            return @"";
+        case SD_Friday:
+            return @"";
+        case SD_Workday:
+            return @"";
+        case SD_Weekend:
+            return @"";
+        case SD_ChristmasDay:
+            return @"";
+        default:
+            return errorWelcomingMessage;
+    }
 }
 
 
 -(SentenceType)chooseTheRightMessageTypeAndDeal:(Featured**)deal
 {
     SentenceType type;
-    
-    
     
     
     NSMutableDictionary *topics=[NSMutableDictionary dictionaryWithObject:@(S_Preference) forKey:@(S_Preference)];
@@ -224,6 +286,9 @@ typedef NS_ENUM(NSInteger, SignPreference) {
     if (time!=ST_Average) [topics setObject:@(S_Time) forKey:@(time)];
     
     //check the significant weather
+    SignWeather weather=[self getRelevantWeather];
+    if (weather!=SW_Average) [topics setObject:@(S_Weather) forKey:@(weather)];
+    
     
     
     
@@ -266,30 +331,36 @@ typedef NS_ENUM(NSInteger, SignPreference) {
 
 -(SignPreference) getRelevantPreference
 {
-#error Missing implementation
-
-    //check the preference map the deal
-
+    SignPreference preference=SP_Weak;
+    
+    
+    
+    return preference;
+    
 }
 
 -(SignDay) getRelevantDay
 {
     SignDay date=SD_Average;
-    NSDate *now=[NSDate date];
-    NSCalendar *calendar = [NSCalendar currentCalendar];
     
-    NSDateComponents *nowComp = [calendar components:(NSDayCalendarUnit | NSMonthCalendarUnit)  fromDate:now];
+    NSCalendar *calendar=[NSCalendar currentCalendar];
+    NSDate *rightNow=[NSDate date];
+    
+    NSDateComponents *nowYMD = [calendar components:(NSDayCalendarUnit | NSWeekdayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit)  fromDate:rightNow];
+    
+    //1-Sunday, 2-Monday..
+    NSInteger dayOfWeek=nowYMD.weekday;
+    
+    if(dayOfWeek==1 || dayOfWeek==7)
+        date=SD_Weekend;
+    else
+        date=dayOfWeek==2?SD_Monday:SD_Workday;
+    
+    if([[nowYMD date] isEqual:self.christmass]) date=SD_ChristmasDay;
+   
+    
 
-    NSDateComponents *christmasComp = [[NSDateComponents alloc] init];
-    [christmasComp setDay:25];
-    [christmasComp setMonth:11];
-    [christmasComp setYear:2014];
     
-    if([[nowComp date] isEqual:[christmasComp date]])
-    {
-        date=SD_ChristmasDay;
-        NSLog(@"herro");
-    }
     return date;
 }
 
@@ -314,7 +385,7 @@ typedef NS_ENUM(NSInteger, SignPreference) {
 -(NSString*)generateGreeting
 {
     NSArray *greetingOptions=[NSArray arrayWithObjects:@"Hi there!",@"Hello stranger!",@"Hi!",@"Hey!", nil];
-    int random=arc4random_uniform(greetingOptions.count);
+    int random=arc4random_uniform((short)greetingOptions.count);
     return greetingOptions[random];
 }
 
