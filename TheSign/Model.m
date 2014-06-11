@@ -50,7 +50,7 @@
         [self.timer setTolerance:600];
 
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
-       // [self deleteModel];
+        [self deleteModel];
         [self performSelectorInBackground:@selector(checkModel) withObject:nil];
         
     }
@@ -130,7 +130,9 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"databaseUpdated" object:self];
 
 }
-
+/**
+ deleting the model
+ */
 -(void)deleteModel
 {
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"SignModel.sqlite"];
@@ -350,5 +352,44 @@
 
 
 
+
+
+
+#pragma mark - Sending requests for commonly used methods to approrpiate classes
+//Commonly used methods from Statistics Class
++(Statistics*) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor
+{
+    return [Statistics recordBeaconDetectedOn:date withMajor:major andMinor:minor];
+}
++(NSArray*) getStatisticsFrom:(NSDate*) startDate To:(NSDate*) endDate ForMajor:(NSNumber*) major andMinor:(NSNumber*)minor
+{
+    return [Statistics getStatisticsFrom:startDate To:endDate ForMajor:major andMinor:minor];
+}
+
+//Commonly used methods from Business Class
++(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier
+{
+    return [Business getBusinessNameByBusinessID:identifier];
+}
++(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier
+{
+    return [Business getWelcomeTextByBusinessID:identifier];
+}
++(NSArray*) getBusinessesByType:(NSString*)type
+{
+    return [Business getBusinessesByType:type];
+}
++(NSArray*) getBusinessTypes
+{
+    return [Business getBusinessTypes];
+}
++(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location
+{
+    return [Business getClosestBusinessToLocation:location];
+}
++(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier
+{
+    return [Business getLocationObjectByBusinessID:identifier];
+}
 
 @end

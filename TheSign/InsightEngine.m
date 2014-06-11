@@ -178,28 +178,39 @@ static NSString* errorWelcomingMessage=@"";
         {
             
             //1. choose the right sentence type and deal
-            SentenceType type=[self chooseTheRightMessageTypeAndDeal:&chosenOffer];
+            NSDictionary* result=[self chooseTheRightMessageTypeAndDeal];
+            chosenOffer=[result objectForKey:@"Deal"];
+            NSNumber* messageType=[result objectForKey:@"Type"];
+            NSNumber* messageKind=[result objectForKey:@"Kind"];
             
             //2. prepare the sentence
-            
-            
-            
-            
+            switch (messageType.integerValue) {
+                case S_Weather:
+                    [self doWeatherMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
+                    break;
+                case S_Time:
+                    [self doTimeMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
+                    break;
+                case S_Day:
+                    [self doDateMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
+                    break;
+                case S_Preference:
+                    [self doPreferencesMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
+                    break;
+                default:
+                    NSLog(@"Unrecognized message type");
+            }
             
         
         }
         //generate "store is closed" message
         else
         {
-#pragma mark - of course this should be smarter than this, treat is as a placeholders
+#warning working hours, days should be accounted
             //show working hours
             result=[NSString stringWithFormat:@"Sorry but %@ is closed, see you next time!", bTitle];
         }
-        
-        
     }
-   
-    
     
     return result;
 }
@@ -270,9 +281,11 @@ static NSString* errorWelcomingMessage=@"";
 }
 
 
--(SentenceType)chooseTheRightMessageTypeAndDeal:(Featured**)deal
+-(NSDictionary*)chooseTheRightMessageTypeAndDeal
 {
     SentenceType type;
+    NSInteger chosenMessage;
+    Featured* chosenDeal;
     
     
     NSMutableDictionary *topics=[NSMutableDictionary dictionaryWithObject:@(S_Preference) forKey:@(S_Preference)];
@@ -288,11 +301,12 @@ static NSString* errorWelcomingMessage=@"";
     //check the significant weather
     SignWeather weather=[self getRelevantWeather];
     if (weather!=SW_Average) [topics setObject:@(S_Weather) forKey:@(weather)];
+
+    
+    int random=arc4random_uniform((short)topics.count);
     
     
-    
-    
-    return type;
+    return [NSDictionary dictionaryWithObjects:@[@(type),@(chosenMessage),chosenDeal] forKeys:@[@"Type",@"Kind",@"Deal"]];
 }
 
 -(SignTime) getRelevantTime
@@ -357,8 +371,8 @@ static NSString* errorWelcomingMessage=@"";
         date=dayOfWeek==2?SD_Monday:SD_Workday;
     
     if([[nowYMD date] isEqual:self.christmass]) date=SD_ChristmasDay;
-   
-    
+   //....
+#warning finish conditions for days
 
     
     return date;
@@ -385,6 +399,7 @@ static NSString* errorWelcomingMessage=@"";
 -(NSString*)generateGreeting
 {
     NSArray *greetingOptions=[NSArray arrayWithObjects:@"Hi there!",@"Hello stranger!",@"Hi!",@"Hey!", nil];
+#warning verify the list of greetings
     int random=arc4random_uniform((short)greetingOptions.count);
     return greetingOptions[random];
 }

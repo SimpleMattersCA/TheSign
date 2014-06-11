@@ -16,10 +16,7 @@ typedef NS_ENUM(NSInteger, SentenceType) {
     //we're closing in 30 minutes so you still have a time to check out..
     S_Time,
     //At the beginning of the winter, summer, fall and spring
-    S_Day,
-    //if someone is visitting very often
-  //  ST_History,
-    
+    S_Day,    
     //based on what was marked as favourite
     S_Preference,
 };

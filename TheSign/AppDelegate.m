@@ -10,7 +10,6 @@
 #import "DetailsViewController.h"
 #import "Model.h"
 #import "InsightEngine.h"
-#import "Statistics.h"
 #import "WelcomeScreenViewController.h"
 
 @import UIKit.UINavigationController;
@@ -28,7 +27,7 @@
 NSUUID *proximityUUID;
 
 
-
+CLCircularRegion* currentlyMonitoredRegion;
 NSNumber *detectedBeaconMinor;
 NSNumber *detectedBeaconMajor;
 
@@ -45,10 +44,11 @@ NSNumber *detectedBeaconMajor;
 
     [self.window makeKeyAndVisible];
 
-    [self prepareForBeacons];
+    [self startLocationMonitoring];
+    
     
     //first-time ever defaults check and set
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"FirstRun"]!=YES)
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"FirstRun"]!=NO)
     {
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
         WelcomeScreenViewController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"WelcomeScreenView"];
@@ -68,12 +68,17 @@ NSNumber *detectedBeaconMajor;
     return YES;
 }
 
--(void) prepareForBeacons
+-(void) startLocationMonitoring
 {
     if(!_locationManager)
     {
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
+        
+        //Geofence monitoring
+        [self.locationManager startMonitoringSignificantLocationChanges];
+        
+        //monitoring for beacons with a specific UUID
         proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
         [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
         
@@ -81,7 +86,16 @@ NSNumber *detectedBeaconMajor;
 }
 
 
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
 
+    //the last object is the most recent locaiton. We don't really pay attention to those that we missed (at the beginning of the array)
+    CLLocation* location=locations.lastObject;
+    CLLocation* closestBusiness=[Model getClosestBusinessToLocation:location];
+    [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion];
+    currentlyMonitoredRegion=[[CLCircularRegion alloc] initWithCenter:closestBusiness.coordinate radius:10 identifier:@"ClosestBusiness"];
+#warning accuracy is a big question here
+    [self.locationManager startMonitoringForRegion:currentlyMonitoredRegion];
+}
 
 
 /*- (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
@@ -156,11 +170,10 @@ NSNumber *detectedBeaconMajor;
     beaconRegion.notifyEntryStateOnDisplay=YES;
     beaconRegion.notifyOnEntry=NO;
     beaconRegion.notifyOnExit=YES;
-    
+
     // Register the beacon region with the location manager.
     [self.locationManager startMonitoringForRegion:beaconRegion];
     [self.locationManager startRangingBeaconsInRegion:beaconRegion];
-
 }
 
 // Delegate method from the CLLocationManagerDelegate protocol.
@@ -188,7 +201,8 @@ NSNumber *detectedBeaconMajor;
        // NSDictionary* dict = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:closest.major,closest.minor, nil] forKeys:[NSArray arrayWithObjects:@"major",@"minor", nil]];
      //   [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
         
-       Statistics* stat=[Statistics recordBeaconDetectedOn:[NSDate date] withMajor:closest.major andMinor:closest.minor];
+       //Statistics* stat=
+        [Model recordBeaconDetectedOn:[NSDate date] withMajor:closest.major andMinor:closest.minor];
         
         
         UILocalNotification *notification = [[UILocalNotification alloc] init];

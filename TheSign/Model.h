@@ -11,12 +11,18 @@
 #import "Parse/Parse.h"
 
 
-
-
+@class Business,Statistics;
+/**
+ Encapsulated some of the basics of the model such as pulling data from Parse and filling CoreData
+ */
 @interface Model : NSObject 
 
+
+///When the weather was updated
 @property NSDate* weatherTimestamp;
+///The current temperature for Vancouver
 @property NSNumber* currentTemperature;
+///The description of weather conditions in Vancouver
 @property NSString* currentWeather;
 
 
@@ -24,23 +30,31 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-//@property (nonatomic, strong) NSArray* businesses;
-
-//-(Business*) getBusinessByID:(NSInteger)identifier;
-//-(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
-//-(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
-//return the array of offers for a detected beacon
-//-(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
-
-
-//-(void) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor;
-
 + (Model*) sharedModel;
 
 - (NSURL *)applicationDocumentsDirectory;
 
+/**
+ Getting data from Parse and putting it to CoreData
+ */
 - (void) pullFromCloud;
 
 -(void) saveContext;
+
+
+//********* Commonly used methods from Statistics Class *********//
++(Statistics*) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor;
++(NSArray*) getStatisticsFrom:(NSDate*) startDate To:(NSDate*) endDate ForMajor:(NSNumber*) major andMinor:(NSNumber*)minor;
+
+//********* Commonly used methods from Business Class *********//
++(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
++(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
++(NSArray*) getBusinessesByType:(NSString*)type;
++(NSArray*) getBusinessTypes;
++(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
++(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier;
+
+
+
 
 @end

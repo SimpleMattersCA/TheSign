@@ -13,7 +13,7 @@
 
 
 
-@class Featured,PFObject;
+@class Featured,PFObject,CLLocation;
 
 @interface Business : NSManagedObject <SignEntityProtocol>
 
@@ -27,12 +27,20 @@
 @property (nonatomic, retain) NSString * businessType;
 @property (nonatomic, retain) NSSet *featuredOffers;
 @property (nonatomic, retain) NSSet *links;
+@property (nonatomic, retain) NSNumber *locationLatt;
+@property (nonatomic, retain) NSNumber *locationLong;
+
+
 
 
 +(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
 +(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
 +(NSArray*) getBusinessesByType:(NSString*)type;
 +(NSArray*) getBusinessTypes;
++(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
+
++(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier;
+
 
 +(NSString*)colName;
 +(NSString*)colLogo;
@@ -41,6 +49,10 @@
 +(NSString*)colWorkingHoursEnd;
 +(NSString*)colWorkingHoursStart;
 +(NSString*)colBusinessType;
++(NSString*)colLocationLong;
++(NSString*)colLocationLatt;
+
+
 
 +(NSString*)pName;
 +(NSString*)pLogo;
@@ -49,7 +61,7 @@
 +(NSString*)pWorkingHoursEnd;
 +(NSString*)pWorkingHoursStart;
 +(NSString*)pBusinessType;
-
++(NSString*)pLocation;
 
 
 @end

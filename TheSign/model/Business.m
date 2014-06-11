@@ -23,6 +23,8 @@
 @dynamic businessType;
 @dynamic featuredOffers;
 @dynamic links;
+@dynamic locationLatt;
+@dynamic locationLong;
 
 
 +(NSString*) entityName {return @"Business";}
@@ -35,6 +37,8 @@
 +(NSString*)colWorkingHoursEnd {return @"workingHoursEnd";}
 +(NSString*)colWorkingHoursStart {return @"workingHoursStart";}
 +(NSString*)colBusinessType {return @"businessType";}
++(NSString*)colLocationLong {return @"locationLong";}
++(NSString*)colLocationLatt {return @"locaitonLatt";}
 
 +(NSString*)pName {return Business.colName;}
 +(NSString*)pLogo {return Business.colLogo;}
@@ -43,23 +47,39 @@
 +(NSString*)pWorkingHoursEnd {return Business.colWorkingHoursEnd;}
 +(NSString*)pWorkingHoursStart {return Business.colWorkingHoursStart;}
 +(NSString*)pBusinessType {return Business.colBusinessType;}
++(NSString*)pLocation {return @"location";}
 
-+(Business*) getByID:(NSString*)identifier
+
+static NSMutableDictionary* businessLocations;
+
++(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
-    NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-    
-    if(error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return nil;
-    }
-    else
-        return (Business*)result.firstObject;
+    return [businessLocations objectForKey:@(identifier)];
 }
+
++(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location
+{
+    NSArray* businesses=[self getBusinessesByType:nil];
+    
+    CLLocationDistance minDistance;
+    CLLocation *closestLocation = nil;
+    
+    for (Business *business in businesses) {
+        
+        CLLocation* bizlocation=[businessLocations objectForKey:business.pObjectID];
+        CLLocationDistance distance = [bizlocation distanceFromLocation:location];
+        
+        if (distance <= minDistance
+            || closestLocation == nil) {
+            minDistance = distance;
+            closestLocation = bizlocation;
+        }
+    }
+    return closestLocation;
+}
+
+
+
 
 +(NSArray*) getBusinessTypes
 {
@@ -127,6 +147,23 @@
 }
 
 
++(Business*) getByID:(NSString*)identifier
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
+    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    NSError *error;
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    else
+        return (Business*)result.firstObject;
+}
+
 +(void)createFromParseObject:(PFObject *)object
 {
     Business *business = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
@@ -138,7 +175,14 @@
     business.workingHoursStart=object[Business.pWorkingHoursStart];
     business.workingHoursEnd=object[Business.pWorkingHoursEnd];
     business.businessType=object[Business.pBusinessType];
+    PFGeoPoint *bizLocation=object[Business.pLocation];
+    business.locationLong=[NSNumber numberWithDouble:bizLocation.longitude];
+    business.locationLatt=[NSNumber numberWithDouble:bizLocation.latitude];
     
+    if(!businessLocations) businessLocations=[NSMutableDictionary dictionary];
+    CLLocation* location=[[CLLocation alloc] initWithLatitude:business.locationLatt.doubleValue longitude:business.locationLong.doubleValue];
+    [businessLocations setObject:location forKey:business.pObjectID];
+
     PFFile *logo=object[Business.pLogo];
     
     NSError *error;
@@ -154,7 +198,6 @@
     }
     else
         NSLog(@"%@",[error localizedDescription]);
-    
 }
 
 
