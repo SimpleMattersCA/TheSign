@@ -17,6 +17,7 @@
 - (void)setUp
 {
     [super setUp];
+    [[Model sharedModel] checkModel];
     // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
@@ -28,25 +29,7 @@
 
 - (void)testExample
 {
-    NSDate *now=[NSDate date];
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *christmasComp = [[NSDateComponents alloc] init];
-    [christmasComp setDay:06];
-    [christmasComp setMonth:06];
-    //[christmasComp setYear:2014];
-    NSDate* christmas=[calendar dateFromComponents:christmasComp];
-
-    NSDateComponents *nowComp = [calendar components:(NSDayCalendarUnit | NSMonthCalendarUnit)  fromDate:now];
     
-
-    
-    now=[calendar dateFromComponents:nowComp];
-    if([now isEqual:christmas])
-    {
-        NSLog(@"herro");
-        return;
-    }
-
     XCTFail(@"Din't Work");
 }
 

@@ -17,8 +17,11 @@
 
 @property (nonatomic, retain) Featured *favouriteOffer;
 @property (nonatomic, retain) NSDate *recordedDate;
+@property (nonatomic, retain) NSNumber *liked;
 
-+(Favourites*) saveFavourite:(Featured*)offer onDate:(NSDate*) date;
+
++(Favourites*) savePreference:(Featured*)offer Liked:(Boolean)liked onDate:(NSDate*) date;
+
 
 +(NSArray*) getFavourites;
 

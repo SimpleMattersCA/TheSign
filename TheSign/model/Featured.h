@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSNumber * minor;
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSString * title;
+@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * videoUrl;
 @property (nonatomic, retain) NSNumber * active;
 @property (nonatomic, retain) NSSet *favourited;
@@ -34,22 +35,23 @@
 +(NSString*)colVideoUrl;
 +(NSString*)colParentBusiness;
 +(NSString*)colActive;
++(NSString*)colName;
+
 
 +(NSString*)pDetails;
 +(NSString*)pImage;
-+(NSString*)pMajor;
 +(NSString*)pMinor;
 +(NSString*)pTitle;
 +(NSString*)pVideoUrl;
 +(NSString*)pParentBusiness;
 +(NSString*)pActive;
-
++(NSString*)pName;
 
 
 +(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
 //+(NSArray*) getOffersForBusiness:(Business*)business;
 
--(void) recordFavourite;
+-(void) recordFavourite:(Boolean)liked;
 
 @end
 

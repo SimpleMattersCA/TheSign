@@ -15,6 +15,7 @@
         <relationship name="links" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Link" inverseName="parentBusiness" inverseEntity="Link" syncable="YES"/>
     </entity>
     <entity name="Favourites" representedClassName="Favourites" syncable="YES">
+        <attribute name="liked" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="recordedDate" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="favouriteOffer" maxCount="1" deletionRule="Nullify" destinationEntity="Featured" inverseName="favourited" inverseEntity="Featured" syncable="YES"/>
     </entity>
@@ -24,6 +25,7 @@
         <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="major" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="minor" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
         <attribute name="videoUrl" optional="YES" attributeType="String" syncable="YES"/>
@@ -82,8 +84,8 @@
     </entity>
     <elements>
         <element name="Business" positionX="-2513" positionY="-144" width="128" height="225"/>
-        <element name="Favourites" positionX="-2450" positionY="-523" width="128" height="73"/>
-        <element name="Featured" positionX="-2477" positionY="-396" width="128" height="208"/>
+        <element name="Favourites" positionX="-2450" positionY="-523" width="128" height="88"/>
+        <element name="Featured" positionX="-2477" positionY="-396" width="128" height="225"/>
         <element name="Link" positionX="-2754" positionY="-141" width="128" height="88"/>
         <element name="Statistics" positionX="-2745" positionY="-385" width="128" height="103"/>
         <element name="TableTimestamp" positionX="-2738" positionY="-523" width="128" height="103"/>

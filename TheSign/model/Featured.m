@@ -25,6 +25,7 @@
 @dynamic active;
 @dynamic featuredTagSets;
 @dynamic favourited;
+@dynamic name;
 
 +(NSString*) entityName {return @"Featured";}
 +(NSString*) parseEntityName {return @"Info";}
@@ -37,16 +38,16 @@
 +(NSString*)colVideoUrl {return @"videoUrl";}
 +(NSString*)colParentBusiness {return @"parentBusiness";}
 +(NSString*)colActive {return @"active";}
++(NSString*)colName {return @"name";}
 
 +(NSString*)pDetails {return @"description";}
 +(NSString*)pImage {return @"picture";}
-+(NSString*)pMajor {return Featured.colMajor;}
 +(NSString*)pMinor {return Featured.colMinor;}
 +(NSString*)pTitle {return @"featured";}
 +(NSString*)pVideoUrl {return @"video";}
 +(NSString*)pParentBusiness {return @"BusinessID";}
 +(NSString*)pActive {return Featured.colActive;}
-
++(NSString*)pName{return Featured.colName;}
 
 +(Featured*) getByID:(NSString*)identifier
 {
@@ -66,9 +67,9 @@
 }
 
 
--(void) recordFavourite
+-(void) recordFavourite:(Boolean)liked
 {
-    Favourites* newFav=[Favourites saveFavourite:self onDate:[NSDate date]];
+    Favourites* newFav=[Favourites savePreference:self Liked:liked onDate:[NSDate date]];
     [self addFavouritedObject:newFav];
 }
 
@@ -124,8 +125,8 @@
     deal.details=object[Featured.pDetails];
     deal.videoUrl=object[Featured.pVideoUrl];
     if(object[Featured.pActive]!=nil) deal.active=object[Featured.pActive];
-    if(object[Featured.pMajor]!=nil) deal.major=object[Featured.pMajor];
     deal.minor=object[Featured.pMinor];
+    if(object[Featured.pName]!=nil) deal.name=object[Featured.pName];
     PFFile *image=object[Featured.pImage];
     
     NSError *error;
@@ -151,6 +152,7 @@
     if (!error)
     {
         Business *linkedBusiness=[Business getByID:(NSString*)(retrievedBusiness.objectId)];
+        deal.major=linkedBusiness.uid;
         deal.parentBusiness = linkedBusiness;
         [linkedBusiness addFeaturedOffersObject:deal];
     }

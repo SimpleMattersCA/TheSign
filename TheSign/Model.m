@@ -50,7 +50,7 @@
         [self.timer setTolerance:600];
 
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
-        [self deleteModel];
+     //   [self deleteModel];
         [self performSelectorInBackground:@selector(checkModel) withObject:nil];
         
     }
@@ -208,9 +208,9 @@
         {
             [targetClass createFromParseObject:object];
         }
-    //    [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud"
-    //                                                        object:self
-    //                                                      userInfo:[NSDictionary dictionaryWithObject:entityName forKey:@"Entity"]];
+       // [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud"
+     //                                                       object:self
+        //                                                  userInfo:[NSDictionary dictionaryWithObject:entityName forKey:@"Entity"]];
         [self saveContext];
     }
     else

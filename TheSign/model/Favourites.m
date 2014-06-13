@@ -14,18 +14,20 @@
 
 @dynamic favouriteOffer;
 @dynamic recordedDate;
+@dynamic liked;
 
 +(NSString*) entityName
 {
     return @"Favourites";
 }
 
-+(Favourites*) saveFavourite:(Featured*)offer onDate:(NSDate*) date
++(Favourites*) savePreference:(Featured*)offer Liked:(Boolean)liked onDate:(NSDate*) date;
 {
     Favourites *newFav = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                         inManagedObjectContext:[Model sharedModel].managedObjectContext];
     newFav.favouriteOffer=offer;
     newFav.recordedDate=date;
+    newFav.liked=@(liked);
     [[Model sharedModel] saveContext];
     return newFav;
 }

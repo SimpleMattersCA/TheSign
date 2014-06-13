@@ -151,7 +151,7 @@ static NSString* errorWelcomingMessage=@"";
     Featured* chosenOffer;
     NSArray* featuredOffers=[Featured getOffersByMajor:major andMinor:minor];
     
-#pragma mark Choose between sentece types not randomly but based on what could be more relevant
+//Choose between sentece types not randomly but based on what could be more relevant
     
     if(featuredOffers!=nil && featuredOffers.count!=0)
     {
@@ -170,7 +170,7 @@ static NSString* errorWelcomingMessage=@"";
         NSInteger curTime=hour*100+minute;
         
         
-#pragma mark - this is fucking wrong, we gotta check when do they work, like what if they work on weekends?
+#warning we gotta check when do they work, like what if they work on weekends?
         //BOOL isFriday=day==6?YES:NO;
         
         //if the store is open right now
@@ -283,8 +283,8 @@ static NSString* errorWelcomingMessage=@"";
 
 -(NSDictionary*)chooseTheRightMessageTypeAndDeal
 {
-    SentenceType type;
-    NSInteger chosenMessage;
+    NSNumber* chosenType;
+    NSNumber* chosenMessage;
     Featured* chosenDeal;
     
     
@@ -303,10 +303,16 @@ static NSString* errorWelcomingMessage=@"";
     if (weather!=SW_Average) [topics setObject:@(S_Weather) forKey:@(weather)];
 
     
+    
+    
     int random=arc4random_uniform((short)topics.count);
     
+   
+    chosenMessage=topics.allKeys[random];
+    chosenType=topics[chosenMessage];
+
     
-    return [NSDictionary dictionaryWithObjects:@[@(type),@(chosenMessage),chosenDeal] forKeys:@[@"Type",@"Kind",@"Deal"]];
+    return [NSDictionary dictionaryWithObjects:@[chosenType,chosenMessage,chosenDeal] forKeys:@[@"Type",@"Kind",@"Deal"]];
 }
 
 -(SignTime) getRelevantTime
@@ -334,8 +340,8 @@ static NSString* errorWelcomingMessage=@"";
     if(curTemperature.integerValue < 10) weather=SW_Cold;
     if(curTemperature.integerValue > 25) weather=SW_Hot;
     
-    if([curWeather isEqualToString:@"rain"]) weather=SW_Rain;
     if([curWeather isEqualToString:@"wind"]) weather=SW_Wind;
+    if([curWeather isEqualToString:@"rain"]) weather=SW_Rain;
     if([curWeather isEqualToString:@"snow"]) weather=SW_Snow;
     if([curWeather isEqualToString:@"fog"]) weather=SW_Fog;
 
@@ -380,21 +386,6 @@ static NSString* errorWelcomingMessage=@"";
 
 
 
-//returning the most relevant offer for the client at this moment
-/*-(Featured*)chooseTheRightOfferFrom:(NSArray*)offerArray ForType:(SentenceType)type
-{
-    Featured *result;
-    
-    //for now, take randomly
-    //int offerId=arc4random_uniform(offerArray.count);
-    //result=offerArray[offerId];
-    //get the preference cloud of tags
-    
-    //get tags for the offer
-    
-    
-    return result;
-}*/
 
 -(NSString*)generateGreeting
 {

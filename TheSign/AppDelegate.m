@@ -41,7 +41,10 @@ NSNumber *detectedBeaconMajor;
     [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
                   clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
-
+    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
+     UIRemoteNotificationTypeAlert|
+     UIRemoteNotificationTypeSound];
+    
     [self.window makeKeyAndVisible];
 
     [self startLocationMonitoring];
@@ -225,7 +228,22 @@ NSNumber *detectedBeaconMajor;
     }
 }
 
+#pragma mark - Push notifications from Parse
 
+- (void)application:(UIApplication *)application
+didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    // Store the deviceToken in the current installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    [currentInstallation saveInBackground];
+}
+
+- (void)application:(UIApplication *)application
+didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [PFPush handlePush:userInfo];
+    [[Model sharedModel] checkModel];
+}
 
 
 - (void)applicationWillResignActive:(UIApplication *)application

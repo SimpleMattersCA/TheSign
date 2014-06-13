@@ -39,6 +39,7 @@
  */
 - (void) pullFromCloud;
 
+
 -(void) saveContext;
 
 
@@ -54,7 +55,12 @@
 +(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
 +(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier;
 
+//********* Commonly used methods from Favourites *********//
 
+
+
+//********* For testign purpoces *********//
+-(void)checkModel;
 
 
 @end
