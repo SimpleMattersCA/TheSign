@@ -156,26 +156,26 @@ static NSString* errorWelcomingMessage=@"";
     if(featuredOffers!=nil && featuredOffers.count!=0)
     {
         //all offers share the same business so we pick the first one just to get its business hours
-        NSString *bTitle=((Featured*)featuredOffers[0]).parentBusiness.name;
-        NSNumber *bOpen=((Featured*)featuredOffers[0]).parentBusiness.workingHoursStart;
-        NSNumber *bClose=((Featured*)featuredOffers[0]).parentBusiness.workingHoursEnd;
+     //   NSString *bTitle=((Featured*)featuredOffers[0]).parentBusiness.name;
+     //   NSNumber *bOpen=((Featured*)featuredOffers[0]).parentBusiness.workingHoursStart;
+     //   NSNumber *bClose=((Featured*)featuredOffers[0]).parentBusiness.workingHoursEnd;
         
-        NSDate *curDate=[NSDate date];
+     //   NSDate *curDate=[NSDate date];
         #pragma mark - what if the user set monday as the first day in the calendar?
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSWeekCalendarUnit)  fromDate:curDate];
-    //    NSInteger hour = [components hour];
-      //  NSInteger minute = [components minute];
+     //   NSCalendar *calendar = [NSCalendar currentCalendar];
+     //   NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSWeekCalendarUnit)  fromDate:curDate];
+     //   NSInteger hour = [components hour];
+     //   NSInteger minute = [components minute];
      //   NSInteger day=[components weekday];
-      //  NSInteger curTime=hour*100+minute;
+     //   NSInteger curTime=hour*100+minute;
         
         
-#warning we gotta check when do they work, like what if they work on weekends?
+//#warning we gotta check when do they work, like what if they work on weekends?
         //BOOL isFriday=day==6?YES:NO;
         
         //if the store is open right now
-     //   if (curTime<bClose.integerValue && curTime>=bOpen.integerValue)
-      //  {
+        //if (curTime<bClose.integerValue && curTime>=bOpen.integerValue)
+        //{
             
             //1. choose the right sentence type and deal
             NSDictionary* result=[self chooseTheRightMessageTypeAndDeal];
@@ -202,7 +202,7 @@ static NSString* errorWelcomingMessage=@"";
             }
             
         
-    //    }
+      //}
         //generate "store is closed" message
      /*   else
         {

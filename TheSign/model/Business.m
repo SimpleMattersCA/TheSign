@@ -51,6 +51,9 @@
 ///One business can have multiple locations, this dictionary contains pairs CLLocation / objectID
 static NSMutableDictionary* businessLocations;
 
+//just so I don't have to create another CoreData entity and fuck with the synchronization we gonna store business types in a hashtable. God I love hash tables. They sounds like hash browns..
+static NSMutableArray* businessTypes;
+
 +(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier
 {
     return [businessLocations objectForKey:@(identifier)];
@@ -82,7 +85,7 @@ static NSMutableDictionary* businessLocations;
 
 +(NSArray*) getBusinessTypes
 {
-    return [NSArray arrayWithObjects:@"Businesses",nil];
+    return [NSArray arrayWithArray:businessTypes];
 }
 
 +(NSArray*) getBusinessesByType:(NSString*)type
@@ -172,6 +175,7 @@ static NSMutableDictionary* businessLocations;
     business.welcomeText=object[P_WELCOMETEXT];
     if(object[P_UID]!=nil) business.uid=object[P_UID];
     business.businessType=object[P_TYPE];
+    if(![businessTypes containsObject:business.businessType]) [businessTypes addObject:business.businessType];
     PFGeoPoint *bizLocation=object[P_LOCATION];
     business.locationLong=@(bizLocation.longitude);
     business.locationLatt=@(bizLocation.latitude);
