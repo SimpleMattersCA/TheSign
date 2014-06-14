@@ -2,11 +2,12 @@
 //  Statistics.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-06-05.
+//  Created by Andrey Chudnovskiy on 2014-06-13.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
 #import "Statistics.h"
+#import "Featured.h"
 #import "Model.h"
 
 @implementation Statistics
@@ -14,15 +15,25 @@
 @dynamic date;
 @dynamic major;
 @dynamic minor;
-@dynamic openedOffer;
+@dynamic wasOpened;
+@dynamic liked;
+@dynamic referenceOffer;
 
 +(NSString*) entityName {return @"Statistics";}
 +(NSString*) colMajor {return @"major";}
 +(NSString*) colMinor {return @"minor";}
 +(NSString*) colDate {return @"date";}
-+(NSString*) colOpenedOffer {return @"openedOffer";}
++(NSString*) colWasOpened {return @"wasOpened";}
++(NSString*) colLiked {return @"liked";}
++(NSString*) colReferenceOffer {return @"referenceOffer";}
 
-
+-(void) savePreference:(Featured*)offer Liked:(Boolean)liked
+{
+    self.referenceOffer=offer;
+    [offer addRecordsObject:self];
+    self.liked=@(liked);
+    [[Model sharedModel] saveContext];
+}
 
 
 +(NSArray*) getStatisticsFrom:(NSDate*) startDate To:(NSDate*) endDate ForMajor:(NSNumber*) major andMinor:(NSNumber*)minor
@@ -80,6 +91,5 @@
      #pragma mark - do a callback with processing the result of the save
      [newStatistics saveEventually];*/
 }
-
 
 @end

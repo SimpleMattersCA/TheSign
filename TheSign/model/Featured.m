@@ -2,52 +2,56 @@
 //  Featured.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-05-24.
+//  Created by Andrey Chudnovskiy on 2014-06-13.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
 #import "Featured.h"
 #import "Business.h"
-#import "Favourites.h"
+#import "Statistics.h"
 #import "TagSet.h"
 #import "Model.h"
 
+#define CD_NAME (@"name")
+#define CD_TITLE (@"title")
+#define CD_DETAILS (@"details")
+#define CD_IMAGE (@"image")
+#define CD_MAJOR (@"major")
+#define CD_MINOR (@"minor")
+#define CD_VIDEO (@"videoUrl")
+#define CD_BUSINESS (@"parentBusiness")
+#define CD_ACIVE (@"active")
+
+#define P_NAME (@"name")
+#define P_TITLE (@"featured")
+#define P_DETAILS (@"description")
+#define P_IMAGE (@"picture")
+#define P_MINOR (@"minor")
+#define P_VIDEO (@"video")
+#define P_BUSINESS (@"BusinessID")
+#define P_ACIVE (@"active")
+
+
+
 @implementation Featured
 
-@dynamic pObjectID;
+@dynamic active;
 @dynamic details;
 @dynamic image;
 @dynamic major;
 @dynamic minor;
+@dynamic pObjectID;
 @dynamic title;
 @dynamic videoUrl;
-@dynamic parentBusiness;
-@dynamic active;
-@dynamic featuredTagSets;
-@dynamic favourited;
 @dynamic name;
+@dynamic featuredTagSets;
+@dynamic parentBusiness;
+@dynamic records;
+
+@synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"Featured";}
 +(NSString*) parseEntityName {return @"Info";}
-
-+(NSString*)colDetails {return @"details";}
-+(NSString*)colImage {return @"image";}
-+(NSString*)colMajor {return @"major";}
-+(NSString*)colMinor {return @"minor";}
-+(NSString*)colTitle {return @"title";}
-+(NSString*)colVideoUrl {return @"videoUrl";}
-+(NSString*)colParentBusiness {return @"parentBusiness";}
-+(NSString*)colActive {return @"active";}
-+(NSString*)colName {return @"name";}
-
-+(NSString*)pDetails {return @"description";}
-+(NSString*)pImage {return @"picture";}
-+(NSString*)pMinor {return Featured.colMinor;}
-+(NSString*)pTitle {return @"featured";}
-+(NSString*)pVideoUrl {return @"video";}
-+(NSString*)pParentBusiness {return @"BusinessID";}
-+(NSString*)pActive {return Featured.colActive;}
-+(NSString*)pName{return Featured.colName;}
 
 +(Featured*) getByID:(NSString*)identifier
 {
@@ -66,28 +70,20 @@
         return (Featured*)result.firstObject;
 }
 
-
--(void) recordFavourite:(Boolean)liked
-{
-    Favourites* newFav=[Favourites savePreference:self Liked:liked onDate:[NSDate date]];
-    [self addFavouritedObject:newFav];
-}
-
-
 //+(NSArray*) getOffersForBusiness:(Business*)business
 //{
- //   NSNumber* major=business.uid;
- //   return [self getOffersByMajor:major andMinor:nil];
+//   NSNumber* major=business.uid;
+//   return [self getOffersByMajor:major andMinor:nil];
 //}
 
 //Getting array of Featured objects by beacon's major and minor. The idea is that optionally the offer can be attached to a specific beacon, but it doesn't have to so we first check if there are offers with such major and minor id's and if not, we check only by major
 +(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicateMajor = [NSString stringWithFormat: @"(%@==%ld)", Featured.colMajor, (long)major.integerValue];
+    NSString *predicateMajor = [NSString stringWithFormat: @"(%@==%ld)", CD_MAJOR, (long)major.integerValue];
     if(minor!=nil)
     {
-        NSString *predicateMinor = [NSString stringWithFormat: @"(%@==%ld)", Featured.colMinor, (long)minor.integerValue];
+        NSString *predicateMinor = [NSString stringWithFormat: @"(%@==%ld)", CD_MINOR, (long)minor.integerValue];
         request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor]];
     }
     else
@@ -116,18 +112,20 @@
 }
 
 
-+ (void)createFromParseObject:(PFObject *)object
++ (void)createFromParse:(PFObject *)object
 {
     Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
+    deal.parseObject=object;
     deal.pObjectID=object.objectId;
-    if(object[Featured.pTitle]!=nil) deal.title=object[Featured.pTitle];
-    deal.details=object[Featured.pDetails];
-    deal.videoUrl=object[Featured.pVideoUrl];
-    if(object[Featured.pActive]!=nil) deal.active=object[Featured.pActive];
-    deal.minor=object[Featured.pMinor];
-    if(object[Featured.pName]!=nil) deal.name=object[Featured.pName];
-    PFFile *image=object[Featured.pImage];
+    
+    if(object[P_NAME]!=nil) deal.name=object[P_NAME];
+    if(object[P_TITLE]!=nil) deal.title=object[P_TITLE];
+    deal.details=object[P_DETAILS];
+    deal.videoUrl=object[P_VIDEO];
+    if(object[P_ACIVE]!=nil) deal.active=object[P_ACIVE];
+    deal.minor=object[P_MINOR];
+    PFFile *image=object[P_IMAGE];
     
     NSError *error;
     NSData *pulledImage;
@@ -147,17 +145,72 @@
         return;
     }
     
-    PFObject *retrievedBusiness=[object[Featured.pParentBusiness] fetchIfNeeded:&error];
+    PFObject *fromParseBusiness=[object[P_BUSINESS] fetchIfNeeded:&error];
     
     if (!error)
     {
-        Business *linkedBusiness=[Business getByID:(NSString*)(retrievedBusiness.objectId)];
+        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
         deal.major=linkedBusiness.uid;
         deal.parentBusiness = linkedBusiness;
         [linkedBusiness addFeaturedOffersObject:deal];
     }
     else
         NSLog(@"%@",[error localizedDescription]);
+}
+
+-(void)refreshFromParse
+{
+    NSError *error;
+    [self.parseObject refresh:&error];
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return;
+    }
+    
+    self.name=self.parseObject[P_NAME];
+    self.title=self.parseObject[P_TITLE];
+    self.details=self.parseObject[P_DETAILS];
+    self.videoUrl=self.parseObject[P_VIDEO];
+    self.active=self.parseObject[P_ACIVE];
+    self.minor=self.parseObject[P_MINOR];
+    
+    PFFile *image=self.parseObject[P_IMAGE];
+    
+    NSData *pulledImage;
+    
+    pulledImage=[image getData:&error];
+#pragma mark - asdaskd
+    if(!error)
+    {
+        if(pulledImage!=nil)
+            self.image = pulledImage;
+        else
+            NSLog(@"Image offer is missing");
+    }
+    else
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return;
+    }
+    
+    
+    PFObject *fromParseBusiness=[self.parseObject[P_BUSINESS] fetchIfNeeded:&error];
+    if (!error)
+    {
+        if(self.parentBusiness.pObjectID!=fromParseBusiness.objectId)
+        {
+            [self.parentBusiness removeLinksObject:self];
+            Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+            self.major=linkedBusiness.uid;
+            self.parentBusiness = linkedBusiness;
+            [linkedBusiness addFeaturedOffersObject:self];
+        }
+    }
+    else
+        NSLog(@"%@",[error localizedDescription]);
+    
+    
 }
 
 

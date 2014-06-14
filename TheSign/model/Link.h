@@ -20,10 +20,4 @@
 @property (nonatomic, retain) NSString * url;
 @property (nonatomic, retain) Business *parentBusiness;
 
-+(NSString*)colUrl;
-+(NSString*)colParentBusiness;
-
-+(NSString*)pUrl;
-+(NSString*)pParentBusiness;
-
 @end

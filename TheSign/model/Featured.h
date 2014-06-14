@@ -2,69 +2,47 @@
 //  Featured.h
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-05-27.
+//  Created by Andrey Chudnovskiy on 2014-06-13.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-@import Foundation;
-@import CoreData;
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 #import "SignEntityProtocol.h"
 
-@class Business, Favourites, TagSet;
+@class Business, Statistics, TagSet;
 
 @interface Featured : NSManagedObject <SignEntityProtocol>
 
+@property (nonatomic, retain) NSNumber * active;
 @property (nonatomic, retain) NSString * details;
 @property (nonatomic, retain) NSData * image;
 @property (nonatomic, retain) NSNumber * major;
 @property (nonatomic, retain) NSNumber * minor;
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * videoUrl;
-@property (nonatomic, retain) NSNumber * active;
-@property (nonatomic, retain) NSSet *favourited;
+@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSSet *featuredTagSets;
 @property (nonatomic, retain) Business *parentBusiness;
-
-+(NSString*)colDetails;
-+(NSString*)colImage;
-+(NSString*)colMajor;
-+(NSString*)colMinor;
-+(NSString*)colTitle;
-+(NSString*)colVideoUrl;
-+(NSString*)colParentBusiness;
-+(NSString*)colActive;
-+(NSString*)colName;
-
-
-+(NSString*)pDetails;
-+(NSString*)pImage;
-+(NSString*)pMinor;
-+(NSString*)pTitle;
-+(NSString*)pVideoUrl;
-+(NSString*)pParentBusiness;
-+(NSString*)pActive;
-+(NSString*)pName;
+@property (nonatomic, retain) NSSet *records;
 
 
 +(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
-//+(NSArray*) getOffersForBusiness:(Business*)business;
 
--(void) recordFavourite:(Boolean)liked;
 
 @end
 
 @interface Featured (CoreDataGeneratedAccessors)
 
-- (void)addFavouritedObject:(Favourites *)value;
-- (void)removeFavouritedObject:(Favourites *)value;
-- (void)addFavourited:(NSSet *)values;
-- (void)removeFavourited:(NSSet *)values;
-
 - (void)addFeaturedTagSetsObject:(TagSet *)value;
 - (void)removeFeaturedTagSetsObject:(TagSet *)value;
 - (void)addFeaturedTagSets:(NSSet *)values;
 - (void)removeFeaturedTagSets:(NSSet *)values;
+
+- (void)addRecordsObject:(Statistics *)value;
+- (void)removeRecordsObject:(Statistics *)value;
+- (void)addRecords:(NSSet *)values;
+- (void)removeRecords:(NSSet *)values;
 
 @end

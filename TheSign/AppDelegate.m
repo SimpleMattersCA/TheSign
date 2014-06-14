@@ -59,7 +59,12 @@ NSNumber *detectedBeaconMajor;
         [navigation pushViewController:firstRun animated:YES];
     }
     
+    NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     
+    if(remoteNotification)
+    {
+        //check model
+    }
     
     
     
@@ -241,7 +246,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    [PFPush handlePush:userInfo];
+    //[PFPush handlePush:userInfo];
     [[Model sharedModel] checkModel];
 }
 

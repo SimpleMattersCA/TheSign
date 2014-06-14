@@ -22,13 +22,5 @@
 @property (nonatomic, retain) Featured *taggedFeature;
 @property (nonatomic, retain) Tag *tagInSet;
 
-+(NSString*)colWeight;
-+(NSString*)colTaggedFeature;
-+(NSString*)colTagInSet;
-+(NSString*)pWeight;
-+(NSString*)pTaggedFeature;
-+(NSString*)pTagInSet;
-
-
 
 @end

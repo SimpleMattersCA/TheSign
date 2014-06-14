@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CommonHeader.h"
 #import "Model.h"
 
 typedef NS_ENUM(NSInteger, SentenceType) {

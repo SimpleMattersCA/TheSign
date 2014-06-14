@@ -7,15 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #define OBJECT_ID (@"pObjectID")
 
 @class PFObject;
 
 @protocol SignEntityProtocol <NSObject>
 
+@property PFObject* parseObject;
+
 +(instancetype) getByID:(NSString*)objectId;
-+(void)createFromParseObject:(PFObject *)object;
++(void)createFromParse:(PFObject *)object;
 +(NSString*) entityName;
 +(NSString*) parseEntityName;
+
+-(void)refreshFromParse;
 
 @end

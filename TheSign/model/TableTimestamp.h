@@ -19,10 +19,6 @@
 @property (nonatomic, retain) NSDate * timeStamp;
 @property (nonatomic, retain) NSNumber * order;
 
-+(NSString*)colTableName;
-+(NSString*)colTimeStamp;
-+(NSString*)colOrder;
-
 +(NSString*)pTableName;
 +(NSString*)pTimeStamp;
 +(NSString*)pOrder;

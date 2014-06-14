@@ -42,28 +42,6 @@
 +(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier;
 
 
-+(NSString*)colName;
-+(NSString*)colLogo;
-+(NSString*)colUid;
-+(NSString*)colWelcomeText;
-+(NSString*)colWorkingHoursEnd;
-+(NSString*)colWorkingHoursStart;
-+(NSString*)colBusinessType;
-+(NSString*)colLocationLong;
-+(NSString*)colLocationLatt;
-
-
-
-+(NSString*)pName;
-+(NSString*)pLogo;
-+(NSString*)pUid;
-+(NSString*)pWelcomeText;
-+(NSString*)pWorkingHoursEnd;
-+(NSString*)pWorkingHoursStart;
-+(NSString*)pBusinessType;
-+(NSString*)pLocation;
-
-
 @end
 
 

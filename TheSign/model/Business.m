@@ -11,6 +11,22 @@
 
 #import "Model.h"
 
+#define CD_NAME (@"name")
+#define CD_LOGO (@"logo")
+#define CD_UID (@"uid")
+#define CD_WELCOMETEXT (@"welcomeText")
+#define CD_TYPE (@"businessType")
+#define CD_LATTITUDE (@"locaitonLatt")
+#define CD_LONGITUDE (@"locationLong")
+
+#define P_NAME (@"name")
+#define P_LOGO (@"logo")
+#define P_UID (@"uid")
+#define P_WELCOMETEXT (@"welcomeText")
+#define P_TYPE (@"businessType")
+#define P_LOCATION (@"location")
+
+
 @implementation Business
 
 @dynamic pObjectID;
@@ -26,30 +42,13 @@
 @dynamic locationLatt;
 @dynamic locationLong;
 
+@synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"Business";}
 +(NSString*) parseEntityName {return @"Business";}
 
-+(NSString*)colName {return @"name";}
-+(NSString*)colLogo {return @"logo";}
-+(NSString*)colUid {return @"uid";}
-+(NSString*)colWelcomeText {return @"welcomeText";}
-+(NSString*)colWorkingHoursEnd {return @"workingHoursEnd";}
-+(NSString*)colWorkingHoursStart {return @"workingHoursStart";}
-+(NSString*)colBusinessType {return @"businessType";}
-+(NSString*)colLocationLong {return @"locationLong";}
-+(NSString*)colLocationLatt {return @"locaitonLatt";}
 
-+(NSString*)pName {return Business.colName;}
-+(NSString*)pLogo {return Business.colLogo;}
-+(NSString*)pUid {return Business.colUid;}
-+(NSString*)pWelcomeText {return Business.colWelcomeText;}
-+(NSString*)pWorkingHoursEnd {return Business.colWorkingHoursEnd;}
-+(NSString*)pWorkingHoursStart {return Business.colWorkingHoursStart;}
-+(NSString*)pBusinessType {return Business.colBusinessType;}
-+(NSString*)pLocation {return @"location";}
-
-
+///One business can have multiple locations, this dictionary contains pairs CLLocation / objectID
 static NSMutableDictionary* businessLocations;
 
 +(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier
@@ -83,7 +82,6 @@ static NSMutableDictionary* businessLocations;
 
 +(NSArray*) getBusinessTypes
 {
-    
     return [NSArray arrayWithObjects:@"Businesses",nil];
 }
 
@@ -109,7 +107,7 @@ static NSMutableDictionary* businessLocations;
 +(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", Business.colUid, (long)identifier];
+    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", CD_UID, (long)identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -129,7 +127,7 @@ static NSMutableDictionary* businessLocations;
 +(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", Business.colUid, (long)identifier];
+    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", CD_UID, (long)identifier];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -164,26 +162,25 @@ static NSMutableDictionary* businessLocations;
         return (Business*)result.firstObject;
 }
 
-+(void)createFromParseObject:(PFObject *)object
++(void)createFromParse:(PFObject *)object
 {
     Business *business = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
+    business.parseObject=object;
     business.pObjectID=object.objectId;
-    if(object[Business.pName]!=nil) business.name=object[Business.pName];
-    business.welcomeText=object[Business.pWelcomeText];
-    if(object[Business.pUid]!=nil) business.uid=object[Business.pUid];
-    business.workingHoursStart=object[Business.pWorkingHoursStart];
-    business.workingHoursEnd=object[Business.pWorkingHoursEnd];
-    business.businessType=object[Business.pBusinessType];
-    PFGeoPoint *bizLocation=object[Business.pLocation];
-    business.locationLong=[NSNumber numberWithDouble:bizLocation.longitude];
-    business.locationLatt=[NSNumber numberWithDouble:bizLocation.latitude];
+    if(object[P_NAME]!=nil) business.name=object[P_NAME];
+    business.welcomeText=object[P_WELCOMETEXT];
+    if(object[P_UID]!=nil) business.uid=object[P_UID];
+    business.businessType=object[P_TYPE];
+    PFGeoPoint *bizLocation=object[P_LOCATION];
+    business.locationLong=@(bizLocation.longitude);
+    business.locationLatt=@(bizLocation.latitude);
     
     if(!businessLocations) businessLocations=[NSMutableDictionary dictionary];
     CLLocation* location=[[CLLocation alloc] initWithLatitude:business.locationLatt.doubleValue longitude:business.locationLong.doubleValue];
     [businessLocations setObject:location forKey:business.pObjectID];
 
-    PFFile *logo=object[Business.pLogo];
+    PFFile *logo=object[P_LOGO];
     
     NSError *error;
     
@@ -200,5 +197,43 @@ static NSMutableDictionary* businessLocations;
         NSLog(@"%@",[error localizedDescription]);
 }
 
+-(void)refreshFromParse
+{
+    NSError *error;
+    [self.parseObject refresh:&error];
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return;
+    }
+    
+    self.name=self.parseObject[P_NAME];
+    self.welcomeText=self.parseObject[P_WELCOMETEXT];
+    self.uid=self.parseObject[P_UID];
+    self.businessType=self.parseObject[P_TYPE];
+    
+    PFGeoPoint *bizLocation=self.parseObject[P_LOCATION];
+    self.locationLong=@(bizLocation.longitude);
+    self.locationLatt=@(bizLocation.latitude);
+    
+#warning what the fuck is going on here?!
+    businessLocations=[NSMutableDictionary dictionary];
+    CLLocation* location=[[CLLocation alloc] initWithLatitude:self.locationLatt.doubleValue longitude:self.locationLong.doubleValue];
+    [businessLocations setObject:location forKey:self.pObjectID];
+    
+    PFFile *logo=self.parseObject[P_LOGO];
+    
+    NSData *pulledLogo;
+    pulledLogo=[logo getData:&error];
+    if(!error)
+    {
+        if(pulledLogo!=nil)
+            self.logo=pulledLogo;
+        else
+            NSLog(@"Business logo is missing");
+    }
+    else
+        NSLog(@"%@",[error localizedDescription]);
+}
 
 @end

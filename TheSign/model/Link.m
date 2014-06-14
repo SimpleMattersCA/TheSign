@@ -10,20 +10,22 @@
 #import "Business.h"
 #import "Model.h"
 
+#define CD_URL (@"url")
+#define CD_BUSINESS (@"parentBusiness")
+
+#define P_URL (@"url")
+#define P_BUSINESS (@"business")
+
 @implementation Link
 
 @dynamic pObjectID;
 @dynamic url;
 @dynamic parentBusiness;
 
+@synthesize parseObject=_parseObject;
+
 +(NSString*) entityName {return @"Link";}
 +(NSString*) parseEntityName {return @"Links";}
-
-+(NSString*)colUrl {return @"url";}
-+(NSString*)colParentBusiness {return @"parentBusiness";}
-
-+(NSString*)pUrl {return Link.colUrl;}
-+(NSString*)pParentBusiness {return @"business";}
 
 +(Link*) getByID:(NSString*)identifier
 {
@@ -43,19 +45,20 @@
 }
 
 
-+ (void)createFromParseObject:(PFObject *)object
++ (void)createFromParse:(PFObject *)object
 {
     Link *link = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
+    link.parseObject=object;
     link.pObjectID=object.objectId;
-    if(object[Link.pUrl]!=nil) link.url=object[Link.pUrl];
+    if(object[P_URL]!=nil) link.url=object[P_URL];
     
     NSError *error;
-    PFObject *retrievedBusiness=[object[Link.pParentBusiness] fetchIfNeeded:&error];
+    PFObject *fromParseBusiness=[object[P_BUSINESS] fetchIfNeeded:&error];
     
     if (!error)
     {
-        Business *linkedBusiness=[Business getByID:(NSString*)(retrievedBusiness.objectId)];
+        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
         link.parentBusiness = linkedBusiness;
         [linkedBusiness addLinksObject:link];
     }
@@ -63,6 +66,30 @@
         NSLog(@"%@",[error localizedDescription]);
 }
 
+-(void)refreshFromParse
+{
+    NSError *error;
+    [self.parseObject refresh:&error];
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return;
+    }
+    
+    self.url=self.parseObject[P_URL];
+    
+    PFObject *fromParseBusiness=[self.parseObject[P_BUSINESS] fetchIfNeeded:&error];
+    
+    if (!error)
+    {
+        [self.parentBusiness removeLinksObject:self];
+        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+        self.parentBusiness = linkedBusiness;
+        [linkedBusiness addLinksObject:self];
+    }
+    else
+        NSLog(@"%@",[error localizedDescription]);
+}
 
 
 @end

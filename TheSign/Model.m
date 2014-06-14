@@ -12,12 +12,9 @@
 #import "Business.h"
 #import "Tag.h"
 #import "TagSet.h"
-#import "TagClass.h"
-#import "TagClassConnection.h"
-#import "TagClassRelation.h"
+#import "TagConnection.h"
 #import "Link.h"
 #import "Statistics.h"
-#import "Favourites.h"
 #import "TableTimestamp.h"
 #import "Parse/Parse.h"
 
@@ -40,17 +37,16 @@
     if (self = [super init])
     {
         
-        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(itemPulledFromCloud:)
                                                      name:@"itemPulledFromCloud"
                                                    object:nil];
         
-        self.timer=[NSTimer scheduledTimerWithTimeInterval:1800 target:self selector:@selector(checkWeather:Temperature:) userInfo:nil repeats:YES];
+        self.timer=[NSTimer scheduledTimerWithTimeInterval:1800 target:self selector:@selector(checkWeather) userInfo:nil repeats:YES];
         [self.timer setTolerance:600];
 
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
-     //   [self deleteModel];
+        //[self deleteModel];
         [self performSelectorInBackground:@selector(checkModel) withObject:nil];
         
     }
@@ -96,6 +92,23 @@
 //check if we need to pull data from parse based on comparing timestamps of the tables.
 -(void)checkModel
 {
+    
+   /* NetworkStatus status = reachability.currentReachabilityStatus;
+    switch(status)
+    {
+        case ReachableViaWiFi:
+            // There's a wifi connection, go ahead and download
+            break;
+        case ReachableViaWWAN:
+            // There's only a cell connection, so you may or may not want to download
+            break;
+        case NotReachable:
+            // No connection at all! Bad signal, or perhaps airplane mode?
+            break;
+    }
+    */
+    
+    
     //pull from cloud for
     PFQuery *query = [PFQuery queryWithClassName:TableTimestamp.parseEntityName];
     NSError *error;
@@ -139,7 +152,6 @@
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
 }
 
-#pragma mark - replace with hashtable
 -(Class)getClassForParseEntity:(NSString*)entityName
 {
     if([entityName isEqualToString:Business.parseEntityName])
@@ -150,20 +162,15 @@
         return [Featured class];
     if([entityName isEqualToString:Tag.parseEntityName])
         return [Tag class];
-    if([entityName isEqualToString:TagClass.parseEntityName])
-        return [TagClass class];
     if([entityName isEqualToString:TagSet.parseEntityName])
         return [TagSet class];
-    if([entityName isEqualToString:TagClassConnection.parseEntityName])
-        return [TagClassConnection class];
-    if([entityName isEqualToString:TagClassRelation.parseEntityName])
-        return [TagClassRelation class];
+    if([entityName isEqualToString:TagConnection.parseEntityName])
+        return [TagConnection class];
     if([entityName isEqualToString:TableTimestamp.parseEntityName])
         return [TableTimestamp class];
     return nil;
 }
 
-#pragma mark - replace with hashtable
 -(Class)getClassForEntity:(NSString*)entityName
 {
     if([entityName isEqualToString:Business.entityName])
@@ -174,14 +181,10 @@
         return [Featured class];
     if([entityName isEqualToString:Tag.entityName])
         return [Tag class];
-    if([entityName isEqualToString:TagClass.entityName])
-        return [TagClass class];
     if([entityName isEqualToString:TagSet.entityName])
         return [TagSet class];
-    if([entityName isEqualToString:TagClassConnection.entityName])
-        return [TagClassConnection class];
-    if([entityName isEqualToString:TagClassRelation.entityName])
-        return [TagClassRelation class];
+    if([entityName isEqualToString:TagConnection.entityName])
+        return [TagConnection class];
     if([entityName isEqualToString:TableTimestamp.entityName])
         return [TableTimestamp class];
     return nil;
@@ -192,21 +195,32 @@
 //The method for pulling data from Parse based on the requested table name
 -(void)pullFromCloud:(NSString*)entityName
 {
+    
     Class targetClass=[self getClassForEntity:entityName];
     NSString *cloudEntityName=[targetClass parseEntityName];
+    
+    NSDate* cdTimestamp=[TableTimestamp getUpdateTimestampForTable:cloudEntityName];
+    
     PFQuery *query = [PFQuery queryWithClassName:cloudEntityName];
+    if (cdTimestamp!=nil)[query whereKey:@"updatedAt" greaterThan:cdTimestamp];
     NSError *error;
     NSArray *result=[query findObjects:&error];
 
     if (!error)
     {
         //delete entity from coredata, so we can create a new one
-#pragma mark - delete only entries that should be deleted, update those that already there, add new ones. Check by objectId
-        [self deleteEntity:entityName];
+      //  [self deleteEntity:entityName];
         //go through the objects we got from Parse
+        
+        
         for (PFObject *object in result)
         {
-            [targetClass createFromParseObject:object];
+            id cdObject=[targetClass getByID:object.objectId];
+            
+            if(cdObject!=nil)
+                [cdObject refreshFromParse];
+            else
+                [targetClass createFromParse:object];
         }
        // [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud"
      //                                                       object:self
@@ -214,7 +228,7 @@
         [self saveContext];
     }
     else
-        NSLog(@"Error: %@ %@", error, [error userInfo]);
+        NSLog(@"Pulling from cloud error: %@ %@", error, [error userInfo]);
     
 
 }
