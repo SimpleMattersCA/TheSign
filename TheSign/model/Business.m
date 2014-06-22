@@ -2,13 +2,14 @@
 //  Business.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-05-24.
+//  Created by Andrey Chudnovskiy on 2014-06-19.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
 #import "Business.h"
+#import "DiscoveredBusiness.h"
 #import "Featured.h"
-
+#import "Link.h"
 #import "Model.h"
 
 #define CD_NAME (@"name")
@@ -29,18 +30,17 @@
 
 @implementation Business
 
-@dynamic pObjectID;
-@dynamic logo;
-@dynamic name;
-@dynamic uid;
-@dynamic welcomeText;
-@dynamic workingHoursEnd;
-@dynamic workingHoursStart;
 @dynamic businessType;
-@dynamic featuredOffers;
-@dynamic links;
 @dynamic locationLatt;
 @dynamic locationLong;
+@dynamic logo;
+@dynamic name;
+@dynamic pObjectID;
+@dynamic uid;
+@dynamic welcomeText;
+@dynamic linkedDiscovery;
+@dynamic linkedOffers;
+@dynamic linkedLinks;
 
 @synthesize parseObject=_parseObject;
 
@@ -48,7 +48,8 @@
 +(NSString*) parseEntityName {return @"Business";}
 
 
-///One business can have multiple locations, this dictionary contains pairs CLLocation / objectID
+#warning will be nil after quitting the app. Put it in UserDefaults or manage to squeze into CoreData
+///this dictionary contains pairs CLLocation / objectID
 static NSMutableDictionary* businessLocations;
 
 //just so I don't have to create another CoreData entity and fuck with the synchronization we gonna store business types in a hashtable. God I love hash tables. They sounds like hash browns..
@@ -107,52 +108,27 @@ static NSMutableArray* businessTypes;
     return nil;
 }
 
-+(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier
++(Business*) getBusinessByUID:(NSNumber*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", CD_UID, (long)identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    request.predicate=[NSPredicate predicateWithFormat: @"%@==%ld", CD_UID, identifier.longValue];
     NSError *error;
-    NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
-    
-    if(business.count==0)
-        return nil;
     else
-        return ((Business*)business[0]).name;
-}
-
-+(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier
-{
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@==%ld", CD_UID, (long)identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
-    NSError *error;
-    NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-    
-    if(!error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return nil;
-    }
-    
-    if(business.count==0)
-        return nil;
-    else
-        return ((Business*)business[0]).welcomeText;
+        return (Business*)result.firstObject;
 }
 
 
 +(Business*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    request.predicate=[NSPredicate predicateWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -167,6 +143,7 @@ static NSMutableArray* businessTypes;
 
 +(void)createFromParse:(PFObject *)object
 {
+    NSError *error;
     Business *business = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
     business.parseObject=object;
@@ -183,11 +160,8 @@ static NSMutableArray* businessTypes;
     if(!businessLocations) businessLocations=[NSMutableDictionary dictionary];
     CLLocation* location=[[CLLocation alloc] initWithLatitude:business.locationLatt.doubleValue longitude:business.locationLong.doubleValue];
     [businessLocations setObject:location forKey:business.pObjectID];
-
+    
     PFFile *logo=object[P_LOGO];
-    
-    NSError *error;
-    
     NSData *pulledLogo;
     pulledLogo=[logo getData:&error];
     if(!error)
@@ -220,7 +194,6 @@ static NSMutableArray* businessTypes;
     self.locationLong=@(bizLocation.longitude);
     self.locationLatt=@(bizLocation.latitude);
     
-#warning what the fuck is going on here?!
     businessLocations=[NSMutableDictionary dictionary];
     CLLocation* location=[[CLLocation alloc] initWithLatitude:self.locationLatt.doubleValue longitude:self.locationLong.doubleValue];
     [businessLocations setObject:location forKey:self.pObjectID];
@@ -239,5 +212,7 @@ static NSMutableArray* businessTypes;
     else
         NSLog(@"%@",[error localizedDescription]);
 }
+
+
 
 @end

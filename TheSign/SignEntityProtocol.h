@@ -22,5 +22,5 @@
 +(NSString*) parseEntityName;
 
 -(void)refreshFromParse;
-
+-(Boolean)checkIfParseObjectRight:(PFObject*)object;
 @end

@@ -2,7 +2,7 @@
 //  Featured.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-06-13.
+//  Created by Andrey Chudnovskiy on 2014-06-19.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
@@ -12,52 +12,46 @@
 #import "TagSet.h"
 #import "Model.h"
 
-#define CD_NAME (@"name")
+#define CD_ABOUT (@"about")
 #define CD_TITLE (@"title")
 #define CD_DETAILS (@"details")
 #define CD_IMAGE (@"image")
 #define CD_MAJOR (@"major")
 #define CD_MINOR (@"minor")
-#define CD_VIDEO (@"videoUrl")
-#define CD_BUSINESS (@"parentBusiness")
 #define CD_ACIVE (@"active")
 
-#define P_NAME (@"name")
-#define P_TITLE (@"featured")
+#define P_ABOUT (@"featured")
+#define P_TITLE (@"name")
 #define P_DETAILS (@"description")
 #define P_IMAGE (@"picture")
 #define P_MINOR (@"minor")
-#define P_VIDEO (@"video")
 #define P_BUSINESS (@"BusinessID")
 #define P_ACIVE (@"active")
 
-
-
 @implementation Featured
-
-@dynamic active;
-@dynamic details;
-@dynamic image;
-@dynamic major;
-@dynamic minor;
-@dynamic pObjectID;
-@dynamic title;
-@dynamic videoUrl;
-@dynamic name;
-@dynamic featuredTagSets;
-@dynamic parentBusiness;
-@dynamic records;
 
 @synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"Featured";}
 +(NSString*) parseEntityName {return @"Info";}
 
+@dynamic active;
+@dynamic details;
+@dynamic image;
+@dynamic major;
+@dynamic minor;
+@dynamic title;
+@dynamic pObjectID;
+@dynamic about;
+@dynamic linkedTagSets;
+@dynamic linkedBusiness;
+@dynamic linkedStats;
+@dynamic linkedScore;
+
 +(Featured*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -80,14 +74,14 @@
 +(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicateMajor = [NSString stringWithFormat: @"(%@==%ld)", CD_MAJOR, (long)major.integerValue];
+    NSPredicate *predicateMajor = [NSPredicate predicateWithFormat: @"(%@==%ld)", CD_MAJOR, major.longValue];
     if(minor!=nil)
     {
-        NSString *predicateMinor = [NSString stringWithFormat: @"(%@==%ld)", CD_MINOR, (long)minor.integerValue];
+        NSPredicate *predicateMinor = [NSPredicate predicateWithFormat: @"(%@==%ld)", CD_MINOR, minor.longValue];
         request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor]];
     }
     else
-        request.predicate=[NSPredicate predicateWithFormat:predicateMajor];
+        request.predicate=predicateMajor;
     NSError *error;
     NSArray *featured = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -100,7 +94,7 @@
     //if there are no offers tied directly to the beacon we try to find all the offers for the business
     if(featured.count==0 && minor!=nil)
     {
-        request.predicate=[NSPredicate predicateWithFormat:predicateMajor];
+        request.predicate=predicateMajor;
         featured = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
         if(error)
         {
@@ -114,48 +108,50 @@
 
 + (void)createFromParse:(PFObject *)object
 {
+    NSError *error;
     Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
     deal.parseObject=object;
     deal.pObjectID=object.objectId;
     
-    if(object[P_NAME]!=nil) deal.name=object[P_NAME];
+    if(object[P_ABOUT]!=nil) deal.about=object[P_ABOUT];
     if(object[P_TITLE]!=nil) deal.title=object[P_TITLE];
     deal.details=object[P_DETAILS];
-    deal.videoUrl=object[P_VIDEO];
     if(object[P_ACIVE]!=nil) deal.active=object[P_ACIVE];
     deal.minor=object[P_MINOR];
-    PFFile *image=object[P_IMAGE];
     
-    NSError *error;
-    NSData *pulledImage;
     
-    pulledImage=[image getData:&error];
-    
-    if(!error)
+    if(object[P_IMAGE]!=nil)
     {
-        if(pulledImage!=nil)
-            deal.image = pulledImage;
+        PFFile *image=object[P_IMAGE];
+        
+        NSData *pulledImage=[image getData:&error];
+        
+        if(!error)
+        {
+            if(pulledImage!=nil)
+                deal.image = pulledImage;
+            else
+                NSLog(@"Image offer is missing");
+        }
         else
-            NSLog(@"Image offer is missing");
-    }
-    else
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return;
+        {
+            NSLog(@"%@",[error localizedDescription]);
+            return;
+        }
     }
     
-    PFObject *fromParseBusiness=[object[P_BUSINESS] fetchIfNeeded:&error];
-    
-    if (!error)
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseBusiness=object[P_BUSINESS];
+    Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+    if (linkedBusiness!=nil)
     {
-        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
         deal.major=linkedBusiness.uid;
-        deal.parentBusiness = linkedBusiness;
-        [linkedBusiness addFeaturedOffersObject:deal];
+        deal.linkedBusiness = linkedBusiness;
+        [linkedBusiness addLinkedOffersObject:deal];
     }
     else
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"Linked business wasn't found");
 }
 
 -(void)refreshFromParse
@@ -168,51 +164,45 @@
         return;
     }
     
-    self.name=self.parseObject[P_NAME];
+    self.about=self.parseObject[P_ABOUT];
     self.title=self.parseObject[P_TITLE];
     self.details=self.parseObject[P_DETAILS];
-    self.videoUrl=self.parseObject[P_VIDEO];
     self.active=self.parseObject[P_ACIVE];
     self.minor=self.parseObject[P_MINOR];
     
-    PFFile *image=self.parseObject[P_IMAGE];
-    
-    NSData *pulledImage;
-    
-    pulledImage=[image getData:&error];
-#pragma mark - asdaskd
-    if(!error)
+    if(self.parseObject[P_IMAGE]!=nil)
     {
-        if(pulledImage!=nil)
-            self.image = pulledImage;
-        else
-            NSLog(@"Image offer is missing");
-    }
-    else
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return;
-    }
-    
-    
-    PFObject *fromParseBusiness=[self.parseObject[P_BUSINESS] fetchIfNeeded:&error];
-    if (!error)
-    {
-        if(self.parentBusiness.pObjectID!=fromParseBusiness.objectId)
+        PFFile *image=self.parseObject[P_IMAGE];
+        NSData *pulledImage=[image getData:&error];
+        if(!error)
         {
-            [self.parentBusiness removeLinksObject:self];
-            Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
-            self.major=linkedBusiness.uid;
-            self.parentBusiness = linkedBusiness;
-            [linkedBusiness addFeaturedOffersObject:self];
+            if(pulledImage!=nil)
+                self.image = pulledImage;
+            else
+                NSLog(@"Image offer is missing");
+        }
+        else
+        {
+            NSLog(@"%@",[error localizedDescription]);
+            return;
         }
     }
-    else
-        NSLog(@"%@",[error localizedDescription]);
     
-    
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseBusiness=self.parseObject[P_BUSINESS];
+    if(self.linkedBusiness.pObjectID!=fromParseBusiness.objectId)
+    {
+        [self.linkedBusiness removeLinkedOffersObject:self];
+        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+        if(linkedBusiness!=nil)
+        {
+            self.major=linkedBusiness.uid;
+            self.linkedBusiness = linkedBusiness;
+            [linkedBusiness addLinkedOffersObject:self];
+        }
+        else
+            NSLog(@"Linked business wasn't found");
+    }
 }
-
-
 
 @end

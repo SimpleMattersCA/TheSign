@@ -56,8 +56,7 @@
 +(NSDate*) getUpdateTimestampForTable:(NSString*)tName
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:TableTimestamp.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@==\"%@\"", CD_TABLE,tName];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    request.predicate=[NSPredicate predicateWithFormat:@"%@==\"%@\"", CD_TABLE,tName];
     NSError *error;
     NSArray *timestamp = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -76,8 +75,7 @@
 +(TableTimestamp*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     

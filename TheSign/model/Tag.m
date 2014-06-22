@@ -2,29 +2,34 @@
 //  Tag.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-06-13.
+//  Created by Andrey Chudnovskiy on 2014-06-19.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
 #import "Tag.h"
+#import "Like.h"
 #import "TagConnection.h"
 #import "TagSet.h"
 #import "Model.h"
 
 #define P_NAME (@"name")
+#define P_INTEREST (@"interest")
 #define P_DETAILS (@"details")
 
 #define CD_NAME (@"name")
+#define CD_INTEREST (@"interest")
 #define CD_DETAILS (@"details")
 
 @implementation Tag
 
+@dynamic interest;
 @dynamic details;
 @dynamic name;
 @dynamic pObjectID;
-@dynamic controlConnection;
-@dynamic tagSets;
-@dynamic relatedConnection;
+@dynamic linkedConnections1;
+@dynamic linkedLike;
+@dynamic linkedTagSets;
+@dynamic linkedConnections2;
 
 @synthesize parseObject=_parseObject;
 
@@ -56,7 +61,8 @@
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
     tag.parseObject=object;
     tag.pObjectID=object.objectId;
-    if(object[P_NAME]!=nil) tag.name=object[P_NAME];
+    if(!object[P_NAME]) tag.name=object[P_NAME];
+    if(!object[P_INTEREST]) tag.interest=object[P_INTEREST];
     tag.details=object[P_DETAILS];
 }
 

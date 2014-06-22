@@ -46,8 +46,8 @@
         [self.timer setTolerance:600];
 
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
-        //[self deleteModel];
-        [self performSelectorInBackground:@selector(checkModel) withObject:nil];
+        [self deleteModel];
+      //  [self performSelectorInBackground:@selector(checkModel) withObject:nil];
         
     }
     return self;
@@ -156,18 +156,18 @@
 {
     if([entityName isEqualToString:Business.parseEntityName])
         return [Business class];
-    if([entityName isEqualToString:Link.parseEntityName])
-        return [Link class];
+    //if([entityName isEqualToString:Link.parseEntityName])
+      //  return [Link class];
     if([entityName isEqualToString:Featured.parseEntityName])
         return [Featured class];
-    if([entityName isEqualToString:Tag.parseEntityName])
+/*    if([entityName isEqualToString:Tag.parseEntityName])
         return [Tag class];
     if([entityName isEqualToString:TagSet.parseEntityName])
         return [TagSet class];
     if([entityName isEqualToString:TagConnection.parseEntityName])
         return [TagConnection class];
     if([entityName isEqualToString:TableTimestamp.parseEntityName])
-        return [TableTimestamp class];
+        return [TableTimestamp class];*/
     return nil;
 }
 
@@ -175,7 +175,7 @@
 {
     if([entityName isEqualToString:Business.entityName])
         return [Business class];
-    if([entityName isEqualToString:Link.entityName])
+  /*  if([entityName isEqualToString:Link.entityName])
         return [Link class];
     if([entityName isEqualToString:Featured.entityName])
         return [Featured class];
@@ -186,7 +186,7 @@
     if([entityName isEqualToString:TagConnection.entityName])
         return [TagConnection class];
     if([entityName isEqualToString:TableTimestamp.entityName])
-        return [TableTimestamp class];
+        return [TableTimestamp class];*/
     return nil;
 }
 
@@ -344,7 +344,8 @@
          
          */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        
+        [self deleteModel];
+        [self checkModel];
 
         //abort();
     }
@@ -371,37 +372,29 @@
 
 #pragma mark - Sending requests for commonly used methods to approrpiate classes
 //Commonly used methods from Statistics Class
-+(Statistics*) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor
+
+-(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor
 {
-    return [Statistics recordBeaconDetectedOn:date withMajor:major andMinor:minor];
+    return [Statistics recordStatisticsFromBeaconMajor:major Minor:minor];
 }
-+(NSArray*) getStatisticsFrom:(NSDate*) startDate To:(NSDate*) endDate ForMajor:(NSNumber*) major andMinor:(NSNumber*)minor
+-(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID
 {
-    return [Statistics getStatisticsFrom:startDate To:endDate ForMajor:major andMinor:minor];
+    return [Statistics recordStatisticsFromGPS:businessUID];
 }
 
-//Commonly used methods from Business Class
-+(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier
-{
-    return [Business getBusinessNameByBusinessID:identifier];
-}
-+(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier
-{
-    return [Business getWelcomeTextByBusinessID:identifier];
-}
-+(NSArray*) getBusinessesByType:(NSString*)type
+-(NSArray*) getBusinessesByType:(NSString*)type
 {
     return [Business getBusinessesByType:type];
 }
-+(NSArray*) getBusinessTypes
+-(NSArray*) getBusinessTypes
 {
     return [Business getBusinessTypes];
 }
-+(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location
+-(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location
 {
     return [Business getClosestBusinessToLocation:location];
 }
-+(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier
+-(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier
 {
     return [Business getLocationObjectByBusinessID:identifier];
 }

@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "DetailsViewController.h"
 #import "Model.h"
 #import "InsightEngine.h"
 #import "WelcomeScreenViewController.h"
@@ -27,7 +26,10 @@
 NSUUID *proximityUUID;
 
 
-CLCircularRegion* currentlyMonitoredRegion;
+CLCircularRegion* currentlyMonitoredRegion1;
+CLCircularRegion* currentlyMonitoredRegion2;
+CLCircularRegion* currentlyMonitoredRegion3;
+
 NSNumber *detectedBeaconMinor;
 NSNumber *detectedBeaconMajor;
 
@@ -41,9 +43,21 @@ NSNumber *detectedBeaconMajor;
     [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
                   clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    
+    //Push Notifications
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
-     UIRemoteNotificationTypeAlert|
-     UIRemoteNotificationTypeSound];
+     UIRemoteNotificationTypeAlert];
+    
+
+    //Twitter support
+    [PFTwitterUtils initializeWithConsumerKey:@"1sFhbRIBGn3KOvKmn1R4V7eod"
+                    consumerSecret:@"IE5JpeGBTTY6509x72MGvfLOEDEcQQSBtBetiaAdJplik9Qxyq"];
+    
+    //Facebook support
+    [PFFacebookUtils initializeFacebook];
+    
+    
+    
     
     [self.window makeKeyAndVisible];
 
@@ -51,14 +65,14 @@ NSNumber *detectedBeaconMajor;
     
     
     //first-time ever defaults check and set
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"FirstRun"]!=NO)
+ /*   if([[NSUserDefaults standardUserDefaults] boolForKey:@"FirstRun"]!=NO)
     {
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
         WelcomeScreenViewController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"WelcomeScreenView"];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FirstRun"];
         [navigation pushViewController:firstRun animated:YES];
     }
-    
+    */
     NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     
     if(remoteNotification)
@@ -68,6 +82,7 @@ NSNumber *detectedBeaconMajor;
     
     
     
+    //apparently we should define the default appearance of UIPageControl otherwise it doesn't shows
     UIPageControl *pageControl = [UIPageControl appearance];
     pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
     pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
@@ -76,6 +91,10 @@ NSNumber *detectedBeaconMajor;
     return YES;
 }
 
+
+/**
+Preparing and starting geofence and beacon monitoring
+ */
 -(void) startLocationMonitoring
 {
     if(!_locationManager)
@@ -83,12 +102,28 @@ NSNumber *detectedBeaconMajor;
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
         
-        //Geofence monitoring
+        //********* Geofence monitoring *********//
         [self.locationManager startMonitoringSignificantLocationChanges];
         
-        //monitoring for beacons with a specific UUID
+        
+        
+        
+         //********* Beacon monitoring *********//
+        
+        //Beacon UUID, the identifier common for all the beacons
         proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
-        [self registerBeaconRegionWithUUID:proximityUUID andIdentifier:@"TheSign"];
+        CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc]
+                                        initWithProximityUUID:proximityUUID
+                                        identifier:@"TheSign"];
+        
+        //show notificaiton only when screen is on
+        beaconRegion.notifyEntryStateOnDisplay=YES;
+        beaconRegion.notifyOnEntry=NO;
+        beaconRegion.notifyOnExit=YES;
+        
+        // Register the beacon region with the location manager.
+        [self.locationManager startMonitoringForRegion:beaconRegion];
+        [self.locationManager requestStateForRegion:beaconRegion];
         
     }
 }
@@ -99,47 +134,48 @@ NSNumber *detectedBeaconMajor;
     //the last object is the most recent locaiton. We don't really pay attention to those that we missed (at the beginning of the array)
     CLLocation* location=locations.lastObject;
     CLLocation* closestBusiness=[Model getClosestBusinessToLocation:location];
-    [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion];
-    currentlyMonitoredRegion=[[CLCircularRegion alloc] initWithCenter:closestBusiness.coordinate radius:10 identifier:@"ClosestBusiness"];
-#warning accuracy is a big question here
-    [self.locationManager startMonitoringForRegion:currentlyMonitoredRegion];
+    [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion1];
+    [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion2];
+    [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion3];
+
+    currentlyMonitoredRegion1=[[CLCircularRegion alloc] initWithCenter:closestBusiness.coordinate radius:10 identifier:@"ClosestBusiness"];
+
+  //  [self.locationManager startMonitoringForRegion:currentlyMonitoredRegion];
 }
 
 
-/*- (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
+- (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
 {
     switch (state) {
         case CLRegionStateInside:
-          //  [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
+            [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
 
             break;
         case CLRegionStateOutside:
-        {
+            [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
             break;
-        }
+        
         case CLRegionStateUnknown:
-        {
-           
+            [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
             break;
-        }
+    
         default:
-
             break;
     }
 
   
-}*/
+}
 
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     if (application.applicationState == UIApplicationStateInactive ) {
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
-        DetailsViewController *details =
-        [navigation.storyboard instantiateViewControllerWithIdentifier:@"DetailsView"];
+   //     DetailsViewController *details =
+     //   [navigation.storyboard instantiateViewControllerWithIdentifier:@"DetailsView"];
         
 #warning do a goddamn notificaiton call right
         //details setBusinessToShow:[notification.userInfo objectForKey:@"BeaconMajor"]];
-        [navigation pushViewController:details animated:NO];
+  //      [navigation pushViewController:details animated:NO];
         
         // Process the received notification
         //[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
@@ -167,22 +203,6 @@ NSNumber *detectedBeaconMajor;
 }
 
 
-- (void)registerBeaconRegionWithUUID:(NSUUID *)proximityUUID
-                       andIdentifier:(NSString*)identifier
-{
-    
-    // Create the beacon region to be monitored.
-    CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc]
-                                    initWithProximityUUID:proximityUUID
-                                    identifier:identifier];
-    beaconRegion.notifyEntryStateOnDisplay=YES;
-    beaconRegion.notifyOnEntry=NO;
-    beaconRegion.notifyOnExit=YES;
-
-    // Register the beacon region with the location manager.
-    [self.locationManager startMonitoringForRegion:beaconRegion];
-    [self.locationManager startRangingBeaconsInRegion:beaconRegion];
-}
 
 // Delegate method from the CLLocationManagerDelegate protocol.
 - (void)locationManager:(CLLocationManager *)manager
@@ -209,8 +229,9 @@ NSNumber *detectedBeaconMajor;
        // NSDictionary* dict = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:closest.major,closest.minor, nil] forKeys:[NSArray arrayWithObjects:@"major",@"minor", nil]];
      //   [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
         
-       //Statistics* stat=
-        [Model recordBeaconDetectedOn:[NSDate date] withMajor:closest.major andMinor:closest.minor];
+#warning we gotta get the Featured object and attach it to notificaiton.
+        
+        Statistics* stat=[[Model sharedModel] recordStatisticsFromBeaconMajor:detectedBeaconMajor Minor:detectedBeaconMinor];
         
         
         UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -218,7 +239,7 @@ NSNumber *detectedBeaconMajor;
         
         
         
-        NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:closest.major,@"BeaconMajor", nil];
+        NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:closest.major,@"BeaconMajor",stat,@"StatisticsObject", nil];
 
     
         notification.userInfo=infoDict;
@@ -250,6 +271,16 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[Model sharedModel] checkModel];
 }
 
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation
+{
+    return [FBAppCall handleOpenURL:url
+                  sourceApplication:sourceApplication
+                        withSession:[PFFacebookUtils session]];
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -273,6 +304,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

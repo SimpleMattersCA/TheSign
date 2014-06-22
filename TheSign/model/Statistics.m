@@ -2,94 +2,92 @@
 //  Statistics.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-06-13.
+//  Created by Andrey Chudnovskiy on 2014-06-19.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
 #import "Statistics.h"
 #import "Featured.h"
+#import "User.h"
 #import "Model.h"
+#import "DiscoveredBusiness.h"
+#import "Parse/PFObject.h"
+
+#define P_DATE (@"date")
+#define P_LIKED (@"liked")
+#define P_MAJOR (@"major")
+#define P_MINOR (@"minor")
+#define P_OPENED (@"wasOpened")
+#define P_USER (@"user")
+#define P_OFFER (@"deal")
+#define P_BEACON (@"byBeacon")
+
+#define CD_DATE (@"date")
+#define CD_LIKED (@"liked")
+#define CD_MAJOR (@"major")
+#define CD_MINOR (@"minor")
+#define CD_OPENED (@"wasOpened")
+#define CD_USER (@"user")
+#define CD_OFFER (@"deal")
+#define CD_BEACON (@"byBeacon")
 
 @implementation Statistics
 
 @dynamic date;
+@dynamic liked;
 @dynamic major;
 @dynamic minor;
 @dynamic wasOpened;
-@dynamic liked;
-@dynamic referenceOffer;
+@dynamic linkedUser;
+@dynamic linkedOffer;
+@dynamic byBeacon;
 
 +(NSString*) entityName {return @"Statistics";}
-+(NSString*) colMajor {return @"major";}
-+(NSString*) colMinor {return @"minor";}
-+(NSString*) colDate {return @"date";}
-+(NSString*) colWasOpened {return @"wasOpened";}
-+(NSString*) colLiked {return @"liked";}
-+(NSString*) colReferenceOffer {return @"referenceOffer";}
++(NSString*) parseEntityName {return @"Statistics";}
 
--(void) savePreference:(Featured*)offer Liked:(Boolean)liked
+
++(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor
 {
-    self.referenceOffer=offer;
-    [offer addRecordsObject:self];
-    self.liked=@(liked);
-    [[Model sharedModel] saveContext];
-}
-
-
-+(NSArray*) getStatisticsFrom:(NSDate*) startDate To:(NSDate*) endDate ForMajor:(NSNumber*) major andMinor:(NSNumber*)minor
-{
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicateFromDate = [NSString stringWithFormat: @"%@>='%@'", Statistics.colDate, startDate];
-    NSString *predicateToDate = [NSString stringWithFormat: @"%@<='%@'", Statistics.colDate, endDate];
-    
-    NSMutableArray *subPredicates=[NSMutableArray arrayWithObjects:predicateFromDate,predicateToDate, nil];
-    
-    if(major!=nil)
-    {
-        NSString *predicateMajor = [NSString stringWithFormat: @"%@=='%@'", Statistics.colMajor, major];
-        [subPredicates addObject:predicateMajor];
-    }
-    if(minor!=nil)
-    {
-        NSString *predicateMinor = [NSString stringWithFormat: @"%@=='%@'", Statistics.colMinor, minor];
-        [subPredicates addObject:predicateMinor];
-    }
-    
-    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:subPredicates];
-    
-    NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-    
-    if(error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return nil;
-    }
-    else
-        return result;
-    
-    
-}
-
-
-+(Statistics*) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor
-{
-    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
-                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
+    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+                                             inManagedObjectContext:[Model sharedModel].managedObjectContext];
+    newStat.byBeacon=@(YES);
+    newStat.date=[NSDate date];
+    newStat.linkedUser=[User currentUser];
     newStat.major=major;
     newStat.minor=minor;
-    newStat.date=date;
+    [DiscoveredBusiness updateDiscoveryList:major];
     [[Model sharedModel] saveContext];
-    
     return newStat;
-    /* SINCE WE ARE NOT STORING STATISTICS IN THE CLOUD
-     PFObject *newStatistics = [PFObject objectWithClassName:PARSE_STATISTICS];
-     newStatistics[PARSE_STATISTICS_MAJOR] = major;
-     newStatistics[PARSE_STATISTICS_MINOR] = minor;
-     newStatistics[PARSE_STATISTICS_DATE] = date;
-     
-     #pragma mark - do a callback with processing the result of the save
-     [newStatistics saveEventually];*/
+}
+
++(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID
+{
+    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
+    newStat.byBeacon=@(NO);
+    newStat.date=[NSDate date];
+    newStat.linkedUser=[User currentUser];
+    newStat.major=businessUID;
+    [DiscoveredBusiness updateDiscoveryList:businessUID];
+    [[Model sharedModel] saveContext];
+    return newStat;
+
+}
+
+
+-(void)sendToCloud
+{
+    PFObject *newStatistics = [PFObject objectWithClassName:Statistics.parseEntityName];
+    newStatistics[P_DATE] = self.date;
+    newStatistics[P_LIKED] = self.liked;
+    newStatistics[P_MAJOR]=self.major;
+    newStatistics[P_MINOR]=self.minor;
+    newStatistics[P_OPENED]=self.wasOpened;
+    newStatistics[P_BEACON]=self.byBeacon;
+    newStatistics[P_OFFER] = [PFObject objectWithoutDataWithClassName:Featured.parseEntityName objectId:self.linkedOffer.pObjectID];
+    newStatistics[P_USER] = [PFObject objectWithoutDataWithClassName:User.parseEntityName objectId:self.linkedUser.pObjectID];
+    //saving data whenever user gets network connection
+    [newStatistics saveEventually];
 }
 
 @end

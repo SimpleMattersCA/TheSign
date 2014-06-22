@@ -2,13 +2,14 @@
 //  TagSet.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-05-26.
+//  Created by Andrey Chudnovskiy on 2014-06-19.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
 #import "TagSet.h"
 #import "Featured.h"
 #import "Tag.h"
+#import "Relevancy.h"
 #import "Model.h"
 
 #define CD_WEIGHT (@"weight")
@@ -19,12 +20,13 @@
 #define P_OFFER (@"DealID")
 #define P_TAG (@"TagID")
 
+
 @implementation TagSet
 
-@dynamic weight;
 @dynamic pObjectID;
-@dynamic taggedFeature;
-@dynamic tagInSet;
+@dynamic weight;
+@dynamic linkedOffer;
+@dynamic linkedTag;
 
 @synthesize parseObject=_parseObject;
 
@@ -34,8 +36,7 @@
 +(TagSet*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -56,36 +57,33 @@
     tagset.pObjectID=object.objectId;
     tagset.weight=object[P_WEIGHT];
     
-    NSError *error;
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseFeatured=object[P_OFFER];
     
-    PFObject *fromParseFeatured=[object[P_OFFER] fetchIfNeeded:&error];
-    
-    if (!error)
+    Featured *linkedFeatured=[Featured getByID:fromParseFeatured.objectId];
+    if(linkedFeatured!=nil)
     {
-        Featured *linkedFeatured=[Featured getByID:fromParseFeatured.objectId];
-        tagset.taggedFeature = linkedFeatured;
-        [linkedFeatured addFeaturedTagSetsObject:tagset];
-        
+        tagset.linkedOffer = linkedFeatured;
+        [linkedFeatured addLinkedTagSetsObject:tagset];
     }
     else
-        NSLog(@"%@",[error localizedDescription]);
-    
-    
-    PFObject *fromParseTag=[object[P_TAG] fetchIfNeeded:&error];
-    
-    if (!error)
+        NSLog(@"Linked offer wasn't found");
+
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseTag=object[P_TAG];
+    Tag *linkedTag=[Tag getByID:fromParseTag.objectId];
+    if(linkedTag!=nil)
     {
-        Tag *linkedTag=[Tag getByID:fromParseTag.objectId];
-        tagset.tagInSet = linkedTag;
-        [linkedTag addTagSetsObject:tagset];
+        tagset.linkedTag = linkedTag;
+        [linkedTag addLinkedTagSetsObject:tagset];
     }
     else
-        NSLog(@"%@",[error localizedDescription]);
-    
+        NSLog(@"Linked tag wasn't found");
 }
 
 -(void)refreshFromParse
 {
+    
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
@@ -94,32 +92,40 @@
         return;
     }
     
+    //rescoring relevancy if we changed the weight
+    if(self.weight!=self.parseObject[P_WEIGHT])
+        [self.linkedOffer.linkedScore rescore];
     self.weight=self.parseObject[P_WEIGHT];
     
-    PFObject *fromParseFeatured=[self.parseObject[P_OFFER] fetchIfNeeded:&error];
-    if (!error)
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseFeatured=self.parseObject[P_OFFER];
+    if (fromParseFeatured.objectId!=self.linkedOffer.pObjectID)
     {
-        [self.taggedFeature removeFeaturedTagSetsObject:self];
+        [self.linkedOffer removeLinkedTagSetsObject:self];
         Featured *linkedFeatured=[Featured getByID:fromParseFeatured.objectId];
-        self.taggedFeature = linkedFeatured;
-        [linkedFeatured addFeaturedTagSetsObject:self];
-        
+        if(linkedFeatured!=nil)
+        {
+            self.linkedOffer = linkedFeatured;
+            [linkedFeatured addLinkedTagSetsObject:self];
+        }
+        else
+            NSLog(@"Linked offer wasn't found");
     }
-    else
-        NSLog(@"%@",[error localizedDescription]);
-    
-    
-    PFObject *fromParseTag=[self.parseObject[P_TAG] fetchIfNeeded:&error];
-    
-    if (!error)
+
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseTag=self.parseObject[P_TAG];
+    if (fromParseTag.objectId!=self.linkedTag.pObjectID)
     {
-        [self.tagInSet removeTagSetsObject:self];
+        [self.linkedTag removeLinkedTagSetsObject:self];
         Tag *linkedTag=[Tag getByID:fromParseTag.objectId];
-        self.tagInSet = linkedTag;
-        [linkedTag addTagSetsObject:self];
+        if(linkedTag!=nil)
+        {
+            self.linkedTag = linkedTag;
+            [linkedTag addLinkedTagSetsObject:self];
+        }
+        else
+            NSLog(@"Linked tag wasn't found");
     }
-    else
-        NSLog(@"%@",[error localizedDescription]);
 }
 
 @end

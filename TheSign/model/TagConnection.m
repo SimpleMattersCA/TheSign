@@ -2,13 +2,16 @@
 //  TagConnection.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-06-13.
+//  Created by Andrey Chudnovskiy on 2014-06-19.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
 #import "TagConnection.h"
 #import "Tag.h"
 #import "Model.h"
+#import "TagSet.h"
+#import "Relevancy.h"
+#import "Featured.h"
 
 #define P_WEIGHT (@"weight")
 #define P_CONTROL_TAG (@"controlTag")
@@ -22,8 +25,8 @@
 
 @dynamic pObjectID;
 @dynamic weight;
-@dynamic relatedTag;
-@dynamic controlTag;
+@dynamic linkedTag1;
+@dynamic linkedTag2;
 
 @synthesize parseObject=_parseObject;
 
@@ -33,8 +36,7 @@
 +(TagConnection*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -49,33 +51,35 @@
 
 + (void)createFromParse:(PFObject *)object
 {
+    
     TagConnection *connection = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
-                                                                   inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
     connection.parseObject=object;
     connection.pObjectID=object.objectId;
     if(object[P_WEIGHT]!=nil) connection.weight=object[P_WEIGHT];
-    
-    NSError *error;
-    PFObject *fromParseControlTag=[object[P_CONTROL_TAG] fetchIfNeeded:&error];
-    if (!error)
+        
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseControlTag=object[P_CONTROL_TAG];
+    Tag *linkedControlTag=[Tag getByID:fromParseControlTag.objectId];
+    if (linkedControlTag!=nil)
     {
-        Tag *linkedControlTag=[Tag getByID:fromParseControlTag.objectId];
-        connection.controlTag=linkedControlTag;
-        [linkedControlTag addControlConnectionObject:connection];
+        connection.linkedTag1=linkedControlTag;
+        [linkedControlTag addLinkedConnections1Object:connection];
     }
     else
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"Linked tag wasn't found");
     
-    PFObject *fromParseRelatedTag=[object[P_RELATED_TAG] fetchIfNeeded:&error];
-    if (!error)
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseRelatedTag=object[P_RELATED_TAG];
+    Tag *linkedRelatedTag=[Tag getByID:fromParseRelatedTag.objectId];
+    if (linkedRelatedTag!=nil)
     {
-        Tag *linkedRelatedTag=[Tag getByID:fromParseRelatedTag.objectId];
-        connection.relatedTag=linkedRelatedTag;
-        [linkedRelatedTag addRelatedConnectionObject:connection];
+        connection.linkedTag2=linkedRelatedTag;
+        [linkedRelatedTag addLinkedConnections2Object:connection];
     }
     else
-        NSLog(@"%@",[error localizedDescription]);
-
+        NSLog(@"Linked tag wasn't found");
+    
 }
 
 -(void)refreshFromParse
@@ -88,31 +92,49 @@
         return;
     }
     
+    //rescoring relevancy if we changed the weight
+    if(self.weight!=self.parseObject[P_WEIGHT])
+    {
+        for(TagSet* tagset in self.linkedTag1.linkedTagSets)
+            [tagset.linkedOffer.linkedScore rescore];
+        
+        for(TagSet* tagset in self.linkedTag2.linkedTagSets)
+            [tagset.linkedOffer.linkedScore rescore];
+    }
+    
     self.weight=self.parseObject[P_WEIGHT];
     
-    PFObject *fromParseControlTag=[self.parseObject[P_CONTROL_TAG] fetchIfNeeded:&error];
-    if (!error)
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseControlTag=self.parseObject[P_CONTROL_TAG];
+    if (fromParseControlTag.objectId!=self.linkedTag1.pObjectID)
     {
-        [self.controlTag removeControlConnectionObject:self];
+        [self.linkedTag1 removeLinkedConnections1Object:self];
         Tag *linkedControlTag=[Tag getByID:fromParseControlTag.objectId];
-        self.controlTag=linkedControlTag;
-        [linkedControlTag addControlConnectionObject:self];
+        if (linkedControlTag!=nil)
+        {
+            self.linkedTag1=linkedControlTag;
+            [linkedControlTag addLinkedConnections1Object:self];
+        }
+        else
+            NSLog(@"Linked tag wasn't found");
     }
-    else
-        NSLog(@"%@",[error localizedDescription]);
     
-    PFObject *fromParseRelatedTag=[self.parseObject[P_RELATED_TAG] fetchIfNeeded:&error];
-    if (!error)
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseRelatedTag=self.parseObject[P_RELATED_TAG];
+    if (fromParseRelatedTag.objectId!=self.linkedTag2.pObjectID)
     {
-        [self.relatedTag removeRelatedConnectionObject:self];
+        [self.linkedTag2 removeLinkedConnections2Object:self];
         Tag *linkedRelatedTag=[Tag getByID:fromParseRelatedTag.objectId];
-        self.relatedTag=linkedRelatedTag;
-        [linkedRelatedTag addRelatedConnectionObject:self];
+        if (linkedRelatedTag!=nil)
+        {
+            self.linkedTag2=linkedRelatedTag;
+            [linkedRelatedTag addLinkedConnections2Object:self];
+        }
+        else
+            NSLog(@"Linked tag wasn't found");
     }
-    else
-        NSLog(@"%@",[error localizedDescription]);
-    
 }
+
 
 
 @end

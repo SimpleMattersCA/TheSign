@@ -1,31 +1,25 @@
 //
-//  BusinessListController.m
+//  BusinessList.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-05-29.
+//  Created by Andrey Chudnovskiy on 2014-06-18.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
 #import "BusinessListController.h"
 #import "Model.h"
-#import "FeaturedViewController.h"
 #import "Business.h"
-#import "BUsinessInfoCell.h"
-#import "DealListController.h"
+#import "BusinessCell.h"
 
 @interface BusinessListController ()
 
-@property (nonatomic, weak, readonly) NSArray* businesses;
-@property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
-@property (nonatomic, weak) NSArray* businessTypes;
+@property NSArray *businesses;
+
 @end
 
 @implementation BusinessListController
 
-@synthesize businesses=_businesses;
-@synthesize businessTypes=_businessTypes;
-
-- (id)initWithStyle:(UITableViewStyle)style
+- (instancetype)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
@@ -34,40 +28,24 @@
     return self;
 }
 
--(NSArray*) businesses
-{
-    if(!_businesses)
-        _businesses=[Business getBusinessesByType:nil];
-    return _businesses;
-}
-
--(NSArray*) businessTypes
-{
-    if(!_businessTypes)
-        _businessTypes=[Business getBusinessTypes];
-    return _businessTypes;
-}
-
 - (void)viewDidLoad
 {
-    
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(pulledNewDataFromCloud:)
-                                                 name:@"pulledNewDataFromCloud"
-                                               object:nil];
-    [self.tableView registerNib:[UINib nibWithNibName:@"BusinessInfoCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"BusinessInfo"];
-    
-    self.navigationBar.title=(NSString*)(self.businessTypes.firstObject);
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationBar.backBarButtonItem=backButton;
-    //[self.tableView setAllowsSelection:YES];
-   // self.tableView.delegate=self;
+    self.businesses=[Business getBusinessesByType:nil];
+    self.edgesForExtendedLayout = UIRectEdgeAll;
+    self.tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, CGRectGetHeight(self.tabBarController.tabBar.frame), 0.0f);
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
-
+    
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+
+-(void)viewWillAppear:(BOOL)animated{
+ //   [self.tableView registerNib:[UINib nibWithNibName:@"BusinessCell" bundle:[NSBundle mainBundle]]
+   //      forCellReuseIdentifier:@"BusinessCell"];
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -85,52 +63,73 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    // Return the number of rows in the section.
+//    NSArray* businesses=[[Model sharedModel] getBusinessesByType:nil];
     return self.businesses.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"BusinessCell" forIndexPath:indexPath];
+    Business* business=self.businesses[indexPath.row];
+    cell.textLabel.text=business.name;
+    cell.detailTextLabel.text=business.welcomeText;
+    //  BusinessCell *newCell=[[BusinessCell alloc] init];
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"BusinessInfo" forIndexPath:indexPath];
-    
-    NSInteger bID = indexPath.row;
-    [(BusinessInfoCell*)cell businessTitle].text=((Business*)(self.businesses[bID])).name;
-    
-    [(BusinessInfoCell*)cell businessLogo].image=[UIImage imageWithData:((Business*)(self.businesses[bID])).logo];
-    [(BusinessInfoCell*)cell businessDescription].text=((Business*)(self.businesses[bID])).welcomeText;
+
     
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+
+/*
+// Override to support conditional editing of the table view.
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self performSegueWithIdentifier:@"ShowBusiness" sender:indexPath];
+    // Return NO if you do not want the specified item to be editable.
+    return YES;
 }
+*/
 
+/*
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+    }   
+}
+*/
 
+/*
+// Override to support rearranging the table view.
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+}
+*/
+
+/*
+// Override to support conditional rearranging of the table view.
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the item to be re-orderable.
+    return YES;
+}
+*/
+
+/*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"ShowBusiness"])
-    {
-        if ([segue.destinationViewController isKindOfClass:[DealListController class]])
-        {
-            
-            NSArray *indexPaths = [self.tableView indexPathsForSelectedRows];
-            NSIndexPath *indexPath = [indexPaths objectAtIndex:0];
-            
-            DealListController *dest = (DealListController *)segue.destinationViewController;
-            //NSNumber *businessID=[NSNumber numberWithLong:indexPath.row];
-            
-            [dest prepareDealsForBusiness:self.businesses[indexPath.row]];
-        }
-    }
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
-
+*/
 
 @end

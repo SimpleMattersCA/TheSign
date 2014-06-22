@@ -2,7 +2,7 @@
 //  Link.m
 //  TheSign
 //
-//  Created by Andrey Chudnovskiy on 2014-05-24.
+//  Created by Andrey Chudnovskiy on 2014-06-19.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
@@ -20,7 +20,9 @@
 
 @dynamic pObjectID;
 @dynamic url;
-@dynamic parentBusiness;
+@dynamic icon;
+@dynamic linkedBusiness;
+
 
 @synthesize parseObject=_parseObject;
 
@@ -30,8 +32,7 @@
 +(Link*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -48,22 +49,21 @@
 + (void)createFromParse:(PFObject *)object
 {
     Link *link = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
-                                                   inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                               inManagedObjectContext:[Model sharedModel].managedObjectContext];
     link.parseObject=object;
     link.pObjectID=object.objectId;
     if(object[P_URL]!=nil) link.url=object[P_URL];
     
-    NSError *error;
-    PFObject *fromParseBusiness=[object[P_BUSINESS] fetchIfNeeded:&error];
-    
-    if (!error)
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseBusiness=object[P_BUSINESS];
+    Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+    if (linkedBusiness!=nil)
     {
-        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
-        link.parentBusiness = linkedBusiness;
-        [linkedBusiness addLinksObject:link];
+        link.linkedBusiness = linkedBusiness;
+        [linkedBusiness addLinkedLinksObject:link];
     }
     else
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"Linked business wasn't found");
 }
 
 -(void)refreshFromParse
@@ -78,18 +78,20 @@
     
     self.url=self.parseObject[P_URL];
     
-    PFObject *fromParseBusiness=[self.parseObject[P_BUSINESS] fetchIfNeeded:&error];
-    
-    if (!error)
+    //no need to fetch it entirely from parse as we use only objectId property
+    PFObject *fromParseBusiness=self.parseObject[P_BUSINESS];
+    if (fromParseBusiness.objectId!=self.linkedBusiness.pObjectID)
     {
-        [self.parentBusiness removeLinksObject:self];
+        [self.linkedBusiness removeLinkedLinksObject:self];
         Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
-        self.parentBusiness = linkedBusiness;
-        [linkedBusiness addLinksObject:self];
+        if (linkedBusiness!=nil)
+        {
+            self.linkedBusiness = linkedBusiness;
+            [linkedBusiness addLinkedLinksObject:self];
+        }
+        else
+            NSLog(@"Linked business wasn't found");
     }
-    else
-        NSLog(@"%@",[error localizedDescription]);
 }
-
 
 @end

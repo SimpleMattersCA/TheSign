@@ -8,6 +8,8 @@
 
 #import <XCTest/XCTest.h>
 #import "InsightEngine.h"
+#import "Parse/Parse.h"
+#import "Featured.h"
 @interface TheSignTests : XCTestCase
 
 @end
@@ -17,7 +19,6 @@
 - (void)setUp
 {
     [super setUp];
-    [[Model sharedModel] checkModel];
     // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
@@ -29,8 +30,8 @@
 
 - (void)testExample
 {
-    
-    XCTFail(@"Din't Work");
+  
+    //XCTFail(@"Din't Work");
 }
 
 @end

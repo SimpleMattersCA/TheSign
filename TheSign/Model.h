@@ -44,18 +44,19 @@
 
 
 //********* Commonly used methods from Statistics Class *********//
-+(Statistics*) recordBeaconDetectedOn:(NSDate*) date withMajor:(NSNumber*) major andMinor: (NSNumber*) minor;
-+(NSArray*) getStatisticsFrom:(NSDate*) startDate To:(NSDate*) endDate ForMajor:(NSNumber*) major andMinor:(NSNumber*)minor;
+-(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor;
+-(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID;
+
+-(NSArray*) getStatisticsFrom:(NSDate*) startDate To:(NSDate*) endDate ForMajor:(NSNumber*) major andMinor:(NSNumber*)minor;
 
 //********* Commonly used methods from Business Class *********//
-+(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
-+(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
-+(NSArray*) getBusinessesByType:(NSString*)type;
-+(NSArray*) getBusinessTypes;
-+(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
-+(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier;
+-(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
+-(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
+-(NSArray*) getBusinessesByType:(NSString*)type;
+-(NSArray*) getBusinessTypes;
+-(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
+-(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier;
 
-//********* Commonly used methods from Favourites *********//
 
 
 
