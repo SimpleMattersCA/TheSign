@@ -28,10 +28,11 @@
 @property (nonatomic, retain) NSSet *linkedLinks;
 
 +(NSArray*) getBusinessesByType:(NSString*)type;
-+(NSArray*) getBusinessTypes;
++(NSArray*) getTypes;
++(NSDictionary*) getLocations;
 +(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
 
-+(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier;
++(CLLocation*)getLocationByBusinessID:(NSInteger)identifier;
 
 +(Business*) getBusinessByUID:(NSNumber*)identifier;
 

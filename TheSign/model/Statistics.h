@@ -17,6 +17,7 @@
 
 @property (nonatomic, retain) NSDate * date;
 @property (nonatomic, retain) NSNumber * liked;
+@property (nonatomic, retain) NSNumber * synced;
 @property (nonatomic, retain) NSNumber * major;
 @property (nonatomic, retain) NSNumber * minor;
 @property (nonatomic, retain) NSNumber * wasOpened;
@@ -25,7 +26,7 @@
 @property (nonatomic, retain) NSNumber * byBeacon;
 
 
--(void)sendToCloud;
++(void)sendToCloud;
 
 +(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor;
 +(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID;

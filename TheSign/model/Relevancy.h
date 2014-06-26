@@ -6,26 +6,28 @@
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
+@import Foundation;
+@import CoreData;
 
-@class Featured, Statistics, User;
+@class Featured, User,Tag;
 
 @interface Relevancy : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * score;
 @property (nonatomic, retain) Featured *linkedOffer;
-@property (nonatomic, retain) NSSet *linkedStatistics;
 @property (nonatomic, retain) User *linkedUser;
+@property (nonatomic, retain) NSSet *linkedTags;
+
++(void)changeRelevancyForOffer:(Featured*)offer ByValue:(NSNumber*)value;
 
 -(void)rescore;
 @end
 
 @interface Relevancy (CoreDataGeneratedAccessors)
 
-- (void)addLinkedStatisticsObject:(Statistics *)value;
-- (void)removeLinkedStatisticsObject:(Statistics *)value;
-- (void)addLinkedStatistics:(NSSet *)values;
-- (void)removeLinkedStatistics:(NSSet *)values;
+- (void)addLinkedTagsObject:(Tag *)value;
+- (void)removeLinkedTagsObject:(Tag *)value;
+- (void)addLinkedTags:(NSSet *)values;
+- (void)removeLinkedTags:(NSSet *)values;
 
 @end

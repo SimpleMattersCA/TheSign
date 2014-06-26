@@ -103,7 +103,7 @@ Preparing and starting geofence and beacon monitoring
         self.locationManager.delegate = self;
         
         //********* Geofence monitoring *********//
-        [self.locationManager startMonitoringSignificantLocationChanges];
+      //  [self.locationManager startMonitoringSignificantLocationChanges];
         
         
         
@@ -133,7 +133,7 @@ Preparing and starting geofence and beacon monitoring
 
     //the last object is the most recent locaiton. We don't really pay attention to those that we missed (at the beginning of the array)
     CLLocation* location=locations.lastObject;
-    CLLocation* closestBusiness=[Model getClosestBusinessToLocation:location];
+    CLLocation* closestBusiness=[[Model sharedModel] getClosestBusinessToLocation:location];
     [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion1];
     [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion2];
     [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion3];
@@ -212,7 +212,7 @@ Preparing and starting geofence and beacon monitoring
     CLBeacon *closest=(CLBeacon*)[beacons firstObject];
    
    
-    if ([beacons count] > 0 && (![detectedBeaconMajor isEqual:closest.major] && ![detectedBeaconMinor isEqual:closest.minor]))
+    if (beacons.count > 0 && (![detectedBeaconMajor isEqual:closest.major] && ![detectedBeaconMinor isEqual:closest.minor]))
     {
         detectedBeaconMinor =closest.minor;
         detectedBeaconMajor =closest.major;
@@ -229,7 +229,6 @@ Preparing and starting geofence and beacon monitoring
        // NSDictionary* dict = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:closest.major,closest.minor, nil] forKeys:[NSArray arrayWithObjects:@"major",@"minor", nil]];
      //   [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
         
-#warning we gotta get the Featured object and attach it to notificaiton.
         
         Statistics* stat=[[Model sharedModel] recordStatisticsFromBeaconMajor:detectedBeaconMajor Minor:detectedBeaconMinor];
         

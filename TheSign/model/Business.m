@@ -48,28 +48,27 @@
 +(NSString*) parseEntityName {return @"Business";}
 
 
-#warning will be nil after quitting the app. Put it in UserDefaults or manage to squeze into CoreData
 ///this dictionary contains pairs CLLocation / objectID
-static NSMutableDictionary* businessLocations;
+static NSDictionary* _businessLocations;
 
 //just so I don't have to create another CoreData entity and fuck with the synchronization we gonna store business types in a hashtable. God I love hash tables. They sounds like hash browns..
-static NSMutableArray* businessTypes;
+static NSArray* _businessTypes;
 
-+(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier
++(CLLocation*)getLocationByBusinessID:(NSInteger)identifier
 {
-    return [businessLocations objectForKey:@(identifier)];
+    return [_businessLocations objectForKey:@(identifier)];
 }
 
 +(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location
 {
-    NSArray* businesses=[self getBusinessesByType:nil];
-    
+    NSArray* businesses=[self getBusinesses];
+    if (!_businessLocations) [Business getLocations];
     CLLocationDistance minDistance;
     CLLocation *closestLocation = nil;
     
     for (Business *business in businesses) {
         
-        CLLocation* bizlocation=[businessLocations objectForKey:business.pObjectID];
+        CLLocation* bizlocation=[_businessLocations objectForKey:business.pObjectID];
         CLLocationDistance distance = [bizlocation distanceFromLocation:location];
         
         if (distance <= minDistance
@@ -84,15 +83,46 @@ static NSMutableArray* businessTypes;
 
 
 
-+(NSArray*) getBusinessTypes
++(NSArray*) getTypes
 {
-    return [NSArray arrayWithArray:businessTypes];
+    if(!_businessTypes)
+    {
+        NSMutableArray* newTypes=[NSMutableArray array];
+        for (Business *business in [Business getBusinesses])
+        {
+            if (![newTypes containsObject:business.businessType])
+                [newTypes addObject:business.businessType];
+        }
+        _businessTypes=newTypes;
+    }
+    return _businessTypes;
 }
 
-+(NSArray*) getBusinessesByType:(NSString*)type
+
+
++(NSDictionary*) getLocations
 {
-    if(type==nil)
+    if(!_businessLocations)
     {
+    
+        NSMutableDictionary *newLocations=[NSMutableDictionary dictionary];
+        
+        for (Business *business in [Business getBusinesses])
+        {
+            if(![newLocations objectForKey:business.pObjectID])
+            {
+                CLLocation* location=[[CLLocation alloc] initWithLatitude:business.locationLatt.doubleValue longitude:business.locationLong.doubleValue];
+                [newLocations setObject:location forKey:business.pObjectID];
+            }
+        }
+        _businessLocations=newLocations;
+    }
+    return _businessLocations;
+}
+
++(NSArray*) getBusinesses
+{
+    
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
         NSError *error;
         NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -104,8 +134,25 @@ static NSMutableArray* businessTypes;
         }
         
         return business;
+    
+}
+
++(NSArray*) getBusinessesByType:(NSString*)type
+{
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
+    request.predicate=[NSPredicate predicateWithFormat: @"%@=='%@'", CD_TYPE, type];
+    NSError *error;
+    NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+        
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
     }
-    return nil;
+        
+    return business;
+    
 }
 
 +(Business*) getBusinessByUID:(NSNumber*)identifier
@@ -152,14 +199,9 @@ static NSMutableArray* businessTypes;
     business.welcomeText=object[P_WELCOMETEXT];
     if(object[P_UID]!=nil) business.uid=object[P_UID];
     business.businessType=object[P_TYPE];
-    if(![businessTypes containsObject:business.businessType]) [businessTypes addObject:business.businessType];
     PFGeoPoint *bizLocation=object[P_LOCATION];
     business.locationLong=@(bizLocation.longitude);
     business.locationLatt=@(bizLocation.latitude);
-    
-    if(!businessLocations) businessLocations=[NSMutableDictionary dictionary];
-    CLLocation* location=[[CLLocation alloc] initWithLatitude:business.locationLatt.doubleValue longitude:business.locationLong.doubleValue];
-    [businessLocations setObject:location forKey:business.pObjectID];
     
     PFFile *logo=object[P_LOGO];
     NSData *pulledLogo;
@@ -193,10 +235,6 @@ static NSMutableArray* businessTypes;
     PFGeoPoint *bizLocation=self.parseObject[P_LOCATION];
     self.locationLong=@(bizLocation.longitude);
     self.locationLatt=@(bizLocation.latitude);
-    
-    businessLocations=[NSMutableDictionary dictionary];
-    CLLocation* location=[[CLLocation alloc] initWithLatitude:self.locationLatt.doubleValue longitude:self.locationLong.doubleValue];
-    [businessLocations setObject:location forKey:self.pObjectID];
     
     PFFile *logo=self.parseObject[P_LOGO];
     

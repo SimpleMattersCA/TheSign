@@ -24,6 +24,7 @@
 
 #define CD_DATE (@"date")
 #define CD_LIKED (@"liked")
+#define CD_SYNCED (@"synced")
 #define CD_MAJOR (@"major")
 #define CD_MINOR (@"minor")
 #define CD_OPENED (@"wasOpened")
@@ -41,10 +42,29 @@
 @dynamic linkedUser;
 @dynamic linkedOffer;
 @dynamic byBeacon;
+@dynamic synced;
 
 +(NSString*) entityName {return @"Statistics";}
 +(NSString*) parseEntityName {return @"Statistics";}
 
+-(void)recordLike:(OfferLike)newLike
+{
+    self.liked=@(newLike);
+    
+    //the likeness effect that will go through Tag graph
+    double effect;
+    switch(newLike)
+    {
+#warning use the setting
+        case LK_None:effect=0.1;
+            break;
+        case LK_Dislike:effect=-1;
+            break;
+        case LK_Like:effect=1;
+            break;
+    }
+    [self.linkedOffer processLike:effect];
+}
 
 +(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor
 {
@@ -75,19 +95,42 @@
 }
 
 
--(void)sendToCloud
++(void)sendToCloud
 {
-    PFObject *newStatistics = [PFObject objectWithClassName:Statistics.parseEntityName];
-    newStatistics[P_DATE] = self.date;
-    newStatistics[P_LIKED] = self.liked;
-    newStatistics[P_MAJOR]=self.major;
-    newStatistics[P_MINOR]=self.minor;
-    newStatistics[P_OPENED]=self.wasOpened;
-    newStatistics[P_BEACON]=self.byBeacon;
-    newStatistics[P_OFFER] = [PFObject objectWithoutDataWithClassName:Featured.parseEntityName objectId:self.linkedOffer.pObjectID];
-    newStatistics[P_USER] = [PFObject objectWithoutDataWithClassName:User.parseEntityName objectId:self.linkedUser.pObjectID];
-    //saving data whenever user gets network connection
-    [newStatistics saveEventually];
+    NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+    [dateComponents setMonth:-1];
+    NSDate *monthAgo = [[NSCalendar currentCalendar]  dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
+
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSString *predicateBound = [NSString stringWithFormat: @"%@>'%@'", CD_DATE, monthAgo];
+    NSString *predicateSynced = [NSString stringWithFormat: @"%@==%hhd", CD_SYNCED, NO];
+    
+    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateBound,predicateSynced]];
+    NSError *error;
+    NSArray *stats = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+    }
+    else
+    {
+        for (Statistics *newStat in stats)
+        {
+            PFObject *newStatistics = [PFObject objectWithClassName:Statistics.parseEntityName];
+            newStatistics[P_DATE] = newStat.date;
+            newStatistics[P_LIKED] = newStat.liked;
+            newStatistics[P_MAJOR]=newStat.major;
+            newStatistics[P_MINOR]=newStat.minor;
+            newStatistics[P_OPENED]=newStat.wasOpened;
+            newStatistics[P_BEACON]=newStat.byBeacon;
+            newStatistics[P_OFFER] = [PFObject objectWithoutDataWithClassName:Featured.parseEntityName objectId:newStat.linkedOffer.pObjectID];
+            newStatistics[P_USER] = [PFObject objectWithoutDataWithClassName:User.parseEntityName objectId:newStat.linkedUser.pObjectID];
+            //saving data whenever user gets network connection
+            [newStatistics saveEventually];
+            newStat.synced=@(YES);
+        }
+    }
 }
 
 @end

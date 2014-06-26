@@ -91,14 +91,14 @@ static User* _currentUser;
 
 +(void)createFromParse:(PFUser *)user
 {
-    NSError *error;
+ //   NSError *error;
     User *newUser = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                   inManagedObjectContext:[Model sharedModel].managedObjectContext];
     newUser.parseObject=user;
     newUser.pObjectID=user.objectId;
     
     
-    if([PFFacebookUtils isLinkedWithUser:user])
+    if(newUser.fbID==nil && [PFFacebookUtils isLinkedWithUser:user])
     {
         FBRequest *request = [FBRequest requestForMe];
         [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -107,18 +107,19 @@ static User* _currentUser;
                 NSDictionary *userData = (NSDictionary *)result;
                 
                 newUser.fbID = userData[@"id"];
-                newUser.name = userData(@"first_name");
+                newUser.name = userData[@"first_name"];
                 
                 NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
                 [formatter setDateFormat:@"MM/dd/yyyy"];
-                newUser.birthdate = [NSDateFormatterShortStyle dateFromString: userData[@"birthday"]];
+                newUser.birthdate = [formatter dateFromString: userData[@"birthday"]];
                 
                 newUser.gender = userData[@"gender"];
                 
-                NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
+                NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", newUser.fbID]];
                 NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:pictureURL
                                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                                       timeoutInterval:2.0f];
+                
                 NSURLResponse* response = nil;
                 NSError* error;
                 NSData *imageData = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];
@@ -126,11 +127,10 @@ static User* _currentUser;
                 [[Model sharedModel] saveContext];
             }
         }];
-#warning fill image, name, birthday and gender from facebook API
 #warning find friends in USER table for this facebook account
     }
     
-    if([PFTwitterUtils isLinkedWithUser:user])
+    if(newUser.twID==nil && [PFTwitterUtils isLinkedWithUser:user])
     {
 #warning fill image, name and followers from twitter api
         //fields id, birthday, firs_name,gender,

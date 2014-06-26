@@ -17,7 +17,7 @@
 
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSNumber * weight;
-@property (nonatomic, retain) Tag *linkedTag1;
-@property (nonatomic, retain) Tag *linkedTag2;
+@property (nonatomic, retain) Tag *linkedTagFrom;
+@property (nonatomic, retain) Tag *linkedTagTo;
 
 @end

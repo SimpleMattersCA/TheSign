@@ -37,6 +37,8 @@
 		55C75A64194E80440051A0EF /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55C75A63194E80440051A0EF /* FacebookSDK.framework */; };
 		55C75A66194E866B0051A0EF /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55C75A65194E866B0051A0EF /* Social.framework */; };
 		55C75A68194E86920051A0EF /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55C75A67194E86920051A0EF /* Accounts.framework */; };
+		55C89C34195BCECF00CA16D9 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C89C33195BCECF00CA16D9 /* Location.m */; };
+		55C89C37195BCED000CA16D9 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C89C36195BCED000CA16D9 /* Settings.m */; };
 		55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E15FE2191A062B00A8B826 /* InsightEngine.m */; };
 		55EC54E31950FE16009494E4 /* FeedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EC54E11950FE16009494E4 /* FeedCell.m */; };
 		55EC54E41950FE16009494E4 /* FeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55EC54E21950FE16009494E4 /* FeedCell.xib */; };
@@ -120,6 +122,10 @@
 		55C75A63194E80440051A0EF /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = TheSign/Frameworks/FacebookSDK.framework; sourceTree = "<group>"; };
 		55C75A65194E866B0051A0EF /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		55C75A67194E86920051A0EF /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		55C89C32195BCECF00CA16D9 /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Location.h; path = model/Location.h; sourceTree = "<group>"; };
+		55C89C33195BCECF00CA16D9 /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Location.m; path = model/Location.m; sourceTree = "<group>"; };
+		55C89C35195BCED000CA16D9 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Settings.h; path = model/Settings.h; sourceTree = "<group>"; };
+		55C89C36195BCED000CA16D9 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Settings.m; path = model/Settings.m; sourceTree = "<group>"; };
 		55E15FE1191A062B00A8B826 /* InsightEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InsightEngine.h; sourceTree = "<group>"; };
 		55E15FE2191A062B00A8B826 /* InsightEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InsightEngine.m; sourceTree = "<group>"; };
 		55EC54E01950FE16009494E4 /* FeedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedCell.h; path = Controller/FeedCell.h; sourceTree = "<group>"; };
@@ -197,9 +203,11 @@
 			isa = PBXGroup;
 			children = (
 				55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */,
+				55C89C35195BCED000CA16D9 /* Settings.h */,
+				55C89C36195BCED000CA16D9 /* Settings.m */,
+				5557BB1A1931C28700B256FF /* SignEntityProtocol.h */,
 				5575AAE919569EB400344313 /* Relevancy.h */,
 				5575AAEA19569EB400344313 /* Relevancy.m */,
-				5557BB1A1931C28700B256FF /* SignEntityProtocol.h */,
 				550C80FA195371B700716D25 /* Like.h */,
 				550C80FB195371B700716D25 /* Like.m */,
 				550C80F7195371B700716D25 /* DiscoveredBusiness.h */,
@@ -212,6 +220,8 @@
 		5557BB2A1934588A00B256FF /* Parse */ = {
 			isa = PBXGroup;
 			children = (
+				55C89C32195BCECF00CA16D9 /* Location.h */,
+				55C89C33195BCECF00CA16D9 /* Location.m */,
 				550C8100195371B700716D25 /* User.h */,
 				550C8101195371B700716D25 /* User.m */,
 				550C8103195371B700716D25 /* Business.h */,
@@ -511,6 +521,7 @@
 				55692CF61952A98200DE60F7 /* BusinessCell.m in Sources */,
 				55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */,
 				55B4AFFA193A484400C5A71B /* CustomScrollView.m in Sources */,
+				55C89C37195BCED000CA16D9 /* Settings.m in Sources */,
 				5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */,
 				55B746EB18DCAECA00F61354 /* Model.m in Sources */,
 				55A5A072193FCE6400DDF688 /* TutorialViewController.m in Sources */,
@@ -518,6 +529,7 @@
 				55EC54E8195160A5009494E4 /* FeedController.m in Sources */,
 				559A427319529F46007D0D66 /* ProfileController.m in Sources */,
 				55EC54E31950FE16009494E4 /* FeedCell.m in Sources */,
+				55C89C34195BCECF00CA16D9 /* Location.m in Sources */,
 				550C8105195371B700716D25 /* Business.m in Sources */,
 				550C810E195371B700716D25 /* Statistics.m in Sources */,
 				559A426D19529B34007D0D66 /* BusinessListController.m in Sources */,

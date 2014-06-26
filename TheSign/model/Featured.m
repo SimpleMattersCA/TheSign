@@ -10,7 +10,9 @@
 #import "Business.h"
 #import "Statistics.h"
 #import "TagSet.h"
+#import "Tag.h"
 #import "Model.h"
+#import "Relevancy.h"
 
 #define CD_ABOUT (@"about")
 #define CD_TITLE (@"title")
@@ -47,6 +49,7 @@
 @dynamic linkedBusiness;
 @dynamic linkedStats;
 @dynamic linkedScore;
+
 
 +(Featured*) getByID:(NSString*)identifier
 {
@@ -204,5 +207,26 @@
             NSLog(@"Linked business wasn't found");
     }
 }
+
+
+
+-(void) processLike:(double)effect
+{
+    //update likeness scores for tags
+    NSMutableArray* alreadyProcessed=[NSMutableArray array];
+    for(TagSet* tagset in self.linkedTagSets)
+    {
+        [tagset.linkedTag processLike:effect*tagset.weight.doubleValue AlreadyProcessed:&alreadyProcessed];
+    }
+
+    //update relevancy score
+    double score=0;
+    for(TagSet* tagset in self.linkedTagSets)
+        score+=[tagset.linkedTag calculateRelevancyOnLevel:0];
+    
+}
+
+
+
 
 @end

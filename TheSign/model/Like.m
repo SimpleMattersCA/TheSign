@@ -32,7 +32,6 @@
         newLike.linkedUser=[User currentUser];
         tag.linkedLike=newLike;
     }
-    [[Model sharedModel] saveContext];
 }
 
 

@@ -30,6 +30,9 @@
 
 +(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
 
+-(void) processLike:(double)effect;
+
+
 @end
 
 @interface Featured (CoreDataGeneratedAccessors)

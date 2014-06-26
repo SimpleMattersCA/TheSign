@@ -10,14 +10,30 @@
 #import "Featured.h"
 #import "Statistics.h"
 #import "User.h"
-
+#import "Model.h"
 
 @implementation Relevancy
 
 @dynamic score;
 @dynamic linkedOffer;
-@dynamic linkedStatistics;
 @dynamic linkedUser;
+@dynamic linkedTags;
+
++(NSString*) entityName {return @"Relevancy";}
+
++(void)changeRelevancyForOffer:(Featured*)offer ByValue:(NSNumber*)value
+{
+    if(offer.linkedScore!=nil)
+        offer.linkedScore.score=@(offer.linkedScore.score.doubleValue+value.doubleValue);
+    else
+    {
+        Relevancy *newScore = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+                                                      inManagedObjectContext:[Model sharedModel].managedObjectContext];
+        newScore.linkedUser=[User currentUser];
+        newScore.linkedOffer=offer;
+        newScore.score=value;
+    }
+}
 
 -(void)rescore
 {

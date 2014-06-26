@@ -18,6 +18,10 @@
 #import "TableTimestamp.h"
 #import "Parse/Parse.h"
 
+
+
+
+
 @interface Model()
 
 @property (strong) NSTimer *timer;
@@ -42,17 +46,25 @@
                                                      name:@"itemPulledFromCloud"
                                                    object:nil];
         
-        self.timer=[NSTimer scheduledTimerWithTimeInterval:1800 target:self selector:@selector(checkWeather) userInfo:nil repeats:YES];
+        self.timer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(requestCloud) userInfo:nil repeats:YES];
         [self.timer setTolerance:600];
-
+        [self.timer fire];
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
-        [self deleteModel];
-      //  [self performSelectorInBackground:@selector(checkModel) withObject:nil];
+        //[self deleteModel];
+       // [self performSelectorInBackground:@selector(checkModel) withObject:nil];
         
     }
     return self;
 }
 
+- (void) requestCloud
+{
+//TODO: change timer's next fire at night (nobody is gonna update any deals then)
+//TODO: location specific weather
+    [self checkWeather];
+    [Statistics sendToCloud];
+    [self performSelectorInBackground:@selector(checkModel) withObject:nil];
+}
 
 
 
@@ -81,7 +93,7 @@
         else
         {
             // Log details of the failure
-            NSLog(@"Error: %@ %@", error, [error userInfo]);
+            NSLog(@"Error in CheckWeather: %@ %@", error, [error userInfo]);
         }
     }];
 }
@@ -123,14 +135,14 @@
             NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName];
             if(![timestamp isEqualToDate:object[TableTimestamp.pTimeStamp]])
             {
-                [self pullFromCloud:[[self getClassForParseEntity:tableName] entityName]];
+                [self pullFromCloud:tableName];
             }
         }
-        [self pullFromCloud:TableTimestamp.entityName];
+        [self pullFromCloud:TableTimestamp.parseEntityName];
     }
     else
     {
-        NSLog(@"Error: %@ %@", error, [error userInfo]);
+        NSLog(@"Error in CheckModel: %@ %@", error, [error userInfo]);
     }
    
 }
@@ -171,34 +183,13 @@
     return nil;
 }
 
--(Class)getClassForEntity:(NSString*)entityName
-{
-    if([entityName isEqualToString:Business.entityName])
-        return [Business class];
-  /*  if([entityName isEqualToString:Link.entityName])
-        return [Link class];
-    if([entityName isEqualToString:Featured.entityName])
-        return [Featured class];
-    if([entityName isEqualToString:Tag.entityName])
-        return [Tag class];
-    if([entityName isEqualToString:TagSet.entityName])
-        return [TagSet class];
-    if([entityName isEqualToString:TagConnection.entityName])
-        return [TagConnection class];
-    if([entityName isEqualToString:TableTimestamp.entityName])
-        return [TableTimestamp class];*/
-    return nil;
-}
-
 
 
 //The method for pulling data from Parse based on the requested table name
--(void)pullFromCloud:(NSString*)entityName
+-(void)pullFromCloud:(NSString*)cloudEntityName
 {
     
-    Class targetClass=[self getClassForEntity:entityName];
-    NSString *cloudEntityName=[targetClass parseEntityName];
-    
+    Class targetClass=[self getClassForParseEntity:cloudEntityName];
     NSDate* cdTimestamp=[TableTimestamp getUpdateTimestampForTable:cloudEntityName];
     
     PFQuery *query = [PFQuery queryWithClassName:cloudEntityName];
@@ -225,7 +216,6 @@
        // [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud"
      //                                                       object:self
         //                                                  userInfo:[NSDictionary dictionaryWithObject:entityName forKey:@"Entity"]];
-        [self saveContext];
     }
     else
         NSLog(@"Pulling from cloud error: %@ %@", error, [error userInfo]);
@@ -367,6 +357,10 @@
 
 
 
+-(void) recordLikeFor:(Statistics*)stat
+{
+    
+}
 
 
 
@@ -382,21 +376,13 @@
     return [Statistics recordStatisticsFromGPS:businessUID];
 }
 
--(NSArray*) getBusinessesByType:(NSString*)type
-{
-    return [Business getBusinessesByType:type];
-}
--(NSArray*) getBusinessTypes
-{
-    return [Business getBusinessTypes];
-}
 -(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location
 {
     return [Business getClosestBusinessToLocation:location];
 }
--(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier
+-(CLLocation*)getLocationByBusinessID:(NSInteger)identifier
 {
-    return [Business getLocationObjectByBusinessID:identifier];
+    return [Business getLocationByBusinessID:identifier];
 }
 
 @end

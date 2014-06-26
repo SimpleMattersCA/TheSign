@@ -11,6 +11,14 @@
 #import "Parse/Parse.h"
 
 
+typedef NS_ENUM(NSInteger, OfferLike) {
+    LK_None,
+    LK_Like,
+    LK_Dislike
+};
+
+NSInteger relevancyDepth=2;
+
 @class Business,Statistics;
 /**
  Encapsulated some of the basics of the model such as pulling data from Parse and filling CoreData
@@ -51,9 +59,6 @@
 
 //********* Commonly used methods from Business Class *********//
 -(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
--(NSString*) getWelcomeTextByBusinessID:(NSInteger)identifier;
--(NSArray*) getBusinessesByType:(NSString*)type;
--(NSArray*) getBusinessTypes;
 -(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
 -(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier;
 

@@ -155,61 +155,30 @@ static NSString* errorWelcomingMessage=@"";
     
     if(featuredOffers!=nil && featuredOffers.count!=0)
     {
-        //all offers share the same business so we pick the first one just to get its business hours
-     //   NSString *bTitle=((Featured*)featuredOffers[0]).parentBusiness.name;
-     //   NSNumber *bOpen=((Featured*)featuredOffers[0]).parentBusiness.workingHoursStart;
-     //   NSNumber *bClose=((Featured*)featuredOffers[0]).parentBusiness.workingHoursEnd;
         
-     //   NSDate *curDate=[NSDate date];
-        #pragma mark - what if the user set monday as the first day in the calendar?
-     //   NSCalendar *calendar = [NSCalendar currentCalendar];
-     //   NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSWeekCalendarUnit)  fromDate:curDate];
-     //   NSInteger hour = [components hour];
-     //   NSInteger minute = [components minute];
-     //   NSInteger day=[components weekday];
-     //   NSInteger curTime=hour*100+minute;
+        //1. choose the right sentence type and deal
+        NSDictionary* result=[self chooseTheRightMessageTypeAndDeal];
+        chosenOffer=[result objectForKey:@"Deal"];
+        NSNumber* messageType=[result objectForKey:@"Type"];
+        NSNumber* messageKind=[result objectForKey:@"Kind"];
         
-        
-//#warning we gotta check when do they work, like what if they work on weekends?
-        //BOOL isFriday=day==6?YES:NO;
-        
-        //if the store is open right now
-        //if (curTime<bClose.integerValue && curTime>=bOpen.integerValue)
-        //{
-            
-            //1. choose the right sentence type and deal
-            NSDictionary* result=[self chooseTheRightMessageTypeAndDeal];
-            chosenOffer=[result objectForKey:@"Deal"];
-            NSNumber* messageType=[result objectForKey:@"Type"];
-            NSNumber* messageKind=[result objectForKey:@"Kind"];
-            
-            //2. prepare the sentence
-            switch (messageType.integerValue) {
-                case S_Weather:
-                    [self doWeatherMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
-                    break;
-                case S_Time:
-                    [self doTimeMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
-                    break;
-                case S_Day:
-                    [self doDateMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
-                    break;
-                case S_Preference:
-                    [self doPreferencesMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
-                    break;
-                default:
-                    NSLog(@"Unrecognized message type");
-            }
-            
-        
-      //}
-        //generate "store is closed" message
-     /*   else
-        {
-#warning working hours, days should be accounted
-            //show working hours
-            result=[NSString stringWithFormat:@"Sorry but %@ is closed, see you next time!", bTitle];
-        }*/
+        //2. prepare the sentence
+        switch (messageType.integerValue) {
+            case S_Weather:
+                [self doWeatherMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
+                break;
+            case S_Time:
+                [self doTimeMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
+                break;
+            case S_Day:
+                [self doDateMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
+                break;
+            case S_Preference:
+                [self doPreferencesMessageForOffer:chosenOffer AndConditionType:messageKind.integerValue];
+                break;
+            default:
+                NSLog(@"Unrecognized message type");
+        }
     }
     
     return result;
