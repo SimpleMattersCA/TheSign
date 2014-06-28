@@ -1,3 +1,107 @@
+Parse.Cloud.afterSave("Business", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("Y16hvazxpA", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+Parse.Cloud.afterSave("Info", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("D6Gl39I29i", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+Parse.Cloud.afterSave("Links", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("u28ju6wQ9r", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+Parse.Cloud.afterSave("Locations", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("aYBFq7xwkd", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+Parse.Cloud.afterSave("TagSet", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("dq9No4Qb9Y", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+Parse.Cloud.afterSave("Tag", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("dRSYvir7j2", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+Parse.Cloud.afterSave("TagConnection", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("tnCmlRew6f", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+Parse.Cloud.afterSave("Settings", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("F4w80xGg39", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
 Parse.Cloud.beforeDelete("Business", function(request, response) {
   	var DeleteHistory = Parse.Object.extend("DeleteHistory");
   	var newDeleteEntry = new DeleteHistory();
