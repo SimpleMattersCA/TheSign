@@ -10,6 +10,7 @@
 #import <stdlib.h>
 #import "Featured.h"
 #import "Business.h"
+#import "Location.h"
 
 typedef NS_ENUM(NSInteger, SignDay) {
     //stat holidays
@@ -148,17 +149,22 @@ static NSString* errorWelcomingMessage=@"";
 -(NSString*)generateWelcomeTextForBeaconWithMajor: (NSNumber*)major andMinor:(NSNumber*)minor
 {
     NSString* result=@"";
-    Featured* chosenOffer;
-    NSArray* featuredOffers=[Featured getOffersByMajor:major andMinor:minor];
+    Featured* tiedOffer=[Featured getOfferByMajor:major andMinor:minor];
     
-//Choose between sentece types not randomly but based on what could be more relevant
+    if(!tiedOffer)
+        return tiedOffer.welcomeText;
     
-    if(featuredOffers!=nil && featuredOffers.count!=0)
+    Business* business= [Location getBusinessForLocationMajor:major];
+
+    
+    //Choose between sentece types not randomly but based on what could be more relevant
+    
+    if(business.linkedOffers)
     {
         
         //1. choose the right sentence type and deal
-        NSDictionary* result=[self chooseTheRightMessageTypeAndDeal];
-        chosenOffer=[result objectForKey:@"Deal"];
+        NSDictionary* result=[self chooseMessageTypeAndDealForBusiness:business];
+        Featured* chosenOffer=[result objectForKey:@"Deal"];
         NSNumber* messageType=[result objectForKey:@"Type"];
         NSNumber* messageKind=[result objectForKey:@"Kind"];
         
@@ -250,7 +256,7 @@ static NSString* errorWelcomingMessage=@"";
 }
 
 
--(NSDictionary*)chooseTheRightMessageTypeAndDeal
+-(NSDictionary*)chooseMessageTypeAndDealForBusiness:(Business*)business
 {
     NSNumber* chosenType;
     NSNumber* chosenMessage;
@@ -259,6 +265,7 @@ static NSString* errorWelcomingMessage=@"";
     
     NSMutableDictionary *topics=[NSMutableDictionary dictionaryWithObject:@(S_Preference) forKey:@(S_Preference)];
     
+#warning check if there are active deals that are suitable for the type
     //check the date
     SignDay day=[self getRelevantDay];
     if (day!=SD_Average) [topics setObject:@(S_Day) forKey:@(day)];
@@ -298,13 +305,15 @@ static NSString* errorWelcomingMessage=@"";
     return time;
 }
 
--(SignWeather) getRelevantWeather
+-(Featured*) tryWeatherMessageForLocation:(Location*)location
 {
     SignWeather weather=SW_Average;
     
     //get current weather
-    NSString* curWeather=[[Model sharedModel] currentWeather];
-    NSNumber* curTemperature=[[Model sharedModel] currentTemperature];
+    
+    NSString* curWeather=location.currentWeather;
+    NSNumber* curTemperature=location.currentTemperature;
+    
     
     if(curTemperature.integerValue < 10) weather=SW_Cold;
     if(curTemperature.integerValue > 25) weather=SW_Hot;
@@ -314,11 +323,13 @@ static NSString* errorWelcomingMessage=@"";
     if([curWeather isEqualToString:@"snow"]) weather=SW_Snow;
     if([curWeather isEqualToString:@"fog"]) weather=SW_Fog;
 
+#error check offers at the business to see if the are ones that are suitable for the current condition
+    
     return weather;
 }
 
 
--(SignPreference) getRelevantPreference
+-(Featured*) tryFindOfferForPreference
 {
     SignPreference preference=SP_Weak;
     

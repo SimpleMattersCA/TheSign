@@ -21,6 +21,10 @@
 
 #define P_NAME (@"name")
 #define P_PIC (@"pic")
+#define P_BIRTHDATE (@"birthdate")
+#define P_GENDER (@"gender")
+#define P_FBID (@"fbID")
+#define P_TWID (@"twID")
 
 @implementation User
 
@@ -45,6 +49,13 @@ static User* _currentUser;
 +(NSString*) entityName {return @"User";}
 +(NSString*) parseEntityName {return @"User";}
 
++(Boolean)checkIfParseObjectRight:(PFUser*)object
+{
+    if(object[P_NAME])
+        return YES;
+    else
+        return NO;
+}
 
 +(User*) currentUser
 {
@@ -149,6 +160,11 @@ static User* _currentUser;
         return;
     }
     
+    if([User checkIfParseObjectRight:self.parseObject]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+        return;
+    }
     
 }
 

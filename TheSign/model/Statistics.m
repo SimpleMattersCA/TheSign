@@ -55,12 +55,11 @@
     double effect;
     switch(newLike)
     {
-#warning use the setting
-        case LK_None:effect=0.1;
+        case LK_None:effect=[Model sharedModel].settings.lk_none.doubleValue;
             break;
-        case LK_Dislike:effect=-1;
+        case LK_Dislike:effect=[Model sharedModel].settings.lk_dislike.doubleValue;
             break;
-        case LK_Like:effect=1;
+        case LK_Like:effect=[Model sharedModel].settings.lk_like.doubleValue;
             break;
     }
     [self.linkedOffer processLike:effect];

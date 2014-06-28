@@ -14,21 +14,23 @@
 #import "Model.h"
 #import "Relevancy.h"
 
-#define CD_ABOUT (@"about")
 #define CD_TITLE (@"title")
 #define CD_DETAILS (@"details")
+#define CD_FULLNAME (@"fullName")
+#define CD_WELCOMETEXT (@"welcomeText")
 #define CD_IMAGE (@"image")
 #define CD_MAJOR (@"major")
 #define CD_MINOR (@"minor")
 #define CD_ACIVE (@"active")
 
-#define P_ABOUT (@"featured")
 #define P_TITLE (@"name")
+#define P_FULLNAME (@"featured")
 #define P_DETAILS (@"description")
+#define P_WELCOMETEXT (@"welcomeText")
 #define P_IMAGE (@"picture")
 #define P_MINOR (@"minor")
 #define P_BUSINESS (@"BusinessID")
-#define P_ACIVE (@"active")
+#define P_ACTIVE (@"active")
 
 @implementation Featured
 
@@ -37,19 +39,28 @@
 +(NSString*) entityName {return @"Featured";}
 +(NSString*) parseEntityName {return @"Info";}
 
-@dynamic active;
+@dynamic title;
+@dynamic fullName;
 @dynamic details;
+@dynamic welcomeText;
+@dynamic active;
 @dynamic image;
 @dynamic major;
 @dynamic minor;
-@dynamic title;
 @dynamic pObjectID;
-@dynamic about;
 @dynamic linkedTagSets;
 @dynamic linkedBusiness;
 @dynamic linkedStats;
 @dynamic linkedScore;
 
+
++(Boolean)checkIfParseObjectRight:(PFObject*)object
+{
+    if(object[P_TITLE] && object[P_FULLNAME] && object[P_ACTIVE] && object[P_BUSINESS])
+        return YES;
+    else
+        return NO;
+}
 
 +(Featured*) getByID:(NSString*)identifier
 {
@@ -73,18 +84,14 @@
 //   return [self getOffersByMajor:major andMinor:nil];
 //}
 
-//Getting array of Featured objects by beacon's major and minor. The idea is that optionally the offer can be attached to a specific beacon, but it doesn't have to so we first check if there are offers with such major and minor id's and if not, we check only by major
-+(NSArray*) getOffersByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
+
++(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSPredicate *predicateMajor = [NSPredicate predicateWithFormat: @"(%@==%ld)", CD_MAJOR, major.longValue];
-    if(minor!=nil)
-    {
-        NSPredicate *predicateMinor = [NSPredicate predicateWithFormat: @"(%@==%ld)", CD_MINOR, minor.longValue];
-        request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor]];
-    }
-    else
-        request.predicate=predicateMajor;
+    NSPredicate *predicateMinor = [NSPredicate predicateWithFormat: @"(%@==%ld)", CD_MINOR, minor.longValue];
+    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor]];
+   
     NSError *error;
     NSArray *featured = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -94,33 +101,29 @@
         return nil;
     }
     
-    //if there are no offers tied directly to the beacon we try to find all the offers for the business
-    if(featured.count==0 && minor!=nil)
-    {
-        request.predicate=predicateMajor;
-        featured = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-        if(error)
-        {
-            NSLog(@"%@",[error localizedDescription]);
-            return nil;
-        }
-    }
-    return featured;
+    return featured.firstObject;
 }
 
 
 + (void)createFromParse:(PFObject *)object
 {
+    if([self checkIfParseObjectRight:object]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
+        return;
+    }
+
     NSError *error;
     Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
     deal.parseObject=object;
     deal.pObjectID=object.objectId;
     
-    if(object[P_ABOUT]!=nil) deal.about=object[P_ABOUT];
+    if(object[P_FULLNAME]!=nil) deal.fullName=object[P_FULLNAME];
     if(object[P_TITLE]!=nil) deal.title=object[P_TITLE];
+    
     deal.details=object[P_DETAILS];
-    if(object[P_ACIVE]!=nil) deal.active=object[P_ACIVE];
+    if(object[P_ACTIVE]!=nil) deal.active=object[P_ACTIVE];
     deal.minor=object[P_MINOR];
     
     
@@ -167,10 +170,16 @@
         return;
     }
     
-    self.about=self.parseObject[P_ABOUT];
+    if([self.class checkIfParseObjectRight:self.parseObject]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+        return;
+    }
+    
+    self.fullName=self.parseObject[P_FULLNAME];
     self.title=self.parseObject[P_TITLE];
     self.details=self.parseObject[P_DETAILS];
-    self.active=self.parseObject[P_ACIVE];
+    self.active=self.parseObject[P_ACTIVE];
     self.minor=self.parseObject[P_MINOR];
     
     if(self.parseObject[P_IMAGE]!=nil)

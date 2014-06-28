@@ -14,11 +14,16 @@
 
 @interface Location : NSManagedObject <SignEntityProtocol>
 
+@property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSNumber * latitude;
 @property (nonatomic, retain) NSNumber * longitude;
 @property (nonatomic, retain) NSString * currentWeather;
 @property (nonatomic, retain) NSNumber * currentTemperature;
 @property (nonatomic, retain) NSDate * weatherTimestamp;
 @property (nonatomic, retain) Business *linkedBusiness;
+@property (nonatomic, retain) NSString * address;
+@property (nonatomic, retain) NSNumber * major;
 
+
++(Business*)getBusinessForLocationMajor:(NSNumber*)major;
 @end

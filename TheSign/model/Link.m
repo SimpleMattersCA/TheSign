@@ -29,9 +29,19 @@
 +(NSString*) entityName {return @"Link";}
 +(NSString*) parseEntityName {return @"Links";}
 
+
++(Boolean)checkIfParseObjectRight:(PFObject*)object
+{
+    if(object[P_URL] && object[P_BUSINESS])
+        return YES;
+    else
+        return NO;
+}
+
+
 +(Link*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Link.entityName];
     request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -48,7 +58,13 @@
 
 + (void)createFromParse:(PFObject *)object
 {
-    Link *link = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
+    if([Link checkIfParseObjectRight:object]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
+        return;
+    }
+    
+    Link *link = [NSEntityDescription insertNewObjectForEntityForName:Link.entityName
                                                inManagedObjectContext:[Model sharedModel].managedObjectContext];
     link.parseObject=object;
     link.pObjectID=object.objectId;
@@ -76,9 +92,15 @@
         return;
     }
     
+    if([Link checkIfParseObjectRight:self.parseObject]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+        return;
+    }
+    
     self.url=self.parseObject[P_URL];
     
-    //no need to fetch it entirely from parse as we use only objectId property
+    //careful, incomplete object - only objectId property is there
     PFObject *fromParseBusiness=self.parseObject[P_BUSINESS];
     if (fromParseBusiness.objectId!=self.linkedBusiness.pObjectID)
     {

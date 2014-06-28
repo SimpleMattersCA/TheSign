@@ -33,6 +33,14 @@
 +(NSString*)pTimeStamp {return P_TIMESTAMP;}
 +(NSString*)pOrder {return P_ORDER;}
 
++(Boolean)checkIfParseObjectRight:(PFObject*)object
+{
+    if(object[P_TABLE] && object[P_ORDER])
+        return YES;
+    else
+        return NO;
+}
+
 + (NSArray*)getTableNames
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:TableTimestamp.entityName];
@@ -92,6 +100,12 @@
 
 + (void)createFromParse:(PFObject *)object
 {
+    if([self checkIfParseObjectRight:object]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
+        return;
+    }
+    
     TableTimestamp *timeStamp = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                           inManagedObjectContext:[Model sharedModel].managedObjectContext];
     timeStamp.parseObject=object;
@@ -110,6 +124,13 @@
         NSLog(@"%@",[error localizedDescription]);
         return;
     }
+    
+    if([self.class checkIfParseObjectRight:self.parseObject]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+        return;
+    }
+    
     self.timeStamp=self.parseObject[TableTimestamp.pTimeStamp];
     self.tableName=self.parseObject[TableTimestamp.pTableName];
     self.order=self.parseObject[TableTimestamp.pOrder];

@@ -30,6 +30,14 @@
 
 @synthesize parseObject=_parseObject;
 
++(Boolean)checkIfParseObjectRight:(PFObject*)object
+{
+    if(object[P_WEIGHT] && object[P_OFFER] && object[P_TAG])
+        return YES;
+    else
+        return NO;
+}
+
 +(NSString*) entityName {return @"TagSet";}
 +(NSString*) parseEntityName {return @"TagSet";}
 
@@ -51,6 +59,12 @@
 
 +(void)createFromParse:(PFObject *)object
 {
+    if([self checkIfParseObjectRight:object]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
+        return;
+    }
+    
     TagSet *tagset = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
     tagset.parseObject=object;
@@ -83,12 +97,17 @@
 
 -(void)refreshFromParse
 {
-    
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
+        return;
+    }
+    
+    if([self.class checkIfParseObjectRight:self.parseObject]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
         return;
     }
     

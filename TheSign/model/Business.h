@@ -11,13 +11,11 @@
 #import "SignEntityProtocol.h"
 
 
-@class DiscoveredBusiness, Featured, Link,PFObject,CLLocation;
+@class DiscoveredBusiness, Featured, Link,PFObject,CLLocation,Location;
 
 @interface Business : NSManagedObject <SignEntityProtocol>
 
 @property (nonatomic, retain) NSString * businessType;
-@property (nonatomic, retain) NSNumber * locationLatt;
-@property (nonatomic, retain) NSNumber * locationLong;
 @property (nonatomic, retain) NSData * logo;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * pObjectID;
@@ -26,13 +24,12 @@
 @property (nonatomic, retain) DiscoveredBusiness *linkedDiscovery;
 @property (nonatomic, retain) NSSet *linkedOffers;
 @property (nonatomic, retain) NSSet *linkedLinks;
+@property (nonatomic, retain) NSSet *linkedLocations;
 
 +(NSArray*) getBusinessesByType:(NSString*)type;
 +(NSArray*) getTypes;
-+(NSDictionary*) getLocations;
 +(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
 
-+(CLLocation*)getLocationByBusinessID:(NSInteger)identifier;
 
 +(Business*) getBusinessByUID:(NSNumber*)identifier;
 
@@ -45,6 +42,11 @@
 - (void)removeLinkedOffersObject:(Featured *)value;
 - (void)addLinkedOffers:(NSSet *)values;
 - (void)removeLinkedOffers:(NSSet *)values;
+
+- (void)addLinkedLocationsObject:(Location *)value;
+- (void)removeLinkedLocationsObject:(Location *)value;
+- (void)addLinkedLocations:(NSSet *)values;
+- (void)removeLinkedLocations:(NSSet *)values;
 
 - (void)addLinkedLinksObject:(Link *)value;
 - (void)removeLinkedLinksObject:(Link *)value;

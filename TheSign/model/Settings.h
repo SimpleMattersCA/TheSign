@@ -23,4 +23,7 @@
 @property (nonatomic, retain) NSNumber * lk_like;
 @property (nonatomic, retain) NSNumber * lk_dislike;
 
+
++(Settings*)getSettingsSet;
+
 @end

@@ -1,6 +1,88 @@
+Parse.Cloud.beforeDelete("Business", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","Business");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
 
-// Use Parse.Cloud.define to define as many cloud functions as you want.
-// For example:
+
+Parse.Cloud.beforeDelete("Info", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","Info");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
+
+Parse.Cloud.beforeDelete("Links", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","Links");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
+
+Parse.Cloud.beforeDelete("Locations", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","Locations");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
+
+Parse.Cloud.beforeDelete("Tag", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","Tag");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
+
+Parse.Cloud.beforeDelete("TagConnection", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","TagConnection");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
+
+Parse.Cloud.beforeDelete("TagSet", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","TagSet");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
+
 Parse.Cloud.job("getForecast", function(request, status) {
 
 var apiKey='d9b6767efb140cd602f07adf5a9018af';

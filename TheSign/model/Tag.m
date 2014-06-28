@@ -40,6 +40,13 @@
 +(NSString*) entityName {return @"Tag";}
 +(NSString*) parseEntityName {return @"Tag";}
 
++(Boolean)checkIfParseObjectRight:(PFObject*)object
+{
+    if(object[P_NAME])
+        return YES;
+    else
+        return NO;
+}
 
 +(Tag*) getByID:(NSString*)identifier
 {
@@ -61,11 +68,17 @@
 
 + (void)createFromParse:(PFObject *)object
 {
+    if([self checkIfParseObjectRight:object]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
+        return;
+    }
+    
     Tag *tag = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
     tag.parseObject=object;
     tag.pObjectID=object.objectId;
-    if(!object[P_NAME]) tag.name=object[P_NAME];
+    tag.name=object[P_NAME];
     if(!object[P_INTEREST]) tag.interest=object[P_INTEREST];
     if(!object[P_CONDITION]) tag.condition=object[P_CONDITION];
     tag.details=object[P_DETAILS];
@@ -80,6 +93,13 @@
         NSLog(@"%@",[error localizedDescription]);
         return;
     }
+    
+    if([self.class checkIfParseObjectRight:self.parseObject]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+        return;
+    }
+    
     self.name=self.parseObject[P_NAME];
     self.details=self.parseObject[P_DETAILS];
     if(!self.parseObject[P_INTEREST]) self.interest=self.parseObject[P_INTEREST];
@@ -89,8 +109,7 @@
 
 -(void)processLike:(double)effect AlreadyProcessed:(NSMutableArray**)processedTags
 {
-#warning use the setting
-    if(effect>=0.1)
+    if(effect>=[Model sharedModel].settings.minLike.doubleValue && self.condition.boolValue==NO)
     {
         [Like changeLikenessForTag:self ByValue:@(effect)];
         for (TagConnection* connection in self.linkedConnectionsFrom)
@@ -115,12 +134,12 @@
 -(double) calculateRelevancyOnLevel:(NSInteger)depth
 {
     double cumulativeScore=0;
-#warning use the setting
-    if(depth<=2)
+    //we go only for a certain levels deep into the tag graph
+    if(depth<=[Model sharedModel].settings.relevancyDepth.integerValue)
     {
-        if(self.linkedLike)
+        if(self.linkedLike && self.condition.boolValue==NO)
             cumulativeScore=self.linkedLike.likeness.doubleValue;
-    
+        
         for (TagConnection* connection in self.linkedConnectionsFrom)
         {
             if(connection.linkedTagTo.linkedLike)

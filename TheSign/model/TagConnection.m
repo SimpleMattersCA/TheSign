@@ -33,6 +33,14 @@
 +(NSString*) entityName {return @"TagConnection";}
 +(NSString*) parseEntityName {return @"TagConnection";}
 
++(Boolean)checkIfParseObjectRight:(PFObject*)object
+{
+    if(object[P_WEIGHT] && object[P_CONTROL_TAG] && object[P_RELATED_TAG])
+        return YES;
+    else
+        return NO;
+}
+
 +(TagConnection*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
@@ -51,6 +59,11 @@
 
 + (void)createFromParse:(PFObject *)object
 {
+    if([self checkIfParseObjectRight:object]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
+        return;
+    }
     
     TagConnection *connection = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
                                                               inManagedObjectContext:[Model sharedModel].managedObjectContext];
@@ -89,6 +102,12 @@
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
+        return;
+    }
+    
+    if([self.class checkIfParseObjectRight:self.parseObject]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
         return;
     }
     

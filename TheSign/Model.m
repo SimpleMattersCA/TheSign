@@ -17,14 +17,17 @@
 #import "Statistics.h"
 #import "TableTimestamp.h"
 #import "Parse/Parse.h"
-
-
+#import "Settings.h"
+#import "Location.h"
 
 
 
 @interface Model()
 
 @property (strong) NSTimer *timer;
+
+
+
 
 @end
 
@@ -33,9 +36,17 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+@synthesize settings=_settings;
 
 
-#pragma mark - the backbone of model initialization
+- (Settings*) getSettings
+{
+    if(!_settings)
+        _settings=[Settings getSettingsSet];
+    return _settings;
+}
+
+#pragma mark - model initialization
 - (id)init
 {
     if (self = [super init])
@@ -61,7 +72,6 @@
 {
 //TODO: change timer's next fire at night (nobody is gonna update any deals then)
 //TODO: location specific weather
-    [self checkWeather];
     [Statistics sendToCloud];
     [self performSelectorInBackground:@selector(checkModel) withObject:nil];
 }
@@ -79,7 +89,7 @@
 }
 
 
--(void)checkWeather
+/*-(void)checkWeather
 {
     PFQuery *query = [PFQuery queryWithClassName:@"WeatherData"];
     [query orderByDescending:@"createdAt"];
@@ -96,7 +106,7 @@
             NSLog(@"Error in CheckWeather: %@ %@", error, [error userInfo]);
         }
     }];
-}
+}*/
 
 
 
@@ -168,18 +178,21 @@
 {
     if([entityName isEqualToString:Business.parseEntityName])
         return [Business class];
-    //if([entityName isEqualToString:Link.parseEntityName])
-      //  return [Link class];
+    if([entityName isEqualToString:Link.parseEntityName])
+        return [Link class];
     if([entityName isEqualToString:Featured.parseEntityName])
         return [Featured class];
-/*    if([entityName isEqualToString:Tag.parseEntityName])
+    if([entityName isEqualToString:Tag.parseEntityName])
         return [Tag class];
     if([entityName isEqualToString:TagSet.parseEntityName])
         return [TagSet class];
     if([entityName isEqualToString:TagConnection.parseEntityName])
         return [TagConnection class];
+    if([entityName isEqualToString:Location.parseEntityName])
+        return [Location class];
     if([entityName isEqualToString:TableTimestamp.parseEntityName])
-        return [TableTimestamp class];*/
+        return [TableTimestamp class];
+    
     return nil;
 }
 
@@ -213,7 +226,9 @@
             else
                 [targetClass createFromParse:object];
         }
-       // [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud"
+      
+        
+        // [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud"
      //                                                       object:self
         //                                                  userInfo:[NSDictionary dictionaryWithObject:entityName forKey:@"Entity"]];
     }
@@ -223,6 +238,12 @@
 
 }
 
+-(void)deleteObjectForClass:(Class)class ParseObjectID:(NSString*)pObjectID
+{
+    NSManagedObject* objectToDelete=[class getByID:pObjectID];
+    if(objectToDelete)
+        [self.managedObjectContext deleteObject:objectToDelete];
+}
 
 
 //deleting all objects from CoreData for a specific entity
@@ -357,12 +378,6 @@
 
 
 
--(void) recordLikeFor:(Statistics*)stat
-{
-    
-}
-
-
 
 #pragma mark - Sending requests for commonly used methods to approrpiate classes
 //Commonly used methods from Statistics Class
@@ -379,10 +394,6 @@
 -(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location
 {
     return [Business getClosestBusinessToLocation:location];
-}
--(CLLocation*)getLocationByBusinessID:(NSInteger)identifier
-{
-    return [Business getLocationByBusinessID:identifier];
 }
 
 @end

@@ -11,6 +11,7 @@
 #import "Featured.h"
 #import "Link.h"
 #import "Model.h"
+#import "Location.h"
 
 #define CD_NAME (@"name")
 #define CD_LOGO (@"logo")
@@ -31,8 +32,6 @@
 @implementation Business
 
 @dynamic businessType;
-@dynamic locationLatt;
-@dynamic locationLong;
 @dynamic logo;
 @dynamic name;
 @dynamic pObjectID;
@@ -41,6 +40,7 @@
 @dynamic linkedDiscovery;
 @dynamic linkedOffers;
 @dynamic linkedLinks;
+@dynamic linkedLocations;
 
 @synthesize parseObject=_parseObject;
 
@@ -49,33 +49,37 @@
 
 
 ///this dictionary contains pairs CLLocation / objectID
-static NSDictionary* _businessLocations;
+//static NSDictionary* _businessLocations;
 
 //just so I don't have to create another CoreData entity and fuck with the synchronization we gonna store business types in a hashtable. God I love hash tables. They sounds like hash browns..
 static NSArray* _businessTypes;
 
-+(CLLocation*)getLocationByBusinessID:(NSInteger)identifier
-{
-    return [_businessLocations objectForKey:@(identifier)];
-}
 
-+(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location
+
+
+
++(CLLocation*)getClosestBusinessToLocation:(CLLocation*)curLocation
 {
     NSArray* businesses=[self getBusinesses];
-    if (!_businessLocations) [Business getLocations];
     CLLocationDistance minDistance;
     CLLocation *closestLocation = nil;
     
     for (Business *business in businesses) {
+
+        for(Location *location in business.linkedLocations)
+        {
+            CLLocation* bizlocation=[[CLLocation alloc] initWithLatitude:location.latitude.doubleValue longitude:location.longitude.doubleValue];
+            CLLocationDistance distance = [bizlocation distanceFromLocation:curLocation];
+            
+            if (distance <= minDistance
+                || closestLocation == nil) {
+                minDistance = distance;
+                closestLocation = bizlocation;
+            }
         
-        CLLocation* bizlocation=[_businessLocations objectForKey:business.pObjectID];
-        CLLocationDistance distance = [bizlocation distanceFromLocation:location];
-        
-        if (distance <= minDistance
-            || closestLocation == nil) {
-            minDistance = distance;
-            closestLocation = bizlocation;
         }
+        
+       
     }
     return closestLocation;
 }
@@ -98,27 +102,6 @@ static NSArray* _businessTypes;
     return _businessTypes;
 }
 
-
-
-+(NSDictionary*) getLocations
-{
-    if(!_businessLocations)
-    {
-    
-        NSMutableDictionary *newLocations=[NSMutableDictionary dictionary];
-        
-        for (Business *business in [Business getBusinesses])
-        {
-            if(![newLocations objectForKey:business.pObjectID])
-            {
-                CLLocation* location=[[CLLocation alloc] initWithLatitude:business.locationLatt.doubleValue longitude:business.locationLong.doubleValue];
-                [newLocations setObject:location forKey:business.pObjectID];
-            }
-        }
-        _businessLocations=newLocations;
-    }
-    return _businessLocations;
-}
 
 +(NSArray*) getBusinesses
 {
@@ -157,8 +140,8 @@ static NSArray* _businessTypes;
 
 +(Business*) getBusinessByUID:(NSNumber*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    request.predicate=[NSPredicate predicateWithFormat: @"%@==%ld", CD_UID, identifier.longValue];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
+    request.predicate=[NSPredicate predicateWithFormat: @"%@==%d", CD_UID, identifier.intValue];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -174,7 +157,7 @@ static NSArray* _businessTypes;
 
 +(Business*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
     request.predicate=[NSPredicate predicateWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -188,20 +171,30 @@ static NSArray* _businessTypes;
         return (Business*)result.firstObject;
 }
 
++(Boolean)checkIfParseObjectRight:(PFObject*)object
+{
+    if(object[P_UID] && object[P_NAME] && object[P_LOGO])
+        return YES;
+    else
+        return NO;
+}
+
 +(void)createFromParse:(PFObject *)object
 {
+    if([Business checkIfParseObjectRight:object]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
+        return;
+    }
     NSError *error;
-    Business *business = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+    Business *business = [NSEntityDescription insertNewObjectForEntityForName:Business.entityName
                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
     business.parseObject=object;
     business.pObjectID=object.objectId;
-    if(object[P_NAME]!=nil) business.name=object[P_NAME];
+    business.name=object[P_NAME];
     business.welcomeText=object[P_WELCOMETEXT];
-    if(object[P_UID]!=nil) business.uid=object[P_UID];
+    business.uid=object[P_UID];
     business.businessType=object[P_TYPE];
-    PFGeoPoint *bizLocation=object[P_LOCATION];
-    business.locationLong=@(bizLocation.longitude);
-    business.locationLatt=@(bizLocation.latitude);
     
     PFFile *logo=object[P_LOGO];
     NSData *pulledLogo;
@@ -217,6 +210,8 @@ static NSArray* _businessTypes;
         NSLog(@"%@",[error localizedDescription]);
 }
 
+
+
 -(void)refreshFromParse
 {
     NSError *error;
@@ -227,14 +222,16 @@ static NSArray* _businessTypes;
         return;
     }
     
+    if([Business checkIfParseObjectRight:self.parseObject]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+        return;
+    }
+    
     self.name=self.parseObject[P_NAME];
     self.welcomeText=self.parseObject[P_WELCOMETEXT];
     self.uid=self.parseObject[P_UID];
     self.businessType=self.parseObject[P_TYPE];
-    
-    PFGeoPoint *bizLocation=self.parseObject[P_LOCATION];
-    self.locationLong=@(bizLocation.longitude);
-    self.locationLatt=@(bizLocation.latitude);
     
     PFFile *logo=self.parseObject[P_LOGO];
     

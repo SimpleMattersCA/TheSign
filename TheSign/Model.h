@@ -8,8 +8,8 @@
 
 @import UIKit;
 @import CoreData;
+#import "Settings.h"
 #import "Parse/Parse.h"
-
 
 typedef NS_ENUM(NSInteger, OfferLike) {
     LK_None,
@@ -17,7 +17,6 @@ typedef NS_ENUM(NSInteger, OfferLike) {
     LK_Dislike
 };
 
-NSInteger relevancyDepth=2;
 
 @class Business,Statistics;
 /**
@@ -26,12 +25,7 @@ NSInteger relevancyDepth=2;
 @interface Model : NSObject 
 
 
-///When the weather was updated
-@property NSDate* weatherTimestamp;
-///The current temperature for Vancouver
-@property NSNumber* currentTemperature;
-///The description of weather conditions in Vancouver
-@property NSString* currentWeather;
+@property (nonatomic, retain) Settings* settings;
 
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
@@ -55,14 +49,9 @@ NSInteger relevancyDepth=2;
 -(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor;
 -(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID;
 
--(NSArray*) getStatisticsFrom:(NSDate*) startDate To:(NSDate*) endDate ForMajor:(NSNumber*) major andMinor:(NSNumber*)minor;
 
 //********* Commonly used methods from Business Class *********//
--(NSString*) getBusinessNameByBusinessID:(NSInteger)identifier;
 -(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
--(CLLocation*)getLocationObjectByBusinessID:(NSInteger)identifier;
-
-
 
 
 //********* For testign purpoces *********//
