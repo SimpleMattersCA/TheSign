@@ -8,23 +8,20 @@
 
 #import "Location.h"
 #import "Business.h"
+#import "Area.h"
 #import "Model.h"
 
 #define CD_LATITUDE (@"latitude")
 #define CD_LONGITUDE (@"longitude")
-#define CD_WEATHER (@"currentWeather")
-#define CD_TEMPERATURE (@"currentTemperature")
-#define CD_TIMESTAMP (@"weatherTimestamp")
 #define CD_ADDRESS (@"address")
 #define CD_MAJOR (@"major")
 
 
 #define P_LATITUDE (@"latitude")
 #define P_LONGITUDE (@"longitude")
-#define P_WEATHER (@"currentWeather")
-#define P_TEMPERATURE (@"currentTemperature")
 #define P_ADDRESS (@"address")
 #define P_BUSINESS (@"business")
+#define P_AREA (@"area")
 #define P_MAJOR (@"major")
 
 @implementation Location
@@ -32,12 +29,10 @@
 @dynamic pObjectID;
 @dynamic latitude;
 @dynamic longitude;
-@dynamic currentWeather;
-@dynamic currentTemperature;
-@dynamic weatherTimestamp;
 @dynamic linkedBusiness;
 @dynamic address;
 @dynamic major;
+@dynamic linkedArea;
 
 @synthesize parseObject=_parseObject;
 
@@ -83,9 +78,6 @@
                                                inManagedObjectContext:[Model sharedModel].managedObjectContext];
     location.parseObject=object;
     location.pObjectID=object.objectId;
-    location.currentTemperature=object[P_TEMPERATURE];
-    location.currentWeather=object[P_WEATHER];
-    location.weatherTimestamp=object.updatedAt;
     location.address=object[P_ADDRESS];
     location.longitude=object[P_LONGITUDE];
     location.latitude=object[P_LATITUDE];
@@ -100,6 +92,18 @@
     }
     else
         NSLog(@"Linked business wasn't found");
+    
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseArea=object[P_AREA];
+    Area *linkedArea=[Area getByID:fromParseArea.objectId];
+    if (linkedArea!=nil)
+    {
+        location.linkedArea = linkedArea;
+        [linkedArea addLinkedLocationsObject:location];
+    }
+    else
+        NSLog(@"Linked are wasn't found");
+    
 }
 
 -(void)refreshFromParse
@@ -118,9 +122,6 @@
         return;
     }
     
-    self.currentTemperature=self.parseObject[P_TEMPERATURE];
-    self.currentWeather=self.parseObject[P_WEATHER];
-    self.weatherTimestamp=self.parseObject.updatedAt;
     self.address=self.parseObject[P_ADDRESS];
     self.longitude=self.parseObject[P_LONGITUDE];
     self.latitude=self.parseObject[P_LATITUDE];
@@ -139,12 +140,27 @@
         }
         else
             NSLog(@"Linked business wasn't found");
-
+    }
+    
+    //careful, incomplete object - only objectId property is there
+    PFObject *fromParseArea=self.parseObject[P_AREA];
+    if (fromParseArea.objectId!=self.linkedArea.pObjectID)
+    {
+        //careful, incomplete object - only objectId property is there
+        PFObject *fromParseArea=self.parseObject[P_AREA];
+        Area *linkedArea=[Area getByID:fromParseArea.objectId];
+        if (linkedArea!=nil)
+        {
+            self.linkedArea = linkedArea;
+            [linkedArea addLinkedLocationsObject:self];
+        }
+        else
+            NSLog(@"Linked are wasn't found");
     }
 }
 
 
-+(Business*)getBusinessForLocationMajor:(NSNumber*)major
++(Location*)getLocationByMajor:(NSNumber*)major
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Location.entityName];
     request.predicate=[NSPredicate predicateWithFormat:@"%@==%d", CD_MAJOR, major.intValue];
@@ -160,9 +176,13 @@
     {
         if(result.count>1)
             NSLog(@"Data inconsitency, more than one location for major %d",major.intValue);
-        return ((Location*)result.firstObject).linkedBusiness;
+        return (Location*)(result.firstObject);
     }
 }
 
+-(CLLocation*)getLocationObject
+{
+    return [[CLLocation alloc] initWithLatitude:self.latitude.doubleValue longitude:self.longitude.doubleValue];
+}
 
 @end

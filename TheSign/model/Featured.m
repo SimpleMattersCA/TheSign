@@ -11,6 +11,7 @@
 #import "Statistics.h"
 #import "TagSet.h"
 #import "Tag.h"
+#import "TagConnection.h"
 #import "Model.h"
 #import "Relevancy.h"
 
@@ -52,7 +53,7 @@
 @dynamic linkedBusiness;
 @dynamic linkedStats;
 @dynamic linkedScore;
-
+@dynamic linkedContexts;
 
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
@@ -217,6 +218,81 @@
     }
 }
 
+/*-(NSSet*)findContextTags:(NSSet*) lookupTags
+{
+    NSMutableSet *results=[NSMutableSet set];
+    double threshold=[Model sharedModel].settings.contextThreshold.doubleValue;
+    for(TagSet* tagset in self.linkedTagSets)
+    {
+        Tag *tag=tagset.linkedTag;
+        //look for context tags from lookupTags array
+        if(tag && tag.context.boolValue && [lookupTags containsObject:tag.pObjectID] && tagset.weight.doubleValue>=threshold)
+            [results addObject:tag.pObjectID];
+        
+        for (TagConnection* connectionTo in tag.linkedConnectionsTo)
+        {
+            Tag* tag2=connectionTo.linkedTagFrom;
+            //look for context tags from lookupTags array
+            if(tag2 && tag2.context.boolValue && [lookupTags containsObject:tag2.pObjectID] && connectionTo.weight.doubleValue>=threshold)
+                [results addObject:tag2.pObjectID];
+        }
+        for (TagConnection* connectionFrom in tag.linkedConnectionsFrom)
+        {
+            Tag* tag3=connectionFrom.linkedTagFrom;
+            //look for context tags from lookupTags array
+            if(tag3 && tag3.context.boolValue && [lookupTags containsObject:tag3.pObjectID] && connectionFrom.weight.doubleValue>=threshold)
+                [results addObject:tag3.pObjectID];
+        }
+    }
+    return results;
+}*/
+
+-(NSSet*)checkContextTags:(NSSet*) lookupTags
+{
+    NSMutableSet*results=[NSMutableSet set];
+    for (Context* tag in self.linkedContextTags)
+    {
+        if(tag && tag.context.boolValue && [lookupTags containsObject:tag.pObjectID])
+            [results addObject:tag.pObjectID];
+    }
+    return results;
+}
+
+/*-(void)updateContextTagList
+{
+    //clean out the list
+    if (self.linkedContextTags)
+        [self removeLinkedContextTags:self.linkedContextTags];
+    
+    for(TagSet* tagset in self.linkedTagSets)
+    {
+        Tag *tag=tagset.linkedTag;
+        if(tag && tag.context.boolValue)
+        {
+            [self addLinkedContextTagsObject:tag];
+           // [tag addLinkedContextOffersObject:self];
+        }
+        
+        for (TagConnection* connectionTo in tag.linkedConnectionsTo)
+        {
+            Tag* tag2=connectionTo.linkedTagFrom;
+            if(tag2 && tag2.context.boolValue)
+            {
+                [self addLinkedContextTagsObject:tag2];
+             //   [tag2 addLinkedContextOffersObject:self];
+            }
+        }
+        for (TagConnection* connectionFrom in tag.linkedConnectionsFrom)
+        {
+            Tag* tag3=connectionFrom.linkedTagTo;
+            if(tag3 && tag3.context.boolValue)
+            {
+                [self addLinkedContextTagsObject:tag3];
+              //  [tag3 addLinkedContextOffersObject:self];
+            }
+        }
+    }
+}*/
 
 
 -(void) processLike:(double)effect
@@ -225,15 +301,18 @@
     NSMutableArray* alreadyProcessed=[NSMutableArray array];
     for(TagSet* tagset in self.linkedTagSets)
     {
-        [tagset.linkedTag processLike:effect*tagset.weight.doubleValue AlreadyProcessed:&alreadyProcessed];
+        if( tagset.linkedTag) [tagset.linkedTag processLike:effect*tagset.weight.doubleValue AlreadyProcessed:&alreadyProcessed];
     }
 
     //update relevancy score
     double score=0;
     for(TagSet* tagset in self.linkedTagSets)
-        score+=[tagset.linkedTag calculateRelevancyOnLevel:0];
+        if( tagset.linkedTag) score+=[tagset.linkedTag calculateRelevancyOnLevel:0];
     
+    [Relevancy changeRelevancyForOffer:self ByValue:@(score)];
 }
+
+
 
 
 

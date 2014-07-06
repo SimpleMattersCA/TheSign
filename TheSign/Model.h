@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 };
 
 
-@class Business,Statistics;
+@class Business,Statistics,Location;
 /**
  Encapsulated some of the basics of the model such as pulling data from Parse and filling CoreData
  */
@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 
 
 //********* Commonly used methods from Business Class *********//
--(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
+-(Location*)getClosestBusinessToLocation:(CLLocation*)location;
 
 
 //********* For testign purpoces *********//

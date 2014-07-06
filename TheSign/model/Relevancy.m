@@ -35,11 +35,6 @@
     }
 }
 
--(void)rescore
-{
-
-
-}
 
 
 @end

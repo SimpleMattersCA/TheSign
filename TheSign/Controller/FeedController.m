@@ -29,9 +29,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.edgesForExtendedLayout=UIRectEdgeNone;
-    self.extendedLayoutIncludesOpaqueBars=NO;
-    self.automaticallyAdjustsScrollViewInsets=NO;
+
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     

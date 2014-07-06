@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6172.15" systemVersion="13D65" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Area" representedClassName="Area" syncable="YES">
+        <attribute name="currentTemperature" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="currentWeather" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="weatherTimestamp" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="linkedLocations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Location" inverseName="linkedArea" inverseEntity="Location" syncable="YES"/>
+    </entity>
     <entity name="Business" representedClassName="Business" syncable="YES">
         <attribute name="businessType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="logo" attributeType="Binary" syncable="YES"/>
@@ -7,10 +14,17 @@
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="uid" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="welcomeText" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="linkedDiscovery" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="DiscoveredBusiness" inverseName="linkedBusiness" inverseEntity="DiscoveredBusiness" syncable="YES"/>
-        <relationship name="linkedLinks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Link" inverseName="linkedBusiness" inverseEntity="Link" syncable="YES"/>
+        <relationship name="linkedDiscovery" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DiscoveredBusiness" inverseName="linkedBusiness" inverseEntity="DiscoveredBusiness" syncable="YES"/>
+        <relationship name="linkedLinks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Link" inverseName="linkedBusiness" inverseEntity="Link" syncable="YES"/>
         <relationship name="linkedLocations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Location" inverseName="linkedBusiness" inverseEntity="Location" syncable="YES"/>
-        <relationship name="linkedOffers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Featured" inverseName="linkedBusiness" inverseEntity="Featured" syncable="YES"/>
+        <relationship name="linkedOffers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Featured" inverseName="linkedBusiness" inverseEntity="Featured" syncable="YES"/>
+    </entity>
+    <entity name="Context" representedClassName="Context" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="probability" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="linkedOffers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Featured" inverseName="linkedContexts" inverseEntity="Featured" syncable="YES"/>
+        <relationship name="linkedTags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="linkedContext" inverseEntity="Tag" syncable="YES"/>
     </entity>
     <entity name="DiscoveredBusiness" representedClassName="DiscoveredBusiness" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
@@ -27,6 +41,7 @@
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
         <relationship name="linkedBusiness" maxCount="1" deletionRule="Nullify" destinationEntity="Business" inverseName="linkedOffers" inverseEntity="Business" syncable="YES"/>
+        <relationship name="linkedContexts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Context" inverseName="linkedOffers" inverseEntity="Context" syncable="YES"/>
         <relationship name="linkedScore" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Relevancy" inverseName="linkedOffer" inverseEntity="Relevancy" syncable="YES"/>
         <relationship name="linkedStats" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Statistics" inverseName="linkedOffer" inverseEntity="Statistics" syncable="YES"/>
         <relationship name="linkedTagSets" toMany="YES" deletionRule="Nullify" destinationEntity="TagSet" inverseName="linkedOffer" inverseEntity="TagSet" syncable="YES"/>
@@ -44,12 +59,10 @@
     </entity>
     <entity name="Location" representedClassName="Location" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="currentTemperature" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="currentWeather" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0" syncable="YES"/>
-        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="pObjectID" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="weatherTimestamp" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="latitude" attributeType="Double" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" indexed="YES" syncable="YES"/>
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="linkedArea" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Area" inverseName="linkedLocations" inverseEntity="Area" syncable="YES"/>
         <relationship name="linkedBusiness" maxCount="1" deletionRule="Nullify" destinationEntity="Business" inverseName="linkedLocations" inverseEntity="Business" syncable="YES"/>
     </entity>
     <entity name="Relevancy" representedClassName="Relevancy" syncable="YES">
@@ -60,21 +73,20 @@
     </entity>
     <entity name="Settings" representedClassName="Settings" syncable="YES">
         <attribute name="beaconUUID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="contextThreshold" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lk_dislike" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lk_like" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lk_none" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="minLike" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="prob_date" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="prob_day" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="pObjectID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="prob_pref" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="prob_weather" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="relevancyDepth" optional="YES" attributeType="Integer 16" defaultValueString="0.0" syncable="YES"/>
     </entity>
     <entity name="Statistics" representedClassName="Statistics" syncable="YES">
         <attribute name="byBeacon" attributeType="Boolean" syncable="YES"/>
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="liked" attributeType="Integer 64" minValueString="0" maxValueString="2" defaultValueString="0" syncable="YES"/>
-        <attribute name="major" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="major" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="minor" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="synced" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="wasOpened" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -88,16 +100,18 @@
         <attribute name="timeStamp" attributeType="Date" syncable="YES"/>
     </entity>
     <entity name="Tag" representedClassName="Tag" syncable="YES">
-        <attribute name="condition" attributeType="Integer 32" defaultValueString="NO" syncable="YES"/>
         <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="interest" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="name" attributeType="String" defaultValueString="DefaultTag" syncable="YES"/>
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
-        <relationship name="linkedConnectionsFrom" toMany="YES" deletionRule="Cascade" destinationEntity="TagConnection" inverseName="linkedTagFrom" inverseEntity="TagConnection" syncable="YES"/>
-        <relationship name="linkedConnectionsTo" toMany="YES" deletionRule="Cascade" destinationEntity="TagConnection" inverseName="linkedTagTo" inverseEntity="TagConnection" syncable="YES"/>
+        <relationship name="linkedCategoryTemplates" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Template" inverseName="linkedContextTag" inverseEntity="Template" syncable="YES"/>
+        <relationship name="linkedConnectionsFrom" toMany="YES" deletionRule="Nullify" destinationEntity="TagConnection" inverseName="linkedTagFrom" inverseEntity="TagConnection" syncable="YES"/>
+        <relationship name="linkedConnectionsTo" toMany="YES" deletionRule="Nullify" destinationEntity="TagConnection" inverseName="linkedTagTo" inverseEntity="TagConnection" syncable="YES"/>
+        <relationship name="linkedContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Context" inverseName="linkedTags" inverseEntity="Context" syncable="YES"/>
+        <relationship name="linkedContextTemplates" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Template" inverseName="linkedCategoryTag" inverseEntity="Template" syncable="YES"/>
         <relationship name="linkedLike" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Like" inverseName="linkedTag" inverseEntity="Like" syncable="YES"/>
         <relationship name="linkedScores" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Relevancy" inverseName="linkedTags" inverseEntity="Relevancy" syncable="YES"/>
-        <relationship name="linkedTagSets" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TagSet" inverseName="linkedTag" inverseEntity="TagSet" syncable="YES"/>
+        <relationship name="linkedTagSets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TagSet" inverseName="linkedTag" inverseEntity="TagSet" syncable="YES"/>
     </entity>
     <entity name="TagConnection" representedClassName="TagConnection" syncable="YES">
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
@@ -111,6 +125,12 @@
         <relationship name="linkedOffer" maxCount="1" deletionRule="Nullify" destinationEntity="Featured" inverseName="linkedTagSets" inverseEntity="Featured" syncable="YES"/>
         <relationship name="linkedTag" maxCount="1" deletionRule="Nullify" destinationEntity="Tag" inverseName="linkedTagSets" inverseEntity="Tag" syncable="YES"/>
     </entity>
+    <entity name="Template" representedClassName="Template" syncable="YES">
+        <attribute name="messageText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="linkedCategoryTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Tag" inverseName="linkedContextTemplates" inverseEntity="Tag" syncable="YES"/>
+        <relationship name="linkedContextTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Tag" inverseName="linkedCategoryTemplates" inverseEntity="Tag" syncable="YES"/>
+    </entity>
     <entity name="User" representedClassName="User" syncable="YES">
         <attribute name="birthdate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="fbID" optional="YES" attributeType="String" syncable="YES"/>
@@ -118,7 +138,7 @@
         <attribute name="isMainUser" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pic" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="pObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pObjectID" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="twID" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="linkedDiscoveries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DiscoveredBusiness" inverseName="linkedUser" inverseEntity="DiscoveredBusiness" syncable="YES"/>
         <relationship name="linkedFriends" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="User" inverseName="linkedUser" inverseEntity="User" syncable="YES"/>
@@ -128,19 +148,22 @@
         <relationship name="linkedUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="linkedFriends" inverseEntity="User" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Business" positionX="-2729" positionY="-612" width="128" height="193"/>
-        <element name="DiscoveredBusiness" positionX="-2495" positionY="-421" width="128" height="88"/>
-        <element name="Featured" positionX="-2709" positionY="-340" width="128" height="223"/>
-        <element name="Like" positionX="-2936" positionY="-9" width="128" height="88"/>
-        <element name="Link" positionX="-2907" positionY="-468" width="128" height="103"/>
-        <element name="Location" positionX="-2529" positionY="-612" width="128" height="163"/>
-        <element name="Relevancy" positionX="-2916" positionY="-162" width="128" height="103"/>
-        <element name="Settings" positionX="-3141" positionY="-630" width="128" height="193"/>
-        <element name="Statistics" positionX="-2486" positionY="-295" width="128" height="178"/>
+        <element name="Area" positionX="-2511" positionY="-765" width="128" height="118"/>
+        <element name="Business" positionX="-2765" positionY="-598" width="128" height="193"/>
+        <element name="Context" positionX="-2952" positionY="-394" width="128" height="118"/>
+        <element name="DiscoveredBusiness" positionX="-2511" positionY="-403" width="128" height="88"/>
+        <element name="Featured" positionX="-2709" positionY="-340" width="128" height="238"/>
+        <element name="Like" positionX="-2945" positionY="36" width="128" height="88"/>
+        <element name="Link" positionX="-2961" positionY="-535" width="128" height="103"/>
+        <element name="Location" positionX="-2513" positionY="-604" width="128" height="133"/>
+        <element name="Relevancy" positionX="-2954" positionY="-117" width="128" height="103"/>
+        <element name="Settings" positionX="-3141" positionY="-625" width="128" height="178"/>
+        <element name="Statistics" positionX="-2502" positionY="-286" width="128" height="178"/>
         <element name="TableTimestamp" positionX="-3339" positionY="-607" width="128" height="103"/>
-        <element name="Tag" positionX="-3141" positionY="-385" width="128" height="193"/>
-        <element name="TagConnection" positionX="-3341" positionY="-342" width="128" height="103"/>
-        <element name="TagSet" positionX="-2907" positionY="-333" width="128" height="103"/>
+        <element name="Tag" positionX="-3134" positionY="-307" width="128" height="223"/>
+        <element name="TagConnection" positionX="-3332" positionY="-261" width="128" height="103"/>
+        <element name="TagSet" positionX="-2952" positionY="-256" width="128" height="103"/>
         <element name="User" positionX="-2709" positionY="-82" width="128" height="253"/>
+        <element name="Template" positionX="-3143" positionY="-18" width="128" height="103"/>
     </elements>
 </model>

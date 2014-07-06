@@ -20,7 +20,6 @@
 
 +(void)changeRelevancyForOffer:(Featured*)offer ByValue:(NSNumber*)value;
 
--(void)rescore;
 @end
 
 @interface Relevancy (CoreDataGeneratedAccessors)

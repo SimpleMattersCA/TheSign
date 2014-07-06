@@ -10,7 +10,7 @@
 @import CoreData;
 #import "SignEntityProtocol.h"
 
-@class Business, Statistics, TagSet,Relevancy;
+@class Business, Statistics, TagSet,Relevancy, Context;
 
 @interface Featured : NSManagedObject <SignEntityProtocol>
 
@@ -29,12 +29,18 @@
 @property (nonatomic, retain) Relevancy *linkedScore;
 
 @property (nonatomic, retain) NSSet *linkedStats;
+@property (nonatomic, retain) NSSet *linkedContexts;
 
 
 ///Getting the offer that is tied to the beacon. If no such offer, returns nil
 +(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
 
 -(void) processLike:(double)effect;
+
+-(void)updateContextTagList;
+
+-(NSSet*)findContextTags:(NSSet*) lookupTags;
+-(NSSet*)checkContextTags:(NSSet*) lookupTags;
 
 
 @end
@@ -50,5 +56,10 @@
 - (void)removeLinkedStatsObject:(Statistics *)value;
 - (void)addLinkedStats:(NSSet *)values;
 - (void)removeLinkedStats:(NSSet *)values;
+
+- (void)addLinkedContextsObject:(Context *)value;
+- (void)removeLinkedContextsObject:(Context *)value;
+- (void)addLinkedContexts:(NSSet *)values;
+- (void)removeLinkedContexts:(NSSet *)values;
 
 @end

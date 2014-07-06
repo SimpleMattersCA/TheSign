@@ -28,10 +28,13 @@
 
 +(NSArray*) getBusinessesByType:(NSString*)type;
 +(NSArray*) getTypes;
-+(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location;
++(Location*)getClosestBusinessToLocation:(CLLocation*)location;
 
+-(NSSet*) getActiveOffers;
 
 +(Business*) getBusinessByUID:(NSNumber*)identifier;
+
+
 
 
 @end

@@ -11,22 +11,19 @@
 #import "TagConnection.h"
 #import "TagSet.h"
 #import "Model.h"
+#import "Context.h"
 
 #define P_NAME (@"name")
 #define P_INTEREST (@"interest")
-#define P_CONDITION (@"condition")
-#define P_DETAILS (@"details")
+#define P_CONTEXT (@"context")
 
 #define CD_NAME (@"name")
 #define CD_INTEREST (@"interest")
-#define CD_CONDITION (@"condition")
-#define CD_DETAILS (@"details")
+#define CD_CONTEXT (@"context")
 
 @implementation Tag
 
 @dynamic interest;
-@dynamic condition;
-@dynamic details;
 @dynamic name;
 @dynamic pObjectID;
 @dynamic linkedConnectionsFrom;
@@ -34,6 +31,9 @@
 @dynamic linkedTagSets;
 @dynamic linkedConnectionsTo;
 @dynamic linkedScores;
+@dynamic linkedContext;
+@dynamic linkedCategoryTemplates;
+@dynamic linkedContextTemplates;
 
 @synthesize parseObject=_parseObject;
 
@@ -80,8 +80,19 @@
     tag.pObjectID=object.objectId;
     tag.name=object[P_NAME];
     if(!object[P_INTEREST]) tag.interest=object[P_INTEREST];
-    if(!object[P_CONDITION]) tag.condition=object[P_CONDITION];
-    tag.details=object[P_DETAILS];
+    if(!object[P_CONTEXT])
+    {
+        //careful, incomplete object - only objectId property is there
+        PFObject *fromParseContext=object[P_CONTEXT];
+        Context *linkedContext=[Context getByID:fromParseContext.objectId];
+        if (linkedContext!=nil)
+        {
+            tag.linkedContext = linkedContext;
+            [linkedContext addLinkedTagsObject:tag];
+        }
+        else
+            NSLog(@"Linked context wasn't found");
+    }
 }
 
 -(void)refreshFromParse
@@ -101,20 +112,31 @@
     }
     
     self.name=self.parseObject[P_NAME];
-    self.details=self.parseObject[P_DETAILS];
     if(!self.parseObject[P_INTEREST]) self.interest=self.parseObject[P_INTEREST];
-    if(!self.parseObject[P_CONDITION]) self.condition=self.parseObject[P_CONDITION];
+    if(!self.parseObject[P_CONTEXT])
+    {
+        //careful, incomplete object - only objectId property is there
+        PFObject *fromParseContext=self.parseObject[P_CONTEXT];
+        Context *linkedContext=[Context getByID:fromParseContext.objectId];
+        if (linkedContext!=nil)
+        {
+            self.linkedContext = linkedContext;
+            [linkedContext addLinkedTagsObject:self];
+        }
+        else
+            NSLog(@"Linked context wasn't found");
+    }
 }
 
 
 -(void)processLike:(double)effect AlreadyProcessed:(NSMutableArray**)processedTags
 {
-    if(effect>=[Model sharedModel].settings.minLike.doubleValue && self.condition.boolValue==NO)
+    if(effect>=[Model sharedModel].settings.minLike.doubleValue && self.linkedContext==nil)
     {
         [Like changeLikenessForTag:self ByValue:@(effect)];
         for (TagConnection* connection in self.linkedConnectionsFrom)
         {
-            if(![*processedTags containsObject:connection.linkedTagTo.pObjectID])
+            if(connection.linkedTagTo && ![*processedTags containsObject:connection.linkedTagTo.pObjectID])
             {
                 [*processedTags addObject:connection.linkedTagTo.pObjectID];
                 [connection.linkedTagTo processLike:effect*connection.weight.doubleValue AlreadyProcessed:processedTags];
@@ -122,7 +144,7 @@
         }
         for (TagConnection* connection in self.linkedConnectionsTo)
         {
-            if(![*processedTags containsObject:connection.linkedTagFrom.pObjectID])
+            if(connection.linkedTagFrom && ![*processedTags containsObject:connection.linkedTagFrom.pObjectID])
             {
                 [*processedTags addObject:connection.linkedTagFrom.pObjectID];
                 [connection.linkedTagFrom processLike:effect*connection.weight.doubleValue AlreadyProcessed:processedTags];
@@ -137,20 +159,26 @@
     //we go only for a certain levels deep into the tag graph
     if(depth<=[Model sharedModel].settings.relevancyDepth.integerValue)
     {
-        if(self.linkedLike && self.condition.boolValue==NO)
+        if(self.linkedLike && self.linkedContext==nil)
             cumulativeScore=self.linkedLike.likeness.doubleValue;
         
         for (TagConnection* connection in self.linkedConnectionsFrom)
         {
-            if(connection.linkedTagTo.linkedLike)
-                cumulativeScore+=connection.linkedTagTo.linkedLike.likeness.doubleValue;
-            cumulativeScore+=[connection.linkedTagTo calculateRelevancyOnLevel:depth+1];
+            if(connection.linkedTagTo)
+            {
+                if(connection.linkedTagTo.linkedLike)
+                    cumulativeScore+=connection.linkedTagTo.linkedLike.likeness.doubleValue;
+                cumulativeScore+=[connection.linkedTagTo calculateRelevancyOnLevel:depth+1];
+            }
         }
         for (TagConnection* connection in self.linkedConnectionsTo)
         {
-            if(connection.linkedTagFrom.linkedLike)
-                cumulativeScore+=connection.linkedTagFrom.linkedLike.likeness.doubleValue;
-            cumulativeScore+=[connection.linkedTagFrom calculateRelevancyOnLevel:depth+1];
+            if(connection.linkedTagFrom)
+            {
+                if(connection.linkedTagFrom.linkedLike)
+                    cumulativeScore+=connection.linkedTagFrom.linkedLike.likeness.doubleValue;
+                cumulativeScore+=[connection.linkedTagFrom calculateRelevancyOnLevel:depth+1];
+            }
         }
     }
     return cumulativeScore;

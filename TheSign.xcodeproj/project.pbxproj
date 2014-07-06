@@ -30,6 +30,9 @@
 		5575AAEB19569EB400344313 /* Relevancy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5575AAEA19569EB400344313 /* Relevancy.m */; };
 		559A426D19529B34007D0D66 /* BusinessListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 559A426C19529B34007D0D66 /* BusinessListController.m */; };
 		559A427319529F46007D0D66 /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 559A427219529F46007D0D66 /* ProfileController.m */; };
+		559F76DE1967656D00905390 /* Context.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76DD1967656D00905390 /* Context.m */; };
+		559F76E11967C9E700905390 /* Area.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76E01967C9E700905390 /* Area.m */; };
+		559F76E41969295C00905390 /* Template.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76E31969295C00905390 /* Template.m */; };
 		55A5A06F193FCE2A00DDF688 /* WelcomeScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55A5A06E193FCE2A00DDF688 /* WelcomeScreenViewController.m */; };
 		55A5A072193FCE6400DDF688 /* TutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55A5A071193FCE6400DDF688 /* TutorialViewController.m */; };
 		55B4AFFA193A484400C5A71B /* CustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B4AFF9193A484400C5A71B /* CustomScrollView.m */; };
@@ -111,6 +114,12 @@
 		559A426C19529B34007D0D66 /* BusinessListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BusinessListController.m; path = Controller/BusinessListController.m; sourceTree = "<group>"; };
 		559A427119529F46007D0D66 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfileController.h; path = Controller/ProfileController.h; sourceTree = "<group>"; };
 		559A427219529F46007D0D66 /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProfileController.m; path = Controller/ProfileController.m; sourceTree = "<group>"; };
+		559F76DC1967656D00905390 /* Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Context.h; path = model/Context.h; sourceTree = "<group>"; };
+		559F76DD1967656D00905390 /* Context.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Context.m; path = model/Context.m; sourceTree = "<group>"; };
+		559F76DF1967C9E700905390 /* Area.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Area.h; path = model/Area.h; sourceTree = "<group>"; };
+		559F76E01967C9E700905390 /* Area.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Area.m; path = model/Area.m; sourceTree = "<group>"; };
+		559F76E21969295C00905390 /* Template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Template.h; path = model/Template.h; sourceTree = "<group>"; };
+		559F76E31969295C00905390 /* Template.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Template.m; path = model/Template.m; sourceTree = "<group>"; };
 		55A5A06D193FCE2A00DDF688 /* WelcomeScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WelcomeScreenViewController.h; path = Controller/WelcomeScreenViewController.h; sourceTree = "<group>"; };
 		55A5A06E193FCE2A00DDF688 /* WelcomeScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WelcomeScreenViewController.m; path = Controller/WelcomeScreenViewController.m; sourceTree = "<group>"; };
 		55A5A070193FCE6400DDF688 /* TutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TutorialViewController.h; path = Controller/TutorialViewController.h; sourceTree = "<group>"; };
@@ -220,12 +229,18 @@
 			children = (
 				55C89C35195BCED000CA16D9 /* Settings.h */,
 				55C89C36195BCED000CA16D9 /* Settings.m */,
+				559F76DF1967C9E700905390 /* Area.h */,
+				559F76E01967C9E700905390 /* Area.m */,
 				55C89C32195BCECF00CA16D9 /* Location.h */,
 				55C89C33195BCECF00CA16D9 /* Location.m */,
-				550C8100195371B700716D25 /* User.h */,
-				550C8101195371B700716D25 /* User.m */,
 				550C8103195371B700716D25 /* Business.h */,
 				550C8104195371B700716D25 /* Business.m */,
+				559F76E21969295C00905390 /* Template.h */,
+				559F76E31969295C00905390 /* Template.m */,
+				559F76DC1967656D00905390 /* Context.h */,
+				559F76DD1967656D00905390 /* Context.m */,
+				550C8100195371B700716D25 /* User.h */,
+				550C8101195371B700716D25 /* User.m */,
 				550C80F4195371B600716D25 /* Link.h */,
 				550C80F5195371B600716D25 /* Link.m */,
 				550C8106195371B700716D25 /* Featured.h */,
@@ -515,6 +530,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				559F76E11967C9E700905390 /* Area.m in Sources */,
 				550C8102195371B700716D25 /* User.m in Sources */,
 				550C810B195371B700716D25 /* TagSet.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
@@ -530,6 +546,7 @@
 				559A427319529F46007D0D66 /* ProfileController.m in Sources */,
 				55EC54E31950FE16009494E4 /* FeedCell.m in Sources */,
 				55C89C34195BCECF00CA16D9 /* Location.m in Sources */,
+				559F76E41969295C00905390 /* Template.m in Sources */,
 				550C8105195371B700716D25 /* Business.m in Sources */,
 				550C810E195371B700716D25 /* Statistics.m in Sources */,
 				559A426D19529B34007D0D66 /* BusinessListController.m in Sources */,
@@ -537,6 +554,7 @@
 				55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */,
 				550C80FC195371B700716D25 /* Like.m in Sources */,
 				550C8108195371B700716D25 /* Featured.m in Sources */,
+				559F76DE1967656D00905390 /* Context.m in Sources */,
 				550C80F6195371B600716D25 /* Link.m in Sources */,
 				55EC54EE195175BF009494E4 /* LoginController.m in Sources */,
 				550C8111195371B700716D25 /* Tag.m in Sources */,

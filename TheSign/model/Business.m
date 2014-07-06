@@ -58,12 +58,12 @@ static NSArray* _businessTypes;
 
 
 
-+(CLLocation*)getClosestBusinessToLocation:(CLLocation*)curLocation
++(Location*)getClosestBusinessToLocation:(CLLocation*)curLocation
 {
     NSArray* businesses=[self getBusinesses];
     CLLocationDistance minDistance;
     CLLocation *closestLocation = nil;
-    
+    Location *closestBusinessLocation;
     for (Business *business in businesses) {
 
         for(Location *location in business.linkedLocations)
@@ -75,13 +75,14 @@ static NSArray* _businessTypes;
                 || closestLocation == nil) {
                 minDistance = distance;
                 closestLocation = bizlocation;
+                closestBusinessLocation=location;
             }
         
         }
         
        
     }
-    return closestLocation;
+    return closestBusinessLocation;
 }
 
 
@@ -248,6 +249,17 @@ static NSArray* _businessTypes;
         NSLog(@"%@",[error localizedDescription]);
 }
 
+-(NSSet*) getActiveOffers
+{
+    if(self.linkedOffers)
+        return [self.linkedOffers objectsPassingTest:^(id obj, BOOL *stop) {
+            if(((Featured*)obj).active)
+                return YES;
+            else
+                return NO;
+        }];
+    return nil;
+}
 
 
 @end

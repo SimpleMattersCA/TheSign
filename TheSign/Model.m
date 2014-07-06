@@ -24,7 +24,7 @@
 
 @interface Model()
 
-@property (strong) NSTimer *timer;
+@property (strong) NSTimer *networkTimer;
 
 
 
@@ -36,7 +36,6 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-@synthesize settings=_settings;
 
 
 - (Settings*) getSettings
@@ -57,9 +56,10 @@
                                                      name:@"itemPulledFromCloud"
                                                    object:nil];
         
-        self.timer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(requestCloud) userInfo:nil repeats:YES];
-        [self.timer setTolerance:600];
-        [self.timer fire];
+        //checking database every hour with tolerance of 10 minutes
+        self.networkTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(requestCloud) userInfo:nil repeats:YES];
+        [self.networkTimer setTolerance:600];
+        [self.networkTimer fire];
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
         //[self deleteModel];
        // [self performSelectorInBackground:@selector(checkModel) withObject:nil];
@@ -70,8 +70,11 @@
 
 - (void) requestCloud
 {
-//TODO: change timer's next fire at night (nobody is gonna update any deals then)
-//TODO: location specific weather
+    NSDateComponents *components = [[NSCalendar currentCalendar] components: NSHourCalendarUnit fromDate:[NSDate date]];
+    //at night we pause database updates firing 8 hours from now
+    if(components.hour>22)
+        [self.networkTimer setFireDate:[[NSDate date] dateByAddingTimeInterval:60*60*8]];
+    
     [Statistics sendToCloud];
     [self performSelectorInBackground:@selector(checkModel) withObject:nil];
 }
@@ -87,26 +90,6 @@
     });
     return sharedModelObj;
 }
-
-
-/*-(void)checkWeather
-{
-    PFQuery *query = [PFQuery queryWithClassName:@"WeatherData"];
-    [query orderByDescending:@"createdAt"];
-    [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseWeather, NSError *error) {
-        if (!error)
-        {
-            self.currentTemperature=parseWeather[@"currentTemp"];
-            self.currentWeather=parseWeather[@"summary"];
-            self.weatherTimestamp=parseWeather.createdAt;
-        }
-        else
-        {
-            // Log details of the failure
-            NSLog(@"Error in CheckWeather: %@ %@", error, [error userInfo]);
-        }
-    }];
-}*/
 
 
 
@@ -245,6 +228,13 @@
         [self.managedObjectContext deleteObject:objectToDelete];
 }
 
+-(void)checkDeleteHistory
+{
+    PFQuery *query = [PFQuery queryWithClassName:@"DeleteHistory"];
+    [query whereKey:@"playerName" equalTo:@"Dan Stemkoski"];
+
+
+}
 
 //deleting all objects from CoreData for a specific entity
 -(void)deleteEntity:(NSString*)entityName
@@ -378,7 +368,6 @@
 
 
 
-
 #pragma mark - Sending requests for commonly used methods to approrpiate classes
 //Commonly used methods from Statistics Class
 
@@ -391,7 +380,7 @@
     return [Statistics recordStatisticsFromGPS:businessUID];
 }
 
--(CLLocation*)getClosestBusinessToLocation:(CLLocation*)location
+-(Location*)getClosestBusinessToLocation:(CLLocation*)location
 {
     return [Business getClosestBusinessToLocation:location];
 }

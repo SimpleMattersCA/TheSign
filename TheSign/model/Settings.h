@@ -8,21 +8,19 @@
 
 @import Foundation;
 @import CoreData;
+#import "SignEntityProtocol.h"
 
+@interface Settings : NSManagedObject <SignEntityProtocol>
 
-@interface Settings : NSManagedObject
-
+@property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSString * beaconUUID;
-@property (nonatomic, retain) NSNumber * prob_weather;
 @property (nonatomic, retain) NSNumber * prob_pref;
-@property (nonatomic, retain) NSNumber * prob_day;
-@property (nonatomic, retain) NSNumber * prob_date;
 @property (nonatomic, retain) NSNumber * relevancyDepth;
 @property (nonatomic, retain) NSNumber * minLike;
 @property (nonatomic, retain) NSNumber * lk_none;
 @property (nonatomic, retain) NSNumber * lk_like;
 @property (nonatomic, retain) NSNumber * lk_dislike;
-
+@property (nonatomic, retain) NSNumber * contextThreshold;
 
 +(Settings*)getSettingsSet;
 

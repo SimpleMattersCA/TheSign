@@ -9,7 +9,6 @@
 #import "FeedCell.h"
 
 @interface FeedCell()
-@property (weak, nonatomic) IBOutlet UIImageView *cellImageView;
 @property (weak, nonatomic) IBOutlet UILabel *dealTitleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *businessTitleLabel;
 
@@ -23,6 +22,13 @@
 {
     
     // Initialization code
+}
+
+-(void)setDealTitle:(NSString *)dTitle BusinessTitle:(NSString*)bTitle
+{
+    self.dealTitleLabel.text=dTitle;
+    self.businessTitleLabel.text=bTitle;
+
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

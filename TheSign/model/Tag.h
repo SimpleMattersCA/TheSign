@@ -11,21 +11,22 @@
 #import "SignEntityProtocol.h"
 
 
-@class Like, TagConnection, TagSet, Relevancy;
+@class Like, TagConnection, TagSet, Relevancy, Featured,Context,Template;
 
 @interface Tag : NSManagedObject <SignEntityProtocol>
 
 @property (nonatomic, retain) NSNumber * interest;
-@property (nonatomic, retain) NSNumber * condition;
-@property (nonatomic, retain) NSString * details;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSSet *linkedConnectionsFrom;
 @property (nonatomic, retain) Like *linkedLike;
+@property (nonatomic, retain) Context *linkedContext;
+
 @property (nonatomic, retain) NSSet *linkedTagSets;
 @property (nonatomic, retain) NSSet *linkedScores;
 @property (nonatomic, retain) NSSet *linkedConnectionsTo;
-
+@property (nonatomic, retain) NSSet *linkedCategoryTemplates;
+@property (nonatomic, retain) NSSet *linkedContextTemplates;
 
 /**
  Setting likeness score to tag and releated tags by traversing through the TagConnection graph.
@@ -44,6 +45,11 @@
 - (void)addLinkedConnectionsFrom:(NSSet *)values;
 - (void)removeLinkedConnectionsFrom:(NSSet *)values;
 
+- (void)addLinkedConnectionsToObject:(TagConnection *)value;
+- (void)removeLinkedConnectionsToObject:(TagConnection *)value;
+- (void)addLinkedConnectionsTo:(NSSet *)values;
+- (void)removeLinkedConnectionsTo:(NSSet *)values;
+
 - (void)addLinkedTagSetsObject:(TagSet *)value;
 - (void)removeLinkedTagSetsObject:(TagSet *)value;
 - (void)addLinkedTagSets:(NSSet *)values;
@@ -54,9 +60,14 @@
 - (void)addLinkedScores:(NSSet *)values;
 - (void)removeLinkedScores:(NSSet *)values;
 
-- (void)addLinkedConnectionsToObject:(TagConnection *)value;
-- (void)removeLinkedConnectionsToObject:(TagConnection *)value;
-- (void)addLinkedConnectionsTo:(NSSet *)values;
-- (void)removeLinkedConnectionsTo:(NSSet *)values;
+- (void)addLinkedCategoryTemplatesObject:(Template *)value;
+- (void)removeLinkedCategoryTemplatesObject:(Template *)value;
+- (void)addLinkedCategoryTemplates:(NSSet *)values;
+- (void)removeLinkedCategoryTemplates:(NSSet *)values;
+
+- (void)addLinkedContextTemplatesObject:(Template *)value;
+- (void)removeLinkedContextTemplatesObject:(Template *)value;
+- (void)addLinkedContextTemplates:(NSSet *)values;
+- (void)removeLinkedContextTemplates:(NSSet *)values;
 
 @end

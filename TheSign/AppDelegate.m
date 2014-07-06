@@ -10,6 +10,9 @@
 #import "Model.h"
 #import "InsightEngine.h"
 #import "WelcomeScreenViewController.h"
+#import "Location.h"
+#import "Business.h"
+#import "Settings.h"
 
 @import UIKit.UINavigationController;
 @import CoreLocation;
@@ -19,16 +22,12 @@
 @interface AppDelegate() <UIApplicationDelegate,CLLocationManagerDelegate>
 
 @property (strong) CLLocationManager *locationManager;
+@property (strong) NSTimer *locationTimer;
+@property (strong) CLCircularRegion* gpsRegion;
+@property (strong) CLBeaconRegion *beaconRegion;
 
 @end
 
-
-NSUUID *proximityUUID;
-
-
-CLCircularRegion* currentlyMonitoredRegion1;
-CLCircularRegion* currentlyMonitoredRegion2;
-CLCircularRegion* currentlyMonitoredRegion3;
 
 NSNumber *detectedBeaconMinor;
 NSNumber *detectedBeaconMajor;
@@ -82,12 +81,18 @@ NSNumber *detectedBeaconMajor;
     
     
     
-    //apparently we should define the default appearance of UIPageControl otherwise it doesn't shows
+    //apparently we should define the default appearance of UIPageControl otherwise it doesn't show
     UIPageControl *pageControl = [UIPageControl appearance];
     pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
     pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
     pageControl.backgroundColor = [UIColor whiteColor];
 
+    
+    
+    
+    
+    
+    
     return YES;
 }
 
@@ -101,9 +106,17 @@ Preparing and starting geofence and beacon monitoring
     {
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
-        
+        self.locationManager.pausesLocationUpdatesAutomatically=YES;
         //********* Geofence monitoring *********//
-      //  [self.locationManager startMonitoringSignificantLocationChanges];
+        [self.locationManager startMonitoringSignificantLocationChanges];
+        
+        //Setting up the timer that will check the closest location and if it's nearby it will monitor the region and fire the welcome message when the device is in it
+        //The timer runs
+        [self.locationManager startUpdatingLocation];
+        self.locationTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(updateGPSRegionForLocation) userInfo:nil repeats:YES];
+        [self.locationTimer setTolerance:600];
+        [self.locationTimer fire];
+        
         
         
         
@@ -111,36 +124,38 @@ Preparing and starting geofence and beacon monitoring
          //********* Beacon monitoring *********//
         
         //Beacon UUID, the identifier common for all the beacons
-        proximityUUID=  [[NSUUID alloc] initWithUUIDString:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"];
-        CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc]
+        NSUUID *proximityUUID=  [[NSUUID alloc] initWithUUIDString:[Model sharedModel].settings.beaconUUID
+];
+        self.beaconRegion = [[CLBeaconRegion alloc]
                                         initWithProximityUUID:proximityUUID
-                                        identifier:@"TheSign"];
+                                        identifier:@"SignBeacon"];
         
         //show notificaiton only when screen is on
-        beaconRegion.notifyEntryStateOnDisplay=YES;
-        beaconRegion.notifyOnEntry=NO;
-        beaconRegion.notifyOnExit=YES;
+        self.beaconRegion.notifyEntryStateOnDisplay=YES;
+        self.beaconRegion.notifyOnEntry=NO;
+        self.beaconRegion.notifyOnExit=YES;
         
         // Register the beacon region with the location manager.
-        [self.locationManager startMonitoringForRegion:beaconRegion];
-        [self.locationManager requestStateForRegion:beaconRegion];
+        [self.locationManager startMonitoringForRegion:self.beaconRegion];
+        [self.locationManager requestStateForRegion:self.beaconRegion];
         
     }
 }
 
 
+-(void)updateGPSRegionForLocation:(CLLocation*)currentLocation
+{
+    Location* closestBusiness=[[Model sharedModel] getClosestBusinessToLocation:currentLocation];
+    [self.locationManager stopMonitoringForRegion:self.gpsRegion];
+    self.gpsRegion=[[CLCircularRegion alloc] initWithCenter:[closestBusiness getLocationObject].coordinate radius:10 identifier:closestBusiness.linkedBusiness.uid.stringValue];
+    //if distance is less than something, start monitoring for a region
+    [self.locationManager startMonitoringForRegion:self.gpsRegion];
+}
+
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
 
     //the last object is the most recent locaiton. We don't really pay attention to those that we missed (at the beginning of the array)
-    CLLocation* location=locations.lastObject;
-    CLLocation* closestBusiness=[[Model sharedModel] getClosestBusinessToLocation:location];
-    [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion1];
-    [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion2];
-    [self.locationManager stopMonitoringForRegion:currentlyMonitoredRegion3];
-
-    currentlyMonitoredRegion1=[[CLCircularRegion alloc] initWithCenter:closestBusiness.coordinate radius:10 identifier:@"ClosestBusiness"];
-
-  //  [self.locationManager startMonitoringForRegion:currentlyMonitoredRegion];
+    [self updateGPSRegionForLocation:(CLLocation*)(locations.lastObject)];
 }
 
 
@@ -192,16 +207,43 @@ Preparing and starting geofence and beacon monitoring
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
+    if([region isEqual:self.beaconRegion])
+        [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
+    else
+        [self welcomeCustomerGPSforRegion:region];
+    
 }
 
 -(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
-    [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+    if([region isEqual:self.beaconRegion])
+        [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+    
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
 
 }
 
+
+-(void) welcomeCustomerGPSforRegion:(CLRegion*)region
+{
+    NSNumber* major=@([region.identifier intValue]);
+    Statistics* stat=[[Model sharedModel] recordStatisticsFromGPS:major];
+    
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor];
+
+    
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:major,@"Major",stat,@"StatisticsObject", nil];
+    
+    
+    notification.userInfo=infoDict;
+    if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""])
+    {
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+    }
+
+}
 
 
 // Delegate method from the CLLocationManagerDelegate protocol.
@@ -225,7 +267,7 @@ Preparing and starting geofence and beacon monitoring
 
         
         
-               //change the local notifacation name and add corresponding logic to handle new beacon detection inside the app (don't forget to change notificaitonName
+               //change the local notification name and add corresponding logic to handle new beacon detection inside the app (don't forget to change notificaitonName
        // NSDictionary* dict = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:closest.major,closest.minor, nil] forKeys:[NSArray arrayWithObjects:@"major",@"minor", nil]];
      //   [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
         
@@ -238,7 +280,7 @@ Preparing and starting geofence and beacon monitoring
         
         
         
-        NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:closest.major,@"BeaconMajor",stat,@"StatisticsObject", nil];
+        NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:closest.major,@"Major",stat,@"StatisticsObject", nil];
 
     
         notification.userInfo=infoDict;

@@ -93,6 +93,15 @@
     else
         NSLog(@"Linked tag wasn't found");
     
+    if(linkedTagTo && linkedTagFrom)
+    {
+        for(TagSet* tagset in linkedTagFrom.linkedTagSets)
+            if(tagset.linkedOffer) [tagset.linkedOffer updateContextTagList];
+        for(TagSet* tagset in linkedTagTo.linkedTagSets)
+            if(tagset.linkedOffer) [tagset.linkedOffer updateContextTagList];
+    }
+        
+    
 }
 
 -(void)refreshFromParse
@@ -112,7 +121,7 @@
     }
     
     //rescoring relevancy if we changed the weight
-    if(self.weight!=self.parseObject[P_WEIGHT])
+   /* if(self.weight!=self.parseObject[P_WEIGHT])
     {
         for(TagSet* tagset in self.linkedTagFrom.linkedTagSets)
             [tagset.linkedOffer.linkedScore rescore];
@@ -120,7 +129,7 @@
         for(TagSet* tagset in self.linkedTagTo.linkedTagSets)
             [tagset.linkedOffer.linkedScore rescore];
     }
-    
+    */
     self.weight=self.parseObject[P_WEIGHT];
     
     //careful, incomplete object - only objectId property is there

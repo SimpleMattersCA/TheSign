@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Model.h"
 
-typedef NS_ENUM(NSInteger, SentenceType) {
+/*typedef NS_ENUM(NSInteger, SentenceType) {
     //it's hot/cold, would you like some.... Also we should track First snow
     S_Weather,
     //we're closing in 30 minutes so you still have a time to check out..
@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, SentenceType) {
     S_Day,    
     //based on what was marked as favourite
     S_Preference,
-};
+};*/
 
 @interface InsightEngine : NSObject
 
@@ -27,7 +27,7 @@ typedef NS_ENUM(NSInteger, SentenceType) {
 
 
 -(NSString*)generateWelcomeTextForBeaconWithMajor: (NSNumber*)major andMinor:(NSNumber*)minor;
-
+-(NSString*)generateWelcomeTextForGPSdetectedMajor:(NSNumber*)major;
 
 
 @end

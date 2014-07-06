@@ -10,10 +10,6 @@
 
 @interface FeedCell : UITableViewCell
 
-@property (nonatomic) NSString* dealTitle;
-@property (nonatomic) NSString* businessTitle;
-@property (nonatomic) NSString* cellImage;
-
-
+-(void)setDealTitle:(NSString *)dTitle BusinessTitle:(NSString*)bTitle;
 
 @end

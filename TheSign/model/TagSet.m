@@ -75,7 +75,7 @@
     PFObject *fromParseFeatured=object[P_OFFER];
     
     Featured *linkedFeatured=[Featured getByID:fromParseFeatured.objectId];
-    if(linkedFeatured!=nil)
+    if(linkedFeatured)
     {
         tagset.linkedOffer = linkedFeatured;
         [linkedFeatured addLinkedTagSetsObject:tagset];
@@ -86,13 +86,16 @@
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseTag=object[P_TAG];
     Tag *linkedTag=[Tag getByID:fromParseTag.objectId];
-    if(linkedTag!=nil)
+    if(linkedTag)
     {
         tagset.linkedTag = linkedTag;
         [linkedTag addLinkedTagSetsObject:tagset];
     }
     else
         NSLog(@"Linked tag wasn't found");
+    
+    if(linkedTag && linkedFeatured)
+        [linkedFeatured updateContextTagList];
 }
 
 -(void)refreshFromParse
@@ -111,12 +114,11 @@
         return;
     }
     
-    //rescoring relevancy if we changed the weight
-    if(self.weight!=self.parseObject[P_WEIGHT])
-        [self.linkedOffer.linkedScore rescore];
     self.weight=self.parseObject[P_WEIGHT];
     
     //careful, incomplete object - only objectId property is there
+    
+    Boolean needOfferUpdate=NO;
     PFObject *fromParseFeatured=self.parseObject[P_OFFER];
     if (fromParseFeatured.objectId!=self.linkedOffer.pObjectID)
     {
@@ -126,6 +128,7 @@
         {
             self.linkedOffer = linkedFeatured;
             [linkedFeatured addLinkedTagSetsObject:self];
+            needOfferUpdate=YES;
         }
         else
             NSLog(@"Linked offer wasn't found");
@@ -141,10 +144,16 @@
         {
             self.linkedTag = linkedTag;
             [linkedTag addLinkedTagSetsObject:self];
+            needOfferUpdate=YES;
         }
         else
             NSLog(@"Linked tag wasn't found");
     }
+    
+    if(needOfferUpdate && self.linkedOffer && self.linkedTag)
+        [self.linkedOffer updateContextTagList];
+        
+        
 }
 
 @end
