@@ -10,12 +10,14 @@
 @import CoreData;
 #import "SignEntityProtocol.h"
 
-@class Tag;
+@class Tag,Featured;
 
 @interface Template : NSManagedObject <SignEntityProtocol>
 @property (nonatomic, retain) NSString * messageText;
 @property (nonatomic, retain) Tag *linkedContextTag;
 @property (nonatomic, retain) Tag *linkedCategoryTag;
 @property (nonatomic, retain) NSString * pObjectID;
+
+-(NSString*) generateMessageForOffer:(Featured*)offer;
 
 @end

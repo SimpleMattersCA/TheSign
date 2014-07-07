@@ -53,7 +53,6 @@
 @dynamic linkedBusiness;
 @dynamic linkedStats;
 @dynamic linkedScore;
-@dynamic linkedContexts;
 
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
@@ -246,18 +245,18 @@
     }
     return results;
 }*/
-
+/*
 -(NSSet*)checkContextTags:(NSSet*) lookupTags
 {
     NSMutableSet*results=[NSMutableSet set];
-    for (Context* tag in self.linkedContextTags)
+    for (Context* context in self.linkedContexts)
     {
-        if(tag && tag.context.boolValue && [lookupTags containsObject:tag.pObjectID])
+        if(context && tag.context.boolValue && [lookupTags containsObject:tag.pObjectID])
             [results addObject:tag.pObjectID];
     }
     return results;
 }
-
+*/
 /*-(void)updateContextTagList
 {
     //clean out the list

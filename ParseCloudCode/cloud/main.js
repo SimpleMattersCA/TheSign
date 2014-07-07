@@ -187,34 +187,43 @@ Parse.Cloud.beforeDelete("TagSet", function(request, response) {
   });
 });
 
+
+
+
 Parse.Cloud.job("getForecast", function(request, status) {
+var _ = require('underscore.js');
 
 var apiKey='d9b6767efb140cd602f07adf5a9018af';
-var latitude='49.2759258';
-var longitude='-123.1150547';
 
-Parse.Cloud.httpRequest({
-   url: 'https://api.forecast.io/forecast/'+apiKey+'/'+latitude+','+longitude+'?units=ca',
-  success: function(httpResponse) {
-  	var result = JSON.parse(httpResponse.text);
-  	var WeatherData = Parse.Object.extend("WeatherData");
-  	var newWeather = new WeatherData();
-  	/*console.log(result.currently.temperature);*/
-  	newWeather.set("currentTemp",result.currently.temperature);
-  	newWeather.set("apparentTemp",result.currently.apparentTemperature);
-  	newWeather.set("summary",result.currently.icon);
-  	newWeather.save(null).then(function(message) {
-    status.success('Success');
-  }, function(error) {
-   status.error(error)
-  });
-  },
-  error: function(httpResponse) {
-  status,error(httpResponse);
-    console.error('Request failed with response code ' + httpResponse.status);
-  }
-});
-
-
-
+var Area = Parse.Object.extend("Area");
+var query = new Parse.Query(Area);
+query.find().then(function(areas) 
+  {
+  console.log(areas.length);
+    var promises = [];
+    
+    _.each(areas, function(area) 
+    {
+    
+     	promises.push(Parse.Cloud.httpRequest({
+      	url: 'https://api.forecast.io/forecast/'+apiKey+'/'+area.get('latitude')+','+area.get('longitude')+'?units=ca'
+      	}).then(function(httpResponse)
+      		{
+				var result = JSON.parse(httpResponse.text);
+				area.set("currentTemperature",result.currently.apparentTemperature);
+				area.set("currentWeather",result.currently.icon);
+				console.log(result.currently.temperature);
+				return area.save();
+			},function(error)
+			{
+			  	status.error("Error in getting forecast");
+			})
+		);
+	});
+	
+	return Parse.Promise.when(promises);
+   //status.success('Success');
+  }).then(function(){
+  	status.success("Done");
+	});
 });

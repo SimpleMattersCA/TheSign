@@ -17,7 +17,6 @@
 @dynamic score;
 @dynamic linkedOffer;
 @dynamic linkedUser;
-@dynamic linkedTags;
 
 +(NSString*) entityName {return @"Relevancy";}
 

@@ -95,31 +95,5 @@
 }
 
 
-+(Location*)getLocationByMajor:(NSNumber*)major
-{
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Location.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:@"%@==%d", CD_MAJOR, major.intValue];
-    NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-    
-    if(error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return nil;
-    }
-    else
-    {
-        if(result.count>1)
-            NSLog(@"Data inconsitency, more than one location for major %d",major.intValue);
-        return (Location*)(result.firstObject);
-    }
-}
-
--(CLLocation*)getLocationObject
-{
-    return [[CLLocation alloc] initWithLatitude:self.latitude.doubleValue longitude:self.longitude.doubleValue];
-}
-
-
 
 @end

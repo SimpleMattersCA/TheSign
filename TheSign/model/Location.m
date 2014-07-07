@@ -185,4 +185,21 @@
     return [[CLLocation alloc] initWithLatitude:self.latitude.doubleValue longitude:self.longitude.doubleValue];
 }
 
+
+-(NSString*)getWeather
+{
+    if(self.linkedArea)
+        return self.linkedArea.currentWeather;
+    else
+        return nil;
+}
+
+-(NSNumber*)getTemperature
+{
+    if(self.linkedArea)
+        return self.linkedArea.currentTemperature;
+    else
+        return nil;
+}
+
 @end

@@ -30,7 +30,6 @@
 @dynamic linkedLike;
 @dynamic linkedTagSets;
 @dynamic linkedConnectionsTo;
-@dynamic linkedScores;
 @dynamic linkedContext;
 @dynamic linkedCategoryTemplates;
 @dynamic linkedContextTemplates;

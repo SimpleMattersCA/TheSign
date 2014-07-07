@@ -22,6 +22,8 @@
 @property (nonatomic, retain) NSString * address;
 @property (nonatomic, retain) NSNumber * major;
 
+-(NSNumber*)getTemperature;
+-(NSString*)getWeather;
 
 +(Location*)getLocationByMajor:(NSNumber*)major;
 

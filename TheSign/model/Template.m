@@ -9,7 +9,7 @@
 #import "Template.h"
 #import "Tag.h"
 #import "Model.h"
-
+#import "Featured.h"
 #define P_MESSAGE (@"messageText")
 #define P_CONTEXT (@"contextTag")
 #define P_CATEGORY (@"categoryTag")
@@ -142,6 +142,14 @@
         else
             NSLog(@"Linked category tag wasn't found");
     }
+}
+
+
+-(NSString*) generateMessageForOffer:(Featured*)offer
+{
+    if(self.messageText.length!=0 && offer.title.length!=0)
+        return [NSString stringWithFormat:@"%@ %@",self.messageText,offer.title];
+    return nil;
 }
 
 @end

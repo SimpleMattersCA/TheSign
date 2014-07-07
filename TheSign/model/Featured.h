@@ -24,12 +24,11 @@
 @property (nonatomic, retain) NSNumber * major;
 @property (nonatomic, retain) NSNumber * minor;
 @property (nonatomic, retain) NSString * pObjectID;
-@property (nonatomic, retain) NSSet *linkedTagSets;
 @property (nonatomic, retain) Business *linkedBusiness;
 @property (nonatomic, retain) Relevancy *linkedScore;
 
 @property (nonatomic, retain) NSSet *linkedStats;
-@property (nonatomic, retain) NSSet *linkedContexts;
+@property (nonatomic, retain) NSSet *linkedTagSets;
 
 
 ///Getting the offer that is tied to the beacon. If no such offer, returns nil
@@ -57,9 +56,5 @@
 - (void)addLinkedStats:(NSSet *)values;
 - (void)removeLinkedStats:(NSSet *)values;
 
-- (void)addLinkedContextsObject:(Context *)value;
-- (void)removeLinkedContextsObject:(Context *)value;
-- (void)addLinkedContexts:(NSSet *)values;
-- (void)removeLinkedContexts:(NSSet *)values;
 
 @end

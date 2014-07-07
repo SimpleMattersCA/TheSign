@@ -10,7 +10,7 @@
 @import CoreData;
 #import "SignEntityProtocol.h"
 
-@class Featured, Tag;
+@class Featured, Tag,Business,Location;
 
 @interface Context : NSManagedObject <SignEntityProtocol>
 
@@ -18,19 +18,16 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * probability;
 @property (nonatomic, retain) NSSet *linkedTags;
-@property (nonatomic, retain) NSSet *linkedOffers;
 @end
 
 @interface Context (CoreDataGeneratedAccessors)
+
++(NSSet*)getCurrentContextsForBusiness:(Business*)business AtLocation:(Location*)location;
 
 - (void)addLinkedTagsObject:(Tag *)value;
 - (void)removeLinkedTagsObject:(Tag *)value;
 - (void)addLinkedTags:(NSSet *)values;
 - (void)removeLinkedTags:(NSSet *)values;
 
-- (void)addLinkedOffersObject:(Featured *)value;
-- (void)removeLinkedOffersObject:(Featured *)value;
-- (void)addLinkedOffers:(NSSet *)values;
-- (void)removeLinkedOffers:(NSSet *)values;
 
 @end

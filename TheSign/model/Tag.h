@@ -23,7 +23,6 @@
 @property (nonatomic, retain) Context *linkedContext;
 
 @property (nonatomic, retain) NSSet *linkedTagSets;
-@property (nonatomic, retain) NSSet *linkedScores;
 @property (nonatomic, retain) NSSet *linkedConnectionsTo;
 @property (nonatomic, retain) NSSet *linkedCategoryTemplates;
 @property (nonatomic, retain) NSSet *linkedContextTemplates;
@@ -54,11 +53,6 @@
 - (void)removeLinkedTagSetsObject:(TagSet *)value;
 - (void)addLinkedTagSets:(NSSet *)values;
 - (void)removeLinkedTagSets:(NSSet *)values;
-
-- (void)addLinkedScoresObject:(Relevancy *)value;
-- (void)removeLinkedScoresObject:(Relevancy *)value;
-- (void)addLinkedScores:(NSSet *)values;
-- (void)removeLinkedScores:(NSSet *)values;
 
 - (void)addLinkedCategoryTemplatesObject:(Template *)value;
 - (void)removeLinkedCategoryTemplatesObject:(Template *)value;

@@ -16,17 +16,8 @@
 @property (nonatomic, retain) NSNumber * score;
 @property (nonatomic, retain) Featured *linkedOffer;
 @property (nonatomic, retain) User *linkedUser;
-@property (nonatomic, retain) NSSet *linkedTags;
 
 +(void)changeRelevancyForOffer:(Featured*)offer ByValue:(NSNumber*)value;
 
 @end
 
-@interface Relevancy (CoreDataGeneratedAccessors)
-
-- (void)addLinkedTagsObject:(Tag *)value;
-- (void)removeLinkedTagsObject:(Tag *)value;
-- (void)addLinkedTags:(NSSet *)values;
-- (void)removeLinkedTags:(NSSet *)values;
-
-@end
