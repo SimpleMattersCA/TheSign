@@ -31,15 +31,14 @@
 @property (nonatomic, retain) NSSet *linkedTagSets;
 
 
-///Getting the offer that is tied to the beacon. If no such offer, returns nil
-+(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
-
+/**
+ Transfering the faiding like through the graph
+ */
 -(void) processLike:(double)effect;
 
--(void)updateContextTagList;
++(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
 
 -(NSSet*)findContextTags:(NSSet*) lookupTags;
--(NSSet*)checkContextTags:(NSSet*) lookupTags;
 
 
 @end

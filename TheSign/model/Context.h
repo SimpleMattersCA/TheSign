@@ -22,7 +22,7 @@
 
 @interface Context (CoreDataGeneratedAccessors)
 
-+(NSSet*)getCurrentContextsForBusiness:(Business*)business AtLocation:(Location*)location;
++(NSArray*)getCurrentContextsForBusiness:(Business*)business AtLocation:(Location*)location;
 
 - (void)addLinkedTagsObject:(Tag *)value;
 - (void)removeLinkedTagsObject:(Tag *)value;

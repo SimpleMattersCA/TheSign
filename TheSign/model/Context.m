@@ -105,7 +105,7 @@
 }
 
 
-+(NSSet*)getCurrentContextsForBusiness:(Business*)business AtLocation:(Location*)location
++(NSArray*)getCurrentContextsForBusiness:(Business*)business AtLocation:(Location*)location
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
@@ -117,7 +117,7 @@
         return nil;
     }
     
-    NSMutableSet* currentContexts;
+    NSMutableArray* currentContexts;
     Tag* contextTag;
     for(Context *context in fetchedContexts)
     {

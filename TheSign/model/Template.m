@@ -147,9 +147,10 @@
 
 -(NSString*) generateMessageForOffer:(Featured*)offer
 {
-    if(self.messageText.length!=0 && offer.title.length!=0)
+    if(offer && self.messageText.length!=0 && offer.title.length!=0)
         return [NSString stringWithFormat:@"%@ %@",self.messageText,offer.title];
-    return nil;
+    else
+        return nil;
 }
 
 @end

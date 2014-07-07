@@ -78,19 +78,13 @@
         return (Featured*)result.firstObject;
 }
 
-//+(NSArray*) getOffersForBusiness:(Business*)business
-//{
-//   NSNumber* major=business.uid;
-//   return [self getOffersByMajor:major andMinor:nil];
-//}
-
-
 +(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSPredicate *predicateMajor = [NSPredicate predicateWithFormat: @"(%@==%ld)", CD_MAJOR, major.longValue];
-    NSPredicate *predicateMinor = [NSPredicate predicateWithFormat: @"(%@==%ld)", CD_MINOR, minor.longValue];
-    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor]];
+    NSPredicate *predicateMajor = [NSPredicate predicateWithFormat: @"(%@==%d)", CD_MAJOR, major.intValue];
+    NSPredicate *predicateMinor = [NSPredicate predicateWithFormat: @"(%@==%d)", CD_MINOR, minor.intValue];
+    NSPredicate *predicateActive = [NSPredicate predicateWithFormat: @"(%@==%d)", CD_ACIVE, minor.boolValue];
+    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor,predicateActive]];
    
     NSError *error;
     NSArray *featured = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -132,8 +126,7 @@
         PFFile *image=object[P_IMAGE];
         
         NSData *pulledImage=[image getData:&error];
-        
-        if(!error)
+                 if(!error)
         {
             if(pulledImage!=nil)
                 deal.image = pulledImage;
@@ -217,82 +210,19 @@
     }
 }
 
-/*-(NSSet*)findContextTags:(NSSet*) lookupTags
+-(NSSet*)findContextTags:(NSSet*) lookupTags
 {
     NSMutableSet *results=[NSMutableSet set];
-    double threshold=[Model sharedModel].settings.contextThreshold.doubleValue;
     for(TagSet* tagset in self.linkedTagSets)
     {
         Tag *tag=tagset.linkedTag;
         //look for context tags from lookupTags array
-        if(tag && tag.context.boolValue && [lookupTags containsObject:tag.pObjectID] && tagset.weight.doubleValue>=threshold)
+        if(tag && [lookupTags containsObject:tag])
             [results addObject:tag.pObjectID];
         
-        for (TagConnection* connectionTo in tag.linkedConnectionsTo)
-        {
-            Tag* tag2=connectionTo.linkedTagFrom;
-            //look for context tags from lookupTags array
-            if(tag2 && tag2.context.boolValue && [lookupTags containsObject:tag2.pObjectID] && connectionTo.weight.doubleValue>=threshold)
-                [results addObject:tag2.pObjectID];
-        }
-        for (TagConnection* connectionFrom in tag.linkedConnectionsFrom)
-        {
-            Tag* tag3=connectionFrom.linkedTagFrom;
-            //look for context tags from lookupTags array
-            if(tag3 && tag3.context.boolValue && [lookupTags containsObject:tag3.pObjectID] && connectionFrom.weight.doubleValue>=threshold)
-                [results addObject:tag3.pObjectID];
-        }
-    }
-    return results;
-}*/
-/*
--(NSSet*)checkContextTags:(NSSet*) lookupTags
-{
-    NSMutableSet*results=[NSMutableSet set];
-    for (Context* context in self.linkedContexts)
-    {
-        if(context && tag.context.boolValue && [lookupTags containsObject:tag.pObjectID])
-            [results addObject:tag.pObjectID];
     }
     return results;
 }
-*/
-/*-(void)updateContextTagList
-{
-    //clean out the list
-    if (self.linkedContextTags)
-        [self removeLinkedContextTags:self.linkedContextTags];
-    
-    for(TagSet* tagset in self.linkedTagSets)
-    {
-        Tag *tag=tagset.linkedTag;
-        if(tag && tag.context.boolValue)
-        {
-            [self addLinkedContextTagsObject:tag];
-           // [tag addLinkedContextOffersObject:self];
-        }
-        
-        for (TagConnection* connectionTo in tag.linkedConnectionsTo)
-        {
-            Tag* tag2=connectionTo.linkedTagFrom;
-            if(tag2 && tag2.context.boolValue)
-            {
-                [self addLinkedContextTagsObject:tag2];
-             //   [tag2 addLinkedContextOffersObject:self];
-            }
-        }
-        for (TagConnection* connectionFrom in tag.linkedConnectionsFrom)
-        {
-            Tag* tag3=connectionFrom.linkedTagTo;
-            if(tag3 && tag3.context.boolValue)
-            {
-                [self addLinkedContextTagsObject:tag3];
-              //  [tag3 addLinkedContextOffersObject:self];
-            }
-        }
-    }
-}*/
-
 
 -(void) processLike:(double)effect
 {

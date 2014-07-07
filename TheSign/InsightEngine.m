@@ -12,101 +12,13 @@
 #import "Business.h"
 #import "Location.h"
 #import "Template.h"
-/*typedef NS_ENUM(NSInteger, ContextType) {
-
-    //days
-    SD_Monday,
-    SD_Friday,
-    SD_Weekend,
-    
-    //temperature
-    SW_Cold,
-    SW_Hot,
-    //conditions
-    SW_Rain,
-    SW_Snow,
-    SW_Wind,
-    SW_Fog,
-    
-    //time
-    ST_Morning,
-    ST_Lunch,
-    ST_Evening,
-    ST_Night,
-    
-    SP_Preference,
-    
-    No_Context
-};*/
-
-
-/*
-typedef NS_ENUM(NSInteger, SignDay) {
-    
-    
-    
-    //stat holidays
-     SD_NewYear,
-     SD_FamilyDay,
-     SD_StPatricsDay,
-     SD_Easter,
-     SD_VictoriaDay,
-     SD_CanadaDay,
-     SD_Thanksgiving,
-     SD_RemembranceDay,
-     SD_LabourDay,
-     SD_ChristmasDay,
-     SD_BoxingDay,
- 
-    //Seasons
-     SD_FirstDayWinter,
-     SD_FirstDayFall,
-     SD_FirstDaySummer,
-     SD_FirstDaySpring,
-
-};
-
-typedef NS_ENUM(NSInteger, SignWeather) {
-   
-    
-    SW_Average
-};
-
-typedef NS_ENUM(NSInteger, SignTime) {
-
-    ST_Average
-};
-
-typedef NS_ENUM(NSInteger, SignPreference) {
-    //deals are weakly related
-    SP_Weak,
-    //deals are related
-    SP_Strong,
-    //deals are matching
-    SP_Match
-};
-*/
+#import "Context.h"
 
 @interface InsightEngine()
 
 @property (strong) NSDictionary* contextTags;
 
-/*@property NSDate* nYearsEve;
-@property NSDate* familyDay;
-@property NSDate* valentinesDay;
-@property NSDate* stPatricsDay;
-@property NSDate* goodFriday;
-@property NSDate* easterMonday;
-@property NSDate* mothersDay;
-@property NSDate* victoriaDay;
-@property NSDate* fathersDay;
-@property NSDate* canadaDay;
-@property NSDate* labourDay;
-@property NSDate* thanksgiving;
-@property NSDate* halloween;
-@property NSDate* remembrancesDay;
-@property NSDate* christmass;
-@property NSDate* boxingDay;*/
+
 
 @end
 
@@ -116,29 +28,6 @@ typedef NS_ENUM(NSInteger, SignPreference) {
 
 static NSString* errorWelcomingMessage=@"";
 
-/*-(void)initDates
-{
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-    [components setYear:2014];
-    
-    
-    
-    
-    [components setDay:1];
-    [components setMonth:1];
-    self.nYearsEve=[calendar dateFromComponents:components];
-    [components setDay:17];
-    [components setMonth:2];
-    self.familyDay=[calendar dateFromComponents:components];
-    
-    [components setDay:25];
-    [components setMonth:12];
-    self.christmass=[calendar dateFromComponents:components];
-    
-    
-
-}*/
 
 
 - (id)init
@@ -184,31 +73,68 @@ static NSString* errorWelcomingMessage=@"";
 
 -(NSString*)genereteWelcomeMessageForLocation:(Location*)location
 {
-    NSString* result;
-    
     Business* business=location.linkedBusiness;
     NSSet* activeOffers=[business getActiveOffers];
+    
+    Featured* chosenOffer;
+    
+    Template* template;
+
     //Choose between sentece types not randomly but based on what could be more relevant
     if(business && activeOffers && activeOffers.count!=0)
     {
         
+        //get current contexts (interesting time, day, weather etc.)
+        NSArray* activeContexts=[Context getCurrentContextsForBusiness:business AtLocation:location];
         
         
-        //1. choose the right sentence type and deal
-        NSDictionary* result=[self chooseMessageTypeAndDealForBusiness:business ActiveOffers:activeOffers AtLocation:location];
-        Featured* chosenOffer=[result objectForKey:@"Deal"];
-        NSNumber* messageType=[result objectForKey:@"Type"];
-        
-        
-        
-#warning empty template
-        Template* template;
-        return [template generateMessageForOffer:chosenOffer];
-        //2. prepare the sentence
-    }
-    
-    return result;
+        if(activeContexts && activeContexts.count!=0)
+        {
+            Tag* chosenContextTag;
+            
+            if(activeContexts.count>1)
+            {
+                //roll the dice
+                
+                //check if there are offers for the chosen context
+                
+                //if there are more than one offer for context, choose one based on relevancy
+                
+            }
+            else
+            {
+                chosenContextTag=activeContexts.firstObject;
+                //check if there are offers for the chosen context
+                
+                //if there are more than one offer for context, choose one based on relevancy
 
+            }
+            
+            if(chosenContextTag)
+            {
+                //choose template for context tag
+            }
+            
+        }
+        //no contexts founds
+        else
+        {
+            // choose an active offer based on relevancy
+            
+        
+        }
+  
+        
+        if(template)
+            return [template generateMessageForOffer:chosenOffer];
+        else
+            //no template
+            return nil;
+
+    }
+    else
+        //no active offers
+        return nil;
 }
 
 
@@ -231,10 +157,7 @@ static NSString* errorWelcomingMessage=@"";
     Featured* chosenDeal;
 
     //check the date
-    ContextType day=[self getRelevantDay];
-    ContextType time=[self getRelevantTime];
-    ContextType weather=[self getRelevantWeatherAtLocation:location];
-    
+
     NSString *dayID;
     NSString *timeID;
     NSString *weatherID;
@@ -243,23 +166,6 @@ static NSString* errorWelcomingMessage=@"";
     NSMutableSet* currentContextTags=[NSMutableSet set];
     
     
-    if(day!=No_Context)
-    {
-        dayID=[self.contextTags objectForKey:@(day)];
-        [currentContextTags addObject:dayID];
-    }
-    if(time!=No_Context)
-    {
-        timeID=[self.contextTags objectForKey:@(time)];
-        [currentContextTags addObject:timeID];
-        
-    }
-    if(weather!=No_Context)
-    {
-        weatherID=[self.contextTags objectForKey:@(weather)];
-        [currentContextTags addObject:weatherID];
-        
-    }
     
  
     
@@ -284,21 +190,7 @@ static NSString* errorWelcomingMessage=@"";
                 //find which of the current context tags are connected to the offer
                 NSSet* foundTags=[offer findContextTags:currentContextTags];
                 
-                //add offer to an appropriate list
-                if (dayID && [foundTags containsObject:dayID])
-                {
-                    [dayOffers addObject:offer];
-                }
-                if (timeID && [foundTags containsObject:timeID])
-                {
-                    [timeOffers addObject:offer];
-                }
-                
-                if (weatherID && [foundTags containsObject:weatherID])
-                {
-                    [weatherOffers addObject:offer];
-                }
-            
+        
         }
         
         
