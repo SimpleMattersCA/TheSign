@@ -10,6 +10,7 @@
 #import "Tag.h"
 #import "Model.h"
 #import "Featured.h"
+#import "Business.h"
 #define P_MESSAGE (@"messageText")
 #define P_CONTEXT (@"contextTag")
 #define P_CATEGORY (@"categoryTag")
@@ -148,9 +149,20 @@
 -(NSString*) generateMessageForOffer:(Featured*)offer
 {
     if(offer && self.messageText.length!=0 && offer.title.length!=0)
-        return [NSString stringWithFormat:@"%@ %@",self.messageText,offer.title];
+        return [NSString stringWithFormat:@"%@: %@ %@ %@",offer.linkedBusiness.name,[self generateGreeting], self.messageText,offer.title];
     else
         return nil;
 }
+
+
+
+-(NSString*)generateGreeting
+{
+    NSArray *greetingOptions=[NSArray arrayWithObjects:@"Hi there!",@"Hello stranger!",@"Hi!",@"Hey!", nil];
+    
+    int random=arc4random_uniform((short)greetingOptions.count);
+    return greetingOptions[random];
+}
+
 
 @end

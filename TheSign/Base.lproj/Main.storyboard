@@ -222,12 +222,12 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="I0v-nz-SqX" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="hoe-da-39l">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="hoe-da-39l" propertyAccessControl="none">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" red="1" green="0.40000000000000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <textAttributes key="titleTextAttributes">
-                            <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="11"/>
+                            <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="13"/>
                         </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>

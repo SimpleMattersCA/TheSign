@@ -10,7 +10,7 @@
 @import CoreData;
 #import "SignEntityProtocol.h"
 
-@class Business, Statistics, TagSet,Relevancy, Context;
+@class Business, Statistics, TagSet,Relevancy, Context,Tag;
 
 @interface Featured : NSManagedObject <SignEntityProtocol>
 
@@ -39,6 +39,8 @@
 +(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
 
 -(NSSet*)findContextTags:(NSSet*) lookupTags;
+
+-(Boolean)checkContextTag:(Tag*) lookupTag;
 
 
 @end

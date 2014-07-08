@@ -94,8 +94,6 @@
     else
         NSLog(@"Linked tag wasn't found");
     
-    if(linkedTag && linkedFeatured)
-        [linkedFeatured updateContextTagList];
 }
 
 -(void)refreshFromParse
@@ -149,10 +147,6 @@
         else
             NSLog(@"Linked tag wasn't found");
     }
-    
-    if(needOfferUpdate && self.linkedOffer && self.linkedTag)
-        [self.linkedOffer updateContextTagList];
-        
         
 }
 

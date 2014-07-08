@@ -18,7 +18,7 @@
 @property (nonatomic, retain) NSNumber * latitude;
 @property (nonatomic, retain) NSNumber * longitude;
 @property (nonatomic, retain) Business * linkedBusiness;
-@property (nonatomic, retain) Business * linkedArea;
+@property (nonatomic, retain) Area * linkedArea;
 @property (nonatomic, retain) NSString * address;
 @property (nonatomic, retain) NSNumber * major;
 

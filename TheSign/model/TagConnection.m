@@ -92,16 +92,6 @@
     }
     else
         NSLog(@"Linked tag wasn't found");
-    
-    if(linkedTagTo && linkedTagFrom)
-    {
-        for(TagSet* tagset in linkedTagFrom.linkedTagSets)
-            if(tagset.linkedOffer) [tagset.linkedOffer updateContextTagList];
-        for(TagSet* tagset in linkedTagTo.linkedTagSets)
-            if(tagset.linkedOffer) [tagset.linkedOffer updateContextTagList];
-    }
-        
-    
 }
 
 -(void)refreshFromParse
@@ -153,8 +143,6 @@
     }
     else
         NSLog(@"Linked tag wasn't found");
-
-    
 }
 
 

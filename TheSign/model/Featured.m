@@ -224,6 +224,16 @@
     return results;
 }
 
+-(Boolean)checkContextTag:(Tag*) lookupTag
+{
+   for(TagSet* tagset in self.linkedTagSets)
+   {
+       if (tagset && tagset.linkedTag && [tagset.linkedTag.pObjectID isEqualToString:lookupTag.pObjectID])
+           return YES;
+   }
+    return NO;
+}
+
 -(void) processLike:(double)effect
 {
     //update likeness scores for tags

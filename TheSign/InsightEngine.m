@@ -80,41 +80,53 @@ static NSString* errorWelcomingMessage=@"";
     
     Template* template;
 
-    //Choose between sentece types not randomly but based on what could be more relevant
+    //check if we do have a business object that has active offers
     if(business && activeOffers && activeOffers.count!=0)
     {
         
         //get current contexts (interesting time, day, weather etc.)
-        NSArray* activeContexts=[Context getCurrentContextsForBusiness:business AtLocation:location];
+        NSArray* activeContextTags=[Context getCurrentContextsForBusiness:business AtLocation:location];
         
         
-        if(activeContexts && activeContexts.count!=0)
+        if(activeContextTags && activeContextTags.count!=0)
         {
             Tag* chosenContextTag;
             
-            if(activeContexts.count>1)
+            NSMutableDictionary* activeContextsWithOffers=[NSMutableDictionary dictionaryWithCapacity:activeContextTags.count];
+            
+            //find if there are offers for active contexts, get arrays of those offers
+            for(int i=0; i<activeContextTags.count;i++)
             {
-                //roll the dice
+                NSSet* offersForContext=[self findOffersFromSet:activeOffers ForContextTag:activeContextTags[i]];
+                if(offersForContext.count>0)
+                    [activeContextsWithOffers setObject:offersForContext forKey:@(i)];
+            }
+            
+            
+            
+            if(activeContextsWithOffers.count>0)
+            {
                 
-                //check if there are offers for the chosen context
+                if(activeContextsWithOffers.count>1)
+                {
+                    //choose the more appropriate context based on the probabilites
+                }
+                else
+                {
+                    id key = [[activeContextsWithOffers allKeys] objectAtIndex:0];
+                    NSSet* offersForContext=[activeContextsWithOffers objectForKey:key];
+                    
+                    chosenContextTag=activeContextTags[((NSNumber*)key).intValue];
+                }
                 
-                //if there are more than one offer for context, choose one based on relevancy
                 
             }
             else
             {
-                chosenContextTag=activeContexts.firstObject;
-                //check if there are offers for the chosen context
-                
-                //if there are more than one offer for context, choose one based on relevancy
-
+                //TODO: do the relevancy
             }
             
-            if(chosenContextTag)
-            {
-                //choose template for context tag
-            }
-            
+        
         }
         //no contexts founds
         else
@@ -123,7 +135,8 @@ static NSString* errorWelcomingMessage=@"";
             
         
         }
-  
+        
+        
         
         if(template)
             return [template generateMessageForOffer:chosenOffer];
@@ -134,6 +147,7 @@ static NSString* errorWelcomingMessage=@"";
     }
     else
         //no active offers
+        //TODO: show some kind of a default business message, not associated with offers
         return nil;
 }
 
@@ -142,110 +156,33 @@ static NSString* errorWelcomingMessage=@"";
 {
     Featured* result;
     
-    
+//create a
     
     return result;
 }
 
 
-
--(NSDictionary*)chooseMessageTypeAndDealForBusiness:(Business*)business
-                                       ActiveOffers:(NSSet*)activeOffers
-                                        AtLocation:(Location*)location
+-(NSSet*)findOffersFromSet:(NSSet*)offerList ForContextTag:(Tag*)contextTag
 {
-    NSNumber* chosenType;
-    Featured* chosenDeal;
-
-    //check the date
-
-    NSString *dayID;
-    NSString *timeID;
-    NSString *weatherID;
-    
-    
-    NSMutableSet* currentContextTags=[NSMutableSet set];
-    
-    
-    
- 
-    
-    double prefProb=[Model sharedModel].settings.prob_pref.doubleValue;
-    
-    NSMutableSet* weatherOffers=[NSMutableSet set];
-    NSMutableSet* timeOffers=[NSMutableSet set];
-    NSMutableSet* dayOffers=[NSMutableSet set];
-    
-    int random=arc4random_uniform(10);
-    
-    
-    if(random>prefProb && currentContextTags.count!=0)
+    NSMutableSet* offersForContext=[NSMutableSet setWithCapacity:offerList.count];
+    //check if there are offers for the chosen context
+    for (Featured* offer in offerList)
     {
-        //try the context message
-        //find active offers suitable for the current context
+        if([offer checkContextTag:contextTag])
+            [offersForContext addObject:offer];
+    }
+    return offersForContext;
+}
 
-        for (Featured* offer in activeOffers)
-        {
-                //TODO: check if checContextTags works better
-                
-                //find which of the current context tags are connected to the offer
-                NSSet* foundTags=[offer findContextTags:currentContextTags];
-                
-        
-        }
-        
-        
-        //if no offers for the context were found
-        if (dayOffers.count==0 && timeOffers.count==0 && weatherOffers.count==0)
-        {
-          
-        }
-        else
-        {
-            //we gotta choose the context based on the probability setting
-            //we doll the dice and if the chosen context doesn't have offers to show we move to the next one
-          
-            
-            
-            
-            NSSet* chosenSet;
-          
-        }
-        
-    }
-    else
-    {
-        
-    }
-    
-    double p = Math.random();
+  /*  double p = Math.random();
     double cumulativeProbability = 0.0;
     for (Item item : items) {
         cumulativeProbability += item.probability();
         if (p <= cumulativeProbability) {
             return item;
         }
-    }
+    }*/
     
-    
-  
-    
-    return [NSDictionary dictionaryWithObjects:@[chosenType,chosenDeal] forKeys:@[@"Type",@"Deal"]];
-}
-
-
-
-
-
-
-
-
--(NSString*)generateGreeting
-{
-    NSArray *greetingOptions=[NSArray arrayWithObjects:@"Hi there!",@"Hello stranger!",@"Hi!",@"Hey!", nil];
-
-    int random=arc4random_uniform((short)greetingOptions.count);
-    return greetingOptions[random];
-}
 
 
 

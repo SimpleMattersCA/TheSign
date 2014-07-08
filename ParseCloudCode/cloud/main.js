@@ -204,7 +204,6 @@ query.find().then(function(areas)
     
     _.each(areas, function(area) 
     {
-    
      	promises.push(Parse.Cloud.httpRequest({
       	url: 'https://api.forecast.io/forecast/'+apiKey+'/'+area.get('latitude')+','+area.get('longitude')+'?units=ca'
       	}).then(function(httpResponse)
