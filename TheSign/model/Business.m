@@ -42,6 +42,11 @@
 @dynamic linkedLinks;
 @dynamic linkedLocations;
 
+
+
+
+#pragma mark - Sign Entity Protocol
+
 @synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"Business";}
@@ -54,8 +59,141 @@
 //just so I don't have to create another CoreData entity and fuck with the synchronization we gonna store business types in a hashtable. God I love hash tables. They sounds like hash browns..
 static NSArray* _businessTypes;
 
++(Business*) getByID:(NSString*)identifier
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
+    
+    request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
+    NSError *error;
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    else
+        return (Business*)result.firstObject;
+}
++(Business*) getBusinessByUID:(NSNumber*)identifier
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
+    request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@=%d", CD_UID, identifier.intValue]];
+    NSError *error;
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    else
+        return (Business*)result.firstObject;
+}
+
++(Boolean)createFromParse:(PFObject *)object
+{
+    if([Business checkIfParseObjectRight:object]==NO)
+    {
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
+    }
+    Boolean complete=YES;
+
+    NSError *error;
+    Business *business = [NSEntityDescription insertNewObjectForEntityForName:Business.entityName
+                                                       inManagedObjectContext:[Model sharedModel].managedObjectContext];
+    business.parseObject=object;
+    business.pObjectID=object.objectId;
+    business.name=object[P_NAME];
+    business.welcomeText=object[P_WELCOMETEXT];
+    business.uid=object[P_UID];
+    business.businessType=object[P_TYPE];
+    
+    PFFile *logo=object[P_LOGO];
+    NSData *pulledLogo;
+    pulledLogo=[logo getData:&error];
+    if(!error)
+    {
+        if(pulledLogo!=nil)
+            business.logo=pulledLogo;
+        else
+        {
+            NSLog(@"Business logo is missing");
+            //complete=NO;
+        }
+    }
+    else
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        complete=NO;
+    }
+    
+    return complete;
+}
 
 
+
+-(Boolean)refreshFromParse
+{
+    NSError *error;
+    [self.parseObject refresh:&error];
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return NO;
+    }
+    
+    if([Business checkIfParseObjectRight:self.parseObject]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+        return NO;
+    }
+    
+    Boolean complete=YES;
+
+    self.name=self.parseObject[P_NAME];
+    self.welcomeText=self.parseObject[P_WELCOMETEXT];
+    self.uid=self.parseObject[P_UID];
+    self.businessType=self.parseObject[P_TYPE];
+    
+    PFFile *logo=self.parseObject[P_LOGO];
+    
+    NSData *pulledLogo;
+    pulledLogo=[logo getData:&error];
+    if(!error)
+    {
+        if(pulledLogo!=nil)
+            self.logo=pulledLogo;
+        else
+        {
+            NSLog(@"Business logo is missing");
+            //complete=NO;
+        }
+    }
+    else
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        complete=NO;
+    }
+    
+    return complete;
+}
+
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
+}
 
 
 +(Location*)getClosestBusinessToLocation:(CLLocation*)curLocation
@@ -125,7 +263,7 @@ static NSArray* _businessTypes;
 {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
-    request.predicate=[NSPredicate predicateWithFormat: @"%@=='%@'", CD_TYPE, type];
+    request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@='%@'", CD_TYPE, type]];
     NSError *error;
     NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
         
@@ -139,38 +277,7 @@ static NSArray* _businessTypes;
     
 }
 
-+(Business*) getBusinessByUID:(NSNumber*)identifier
-{
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
-    request.predicate=[NSPredicate predicateWithFormat: @"%@==%d", CD_UID, identifier.intValue];
-    NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-    
-    if(error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return nil;
-    }
-    else
-        return (Business*)result.firstObject;
-}
 
-
-+(Business*) getByID:(NSString*)identifier
-{
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
-    request.predicate=[NSPredicate predicateWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
-    NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-    
-    if(error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return nil;
-    }
-    else
-        return (Business*)result.firstObject;
-}
 
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
@@ -180,74 +287,6 @@ static NSArray* _businessTypes;
         return NO;
 }
 
-+(void)createFromParse:(PFObject *)object
-{
-    if([Business checkIfParseObjectRight:object]==NO)
-    {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
-    }
-    NSError *error;
-    Business *business = [NSEntityDescription insertNewObjectForEntityForName:Business.entityName
-                                                       inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    business.parseObject=object;
-    business.pObjectID=object.objectId;
-    business.name=object[P_NAME];
-    business.welcomeText=object[P_WELCOMETEXT];
-    business.uid=object[P_UID];
-    business.businessType=object[P_TYPE];
-    
-    PFFile *logo=object[P_LOGO];
-    NSData *pulledLogo;
-    pulledLogo=[logo getData:&error];
-    if(!error)
-    {
-        if(pulledLogo!=nil)
-            business.logo=pulledLogo;
-        else
-            NSLog(@"Business logo is missing");
-    }
-    else
-        NSLog(@"%@",[error localizedDescription]);
-}
-
-
-
--(void)refreshFromParse
-{
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return;
-    }
-    
-    if([Business checkIfParseObjectRight:self.parseObject]==NO)
-    {
-        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
-    }
-    
-    self.name=self.parseObject[P_NAME];
-    self.welcomeText=self.parseObject[P_WELCOMETEXT];
-    self.uid=self.parseObject[P_UID];
-    self.businessType=self.parseObject[P_TYPE];
-    
-    PFFile *logo=self.parseObject[P_LOGO];
-    
-    NSData *pulledLogo;
-    pulledLogo=[logo getData:&error];
-    if(!error)
-    {
-        if(pulledLogo!=nil)
-            self.logo=pulledLogo;
-        else
-            NSLog(@"Business logo is missing");
-    }
-    else
-        NSLog(@"%@",[error localizedDescription]);
-}
 
 -(NSSet*) getActiveOffers
 {

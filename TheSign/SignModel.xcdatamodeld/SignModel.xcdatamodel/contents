@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6172.15" systemVersion="13D65" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6198" systemVersion="13D65" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Area" representedClassName="Area" syncable="YES">
         <attribute name="currentTemperature" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="currentWeather" optional="YES" attributeType="String" syncable="YES"/>
@@ -12,7 +12,7 @@
         <attribute name="logo" attributeType="Binary" syncable="YES"/>
         <attribute name="name" attributeType="String" defaultValueString="DefaultBusiness" syncable="YES"/>
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
-        <attribute name="uid" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="uid" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="welcomeText" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="linkedDiscovery" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DiscoveredBusiness" inverseName="linkedBusiness" inverseEntity="DiscoveredBusiness" syncable="YES"/>
         <relationship name="linkedLinks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Link" inverseName="linkedBusiness" inverseEntity="Link" syncable="YES"/>
@@ -31,9 +31,9 @@
         <relationship name="linkedUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="linkedDiscoveries" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="Featured" representedClassName="Featured" syncable="YES">
-        <attribute name="about" attributeType="String" syncable="YES"/>
         <attribute name="active" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fullName" attributeType="String" syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="major" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="minor" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -59,6 +59,7 @@
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="latitude" attributeType="Double" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" indexed="YES" syncable="YES"/>
+        <attribute name="major" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="linkedArea" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Area" inverseName="linkedLocations" inverseEntity="Area" syncable="YES"/>
         <relationship name="linkedBusiness" maxCount="1" deletionRule="Nullify" destinationEntity="Business" inverseName="linkedLocations" inverseEntity="Business" syncable="YES"/>
@@ -70,7 +71,6 @@
     </entity>
     <entity name="Settings" representedClassName="Settings" syncable="YES">
         <attribute name="beaconUUID" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="contextThreshold" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lk_dislike" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lk_like" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lk_none" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -148,12 +148,12 @@
         <element name="Business" positionX="-2765" positionY="-603" width="128" height="193"/>
         <element name="Context" positionX="-3332" positionY="-126" width="128" height="103"/>
         <element name="DiscoveredBusiness" positionX="-2531" positionY="-414" width="128" height="88"/>
-        <element name="Featured" positionX="-2763" positionY="-333" width="128" height="223"/>
+        <element name="Featured" positionX="-2763" positionY="-333" width="128" height="225"/>
         <element name="Like" positionX="-3141" positionY="137" width="128" height="88"/>
         <element name="Link" positionX="-2970" positionY="-549" width="128" height="103"/>
-        <element name="Location" positionX="-2772" positionY="-765" width="128" height="133"/>
+        <element name="Location" positionX="-2772" positionY="-765" width="128" height="150"/>
         <element name="Relevancy" positionX="-2817" positionY="-43" width="128" height="88"/>
-        <element name="Settings" positionX="-3483" positionY="-727" width="128" height="178"/>
+        <element name="Settings" positionX="-3483" positionY="-727" width="128" height="165"/>
         <element name="Statistics" positionX="-2495" positionY="-232" width="128" height="178"/>
         <element name="TableTimestamp" positionX="-3314" positionY="-652" width="128" height="103"/>
         <element name="Tag" positionX="-3143" positionY="-306" width="128" height="208"/>

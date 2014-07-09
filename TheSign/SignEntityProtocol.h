@@ -17,10 +17,12 @@
 @property PFObject* parseObject;
 
 +(instancetype) getByID:(NSString*)objectId;
-+(void)createFromParse:(PFObject *)object;
++(NSInteger) getRowCount;
+
++(Boolean)createFromParse:(PFObject *)object;
 +(NSString*) entityName;
 +(NSString*) parseEntityName;
 
--(void)refreshFromParse;
+-(Boolean)refreshFromParse;
 +(Boolean)checkIfParseObjectRight:(PFObject*)object;
 @end

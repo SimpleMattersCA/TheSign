@@ -42,9 +42,12 @@
 @dynamic twID;
 @dynamic gender;
 @dynamic birthdate;
-@synthesize parseObject=_parseObject;
 
-static User* _currentUser;
+
+
+#pragma mark - Sign Entity Protocol
+
+@synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"User";}
 +(NSString*) parseEntityName {return @"User";}
@@ -57,37 +60,10 @@ static User* _currentUser;
         return NO;
 }
 
-+(User*) currentUser
-{
-    if(!_currentUser)
-    {
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-        request.predicate=[NSPredicate predicateWithFormat:@"%@==%d", CD_MAIN, YES];
-        NSError *error;
-        NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-        
-        if(error)
-        {
-            NSLog(@"%@",[error localizedDescription]);
-            return nil;
-        }
-        else
-            if(result.count!=1)
-            {
-                NSLog(@"No current user or more than one current user specified");
-                return nil;
-            }
-            else
-                _currentUser= (User*)result.firstObject;
-            
-    }
-    return _currentUser;
-}
-
 +(User*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -113,7 +89,8 @@ static User* _currentUser;
     {
         FBRequest *request = [FBRequest requestForMe];
         [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-            if (!error) {
+            if (!error)
+            {
                 // result is a dictionary with the user's Facebook data
                 NSDictionary *userData = (NSDictionary *)result;
                 
@@ -146,26 +123,94 @@ static User* _currentUser;
 #warning fill image, name and followers from twitter api
         //fields id, birthday, firs_name,gender,
     }
-    
-    
 }
 
--(void)refreshFromParse
+-(Boolean)refreshFromParse
 {
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
-        return;
+        return NO;
     }
     
     if([User checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
+        return NO;
     }
     
+    Boolean complete=YES;
+
+    self.name=self.parseObject[P_NAME];
+    
+    PFFile *pic=self.parseObject[P_PIC];
+    NSData *pulledImage;
+    pulledImage=[pic getData:&error];
+    if(!error)
+    {
+        if(pulledImage!=nil)
+            self.pic=pulledImage;
+        else
+        {
+            NSLog(@"Business logo is missing");
+            complete=NO;
+        }
+    }
+    else
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        complete=NO;
+    }
+    
+    return complete;
+}
+
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
+}
+
+
+
+static User* _currentUser;
+
++(User*) currentUser
+{
+    if(!_currentUser)
+    {
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+        request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAIN, YES]];
+        NSError *error;
+        NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+        
+        if(error)
+        {
+            NSLog(@"%@",[error localizedDescription]);
+            return nil;
+        }
+        else
+            if(result.count!=1)
+            {
+                NSLog(@"No current user or more than one current user specified");
+                return nil;
+            }
+            else
+                _currentUser= (User*)result.firstObject;
+        
+    }
+    return _currentUser;
 }
 
 

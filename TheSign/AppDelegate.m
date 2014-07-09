@@ -60,7 +60,7 @@ NSNumber *detectedBeaconMajor;
     
     [self.window makeKeyAndVisible];
 
-    [self startLocationMonitoring];
+//    [self startLocationMonitoring];
     
     
     //first-time ever defaults check and set
@@ -108,12 +108,11 @@ Preparing and starting geofence and beacon monitoring
         self.locationManager.delegate = self;
         self.locationManager.pausesLocationUpdatesAutomatically=YES;
         //********* Geofence monitoring *********//
-        [self.locationManager startMonitoringSignificantLocationChanges];
+      //  [self.locationManager startMonitoringSignificantLocationChanges];
         
         //Setting up the timer that will check the closest location and if it's nearby it will monitor the region and fire the welcome message when the device is in it
         //The timer runs
-        [self.locationManager startUpdatingLocation];
-        self.locationTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(updateGPSRegionForLocation) userInfo:nil repeats:YES];
+        self.locationTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(updateGPS) userInfo:nil repeats:YES];
         [self.locationTimer setTolerance:600];
         [self.locationTimer fire];
         
@@ -142,14 +141,21 @@ Preparing and starting geofence and beacon monitoring
     }
 }
 
+-(void)updateGPS
+{
+    [self.locationManager startUpdatingLocation];
+}
 
 -(void)updateGPSRegionForLocation:(CLLocation*)currentLocation
 {
+    [self.locationManager stopUpdatingLocation];
     Location* closestBusiness=[[Model sharedModel] getClosestBusinessToLocation:currentLocation];
     [self.locationManager stopMonitoringForRegion:self.gpsRegion];
     self.gpsRegion=[[CLCircularRegion alloc] initWithCenter:[closestBusiness getLocationObject].coordinate radius:10 identifier:closestBusiness.linkedBusiness.uid.stringValue];
     //if distance is less than something, start monitoring for a region
     [self.locationManager startMonitoringForRegion:self.gpsRegion];
+    //else
+    [self.locationManager stopMonitoringForRegion:self.gpsRegion];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {

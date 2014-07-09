@@ -5,7 +5,7 @@
 //  Created by Andrey Chudnovskiy on 2014-03-21.
 //  Copyright (c) 2014 Andrey Chudnovskiy. All rights reserved.
 //
-
+#import "Parse/Parse.h"
 
 #import "Model.h"
 #import "Featured.h"
@@ -16,9 +16,11 @@
 #import "Link.h"
 #import "Statistics.h"
 #import "TableTimestamp.h"
-#import "Parse/Parse.h"
 #import "Settings.h"
 #import "Location.h"
+#import "Area.h"
+#import "Context.h"
+#import "Template.h"
 
 
 
@@ -57,9 +59,11 @@
                                                    object:nil];
         
         //checking database every hour with tolerance of 10 minutes
-        self.networkTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(requestCloud) userInfo:nil repeats:YES];
-        [self.networkTimer setTolerance:600];
-        [self.networkTimer fire];
+      //  self.networkTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(requestCloud) userInfo:nil repeats:YES];
+      //  [self.networkTimer setTolerance:600];
+      //  [self.networkTimer fire];
+        
+        
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
         //[self deleteModel];
        // [self performSelectorInBackground:@selector(checkModel) withObject:nil];
@@ -95,7 +99,7 @@
 
 
 //check if we need to pull data from parse based on comparing timestamps of the tables.
--(void)checkModel
+-(Boolean)checkModel
 {
     
    /* NetworkStatus status = reachability.currentReachabilityStatus;
@@ -113,7 +117,8 @@
     }
     */
     
-    
+    Boolean completeData=YES;
+
     //pull from cloud for
     PFQuery *query = [PFQuery queryWithClassName:TableTimestamp.parseEntityName];
     NSError *error;
@@ -128,7 +133,8 @@
             NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName];
             if(![timestamp isEqualToDate:object[TableTimestamp.pTimeStamp]])
             {
-                [self pullFromCloud:tableName];
+                if([self pullFromCloud:tableName]==NO)
+                    completeData=NO;
             }
         }
         [self pullFromCloud:TableTimestamp.parseEntityName];
@@ -137,17 +143,10 @@
     {
         NSLog(@"Error in CheckModel: %@ %@", error, [error userInfo]);
     }
-   
-}
-
--(void)pullFromCloud
-{
-    for(NSString *tableName in [TableTimestamp getTableNames])
-        [self pullFromCloud:tableName];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"databaseUpdated" object:self];
-
+    return completeData;
 }
+
 /**
  deleting the model
  */
@@ -159,22 +158,30 @@
 
 -(Class)getClassForParseEntity:(NSString*)entityName
 {
-    if([entityName isEqualToString:Business.parseEntityName])
-        return [Business class];
-    if([entityName isEqualToString:Link.parseEntityName])
-        return [Link class];
-    if([entityName isEqualToString:Featured.parseEntityName])
-        return [Featured class];
-    if([entityName isEqualToString:Tag.parseEntityName])
-        return [Tag class];
-    if([entityName isEqualToString:TagSet.parseEntityName])
-        return [TagSet class];
-    if([entityName isEqualToString:TagConnection.parseEntityName])
-        return [TagConnection class];
-    if([entityName isEqualToString:Location.parseEntityName])
-        return [Location class];
     if([entityName isEqualToString:TableTimestamp.parseEntityName])
         return [TableTimestamp class];
+    else if([entityName isEqualToString:Settings.parseEntityName])
+        return [Settings class];
+    else if([entityName isEqualToString:Context.parseEntityName])
+        return [Context class];
+    else if([entityName isEqualToString:Business.parseEntityName])
+        return [Business class];
+    else if([entityName isEqualToString:Link.parseEntityName])
+        return [Link class];
+    else if([entityName isEqualToString:Featured.parseEntityName])
+        return [Featured class];
+    else if([entityName isEqualToString:Tag.parseEntityName])
+        return [Tag class];
+    else if([entityName isEqualToString:TagSet.parseEntityName])
+        return [TagSet class];
+    else if([entityName isEqualToString:TagConnection.parseEntityName])
+        return [TagConnection class];
+    else if([entityName isEqualToString:Location.parseEntityName])
+        return [Location class];
+    else if([entityName isEqualToString:Area.parseEntityName])
+        return [Area class];
+    else if([entityName isEqualToString:Template.parseEntityName])
+        return [Template class];
     
     return nil;
 }
@@ -182,8 +189,9 @@
 
 
 //The method for pulling data from Parse based on the requested table name
--(void)pullFromCloud:(NSString*)cloudEntityName
+-(Boolean)pullFromCloud:(NSString*)cloudEntityName
 {
+    Boolean complete=YES;;
     
     Class targetClass=[self getClassForParseEntity:cloudEntityName];
     NSDate* cdTimestamp=[TableTimestamp getUpdateTimestampForTable:cloudEntityName];
@@ -205,9 +213,9 @@
             id cdObject=[targetClass getByID:object.objectId];
             
             if(cdObject!=nil)
-                [cdObject refreshFromParse];
+                complete=[cdObject refreshFromParse];
             else
-                [targetClass createFromParse:object];
+                complete=[targetClass createFromParse:object];
         }
       
         
@@ -216,9 +224,12 @@
         //                                                  userInfo:[NSDictionary dictionaryWithObject:entityName forKey:@"Entity"]];
     }
     else
+    {
         NSLog(@"Pulling from cloud error: %@ %@", error, [error userInfo]);
+        complete=NO;
+    }
     
-
+    return complete;
 }
 
 -(void)deleteObjectForClass:(Class)class ParseObjectID:(NSString*)pObjectID

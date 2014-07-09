@@ -102,7 +102,7 @@
 
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSString *predicateBound = [NSString stringWithFormat: @"%@>'%@'", CD_DATE, monthAgo];
-    NSString *predicateSynced = [NSString stringWithFormat: @"%@==%hhd", CD_SYNCED, NO];
+    NSString *predicateSynced = [NSString stringWithFormat: @"%@==%d", CD_SYNCED, NO];
     
     request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateBound,predicateSynced]];
     NSError *error;

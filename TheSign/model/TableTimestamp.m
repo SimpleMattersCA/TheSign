@@ -24,6 +24,11 @@
 @dynamic timeStamp;
 @dynamic order;
 
+
+
+
+#pragma mark - Sign Entity Protocol
+
 @synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"TableTimestamp";}
@@ -40,6 +45,85 @@
     else
         return NO;
 }
+
+
++(TableTimestamp*) getByID:(NSString*)identifier
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
+    NSError *error;
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    else
+        return (TableTimestamp*)result.firstObject;
+}
+
++ (Boolean)createFromParse:(PFObject *)object
+{
+    if([self checkIfParseObjectRight:object]==NO)
+    {
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
+    }
+    
+    Boolean complete=YES;
+
+    TableTimestamp *timeStamp = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+                                                          inManagedObjectContext:[Model sharedModel].managedObjectContext];
+    timeStamp.parseObject=object;
+    timeStamp.pObjectID=object.objectId;
+    timeStamp.timeStamp=object[TableTimestamp.pTimeStamp];
+    timeStamp.tableName=object[TableTimestamp.pTableName];
+    timeStamp.order=object[TableTimestamp.pOrder];
+    
+    return complete;
+}
+
+-(Boolean)refreshFromParse
+{
+    NSError *error;
+    [self.parseObject refresh:&error];
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return NO;
+    }
+    
+    if([self.class checkIfParseObjectRight:self.parseObject]==NO)
+    {
+        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+        return NO;
+    }
+    
+    Boolean complete=YES;
+
+    self.timeStamp=self.parseObject[TableTimestamp.pTimeStamp];
+    self.tableName=self.parseObject[TableTimestamp.pTableName];
+    self.order=self.parseObject[TableTimestamp.pOrder];
+    
+    return complete;
+}
+
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
+}
+
 
 + (NSArray*)getTableNames
 {
@@ -64,7 +148,7 @@
 +(NSDate*) getUpdateTimestampForTable:(NSString*)tName
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:TableTimestamp.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:@"%@==\"%@\"", CD_TABLE,tName];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", CD_TABLE,tName]];
     NSError *error;
     NSArray *timestamp = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -79,62 +163,5 @@
     else
         return ((TableTimestamp*)timestamp[0]).timeStamp;
 }
-
-+(TableTimestamp*) getByID:(NSString*)identifier
-{
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
-    NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-    
-    if(error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return nil;
-    }
-    else
-        return (TableTimestamp*)result.firstObject;
-}
-
-
-
-+ (void)createFromParse:(PFObject *)object
-{
-    if([self checkIfParseObjectRight:object]==NO)
-    {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
-    }
-    
-    TableTimestamp *timeStamp = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
-                                                          inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    timeStamp.parseObject=object;
-    timeStamp.pObjectID=object.objectId;
-    timeStamp.timeStamp=object[TableTimestamp.pTimeStamp];
-    timeStamp.tableName=object[TableTimestamp.pTableName];
-    timeStamp.order=object[TableTimestamp.pOrder];
-}
-
--(void)refreshFromParse
-{
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return;
-    }
-    
-    if([self.class checkIfParseObjectRight:self.parseObject]==NO)
-    {
-        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
-    }
-    
-    self.timeStamp=self.parseObject[TableTimestamp.pTimeStamp];
-    self.tableName=self.parseObject[TableTimestamp.pTableName];
-    self.order=self.parseObject[TableTimestamp.pOrder];
-}
-
 
 @end

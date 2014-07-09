@@ -28,11 +28,16 @@
 @dynamic linkedOffer;
 @dynamic linkedTag;
 
+
+
+
+#pragma mark - Sign Entity Protocol
+
 @synthesize parseObject=_parseObject;
 
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
-    if(object[P_WEIGHT] && object[P_OFFER] && object[P_TAG])
+    if(object[P_OFFER] && object[P_TAG])
         return YES;
     else
         return NO;
@@ -44,7 +49,7 @@
 +(TagSet*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -57,19 +62,24 @@
         return (TagSet*)result.firstObject;
 }
 
-+(void)createFromParse:(PFObject *)object
+
+
++(Boolean)createFromParse:(PFObject *)object
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
     }
     
+    Boolean complete=YES;
+
     TagSet *tagset = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
     tagset.parseObject=object;
     tagset.pObjectID=object.objectId;
-    tagset.weight=object[P_WEIGHT];
+    if(object[P_WEIGHT])
+        tagset.weight=object[P_WEIGHT];
     
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseFeatured=object[P_OFFER];
@@ -81,7 +91,10 @@
         [linkedFeatured addLinkedTagSetsObject:tagset];
     }
     else
+    {
         NSLog(@"Linked offer wasn't found");
+        complete=NO;
+    }
 
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseTag=object[P_TAG];
@@ -92,27 +105,37 @@
         [linkedTag addLinkedTagSetsObject:tagset];
     }
     else
+    {
         NSLog(@"Linked tag wasn't found");
+        complete=NO;
+    }
     
+    return complete;
 }
 
--(void)refreshFromParse
+-(Boolean)refreshFromParse
 {
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
-        return;
+        return NO;
     }
     
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
+        return NO;
     }
     
-    self.weight=self.parseObject[P_WEIGHT];
+    Boolean complete=YES;
+    
+    if(self.parseObject[P_WEIGHT])
+        self.weight=self.parseObject[P_WEIGHT];
+    else
+        //default value
+        self.weight=@(1);
     
     //careful, incomplete object - only objectId property is there
     
@@ -129,7 +152,10 @@
             needOfferUpdate=YES;
         }
         else
+        {
             NSLog(@"Linked offer wasn't found");
+            complete=NO;
+        }
     }
 
     //careful, incomplete object - only objectId property is there
@@ -145,9 +171,28 @@
             needOfferUpdate=YES;
         }
         else
+        {
             NSLog(@"Linked tag wasn't found");
+            complete=NO;
+        }
     }
-        
+    
+    return complete;
+}
+
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
 }
 
 @end

@@ -20,7 +20,6 @@
 @property (nonatomic, retain) NSNumber * lk_none;
 @property (nonatomic, retain) NSNumber * lk_like;
 @property (nonatomic, retain) NSNumber * lk_dislike;
-@property (nonatomic, retain) NSNumber * contextThreshold;
 
 +(Settings*)getSettingsSet;
 

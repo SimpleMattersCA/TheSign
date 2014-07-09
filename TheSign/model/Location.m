@@ -34,6 +34,11 @@
 @dynamic major;
 @dynamic linkedArea;
 
+
+
+
+#pragma mark - Sign Entity Protocol
+
 @synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"Location";}
@@ -51,7 +56,7 @@
 +(Location*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Location.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -66,13 +71,15 @@
 
 
 
-+ (void)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object
 {
     if([Location checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
     }
+    
+    Boolean complete=YES;
     
     Location *location = [NSEntityDescription insertNewObjectForEntityForName:[Location entityName]
                                                inManagedObjectContext:[Model sharedModel].managedObjectContext];
@@ -91,7 +98,10 @@
         [linkedBusiness addLinkedLocationsObject:location];
     }
     else
+    {
         NSLog(@"Linked business wasn't found");
+        complete=NO;
+    }
     
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseArea=object[P_AREA];
@@ -102,25 +112,31 @@
         [linkedArea addLinkedLocationsObject:location];
     }
     else
+    {
         NSLog(@"Linked are wasn't found");
+        complete=NO;
+    }
     
+    return complete;
 }
 
--(void)refreshFromParse
+-(Boolean)refreshFromParse
 {
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
-        return;
+        return NO;
     }
     
     if([Location checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
+        return NO;
     }
+    
+    Boolean complete=YES;
     
     self.address=self.parseObject[P_ADDRESS];
     self.longitude=self.parseObject[P_LONGITUDE];
@@ -139,7 +155,10 @@
             [linkedBusiness addLinkedLocationsObject:self];
         }
         else
+        {
             NSLog(@"Linked business wasn't found");
+            complete=NO;
+        }
     }
     
     //careful, incomplete object - only objectId property is there
@@ -155,15 +174,36 @@
             [linkedArea addLinkedLocationsObject:self];
         }
         else
+        {
             NSLog(@"Linked are wasn't found");
+            complete=NO;
+        }
     }
+    
+    return complete;
 }
+
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
+}
+
 
 
 +(Location*)getLocationByMajor:(NSNumber*)major
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Location.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:@"%@==%d", CD_MAJOR, major.intValue];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAJOR, major.intValue]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     

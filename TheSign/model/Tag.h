@@ -31,7 +31,7 @@
  Setting likeness score to tag and releated tags by traversing through the TagConnection graph.
  The minimal likeness to be used = 0.1
  */
--(void)processLike:(double)effect AlreadyProcessed:(NSMutableArray**)processedTags;
+-(void)processLike:(double)effect AlreadyProcessed:(NSMutableSet**)processedTags;
 -(double) calculateRelevancyOnLevel:(NSInteger)depth;
 
 @end

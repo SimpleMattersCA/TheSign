@@ -24,8 +24,8 @@
 #define CD_MINOR (@"minor")
 #define CD_ACIVE (@"active")
 
-#define P_TITLE (@"name")
-#define P_FULLNAME (@"featured")
+#define P_TITLE (@"fullName")
+#define P_FULLNAME (@"name")
 #define P_DETAILS (@"description")
 #define P_WELCOMETEXT (@"welcomeText")
 #define P_IMAGE (@"picture")
@@ -34,11 +34,6 @@
 #define P_ACTIVE (@"active")
 
 @implementation Featured
-
-@synthesize parseObject=_parseObject;
-
-+(NSString*) entityName {return @"Featured";}
-+(NSString*) parseEntityName {return @"Info";}
 
 @dynamic title;
 @dynamic fullName;
@@ -54,6 +49,16 @@
 @dynamic linkedStats;
 @dynamic linkedScore;
 
+
+
+
+#pragma mark - Sign Entity Protocol
+
+@synthesize parseObject=_parseObject;
+
++(NSString*) entityName {return @"Featured";}
++(NSString*) parseEntityName {return @"Info";}
+
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
     if(object[P_TITLE] && object[P_FULLNAME] && object[P_ACTIVE] && object[P_BUSINESS])
@@ -65,7 +70,7 @@
 +(Featured*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier]];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -78,34 +83,15 @@
         return (Featured*)result.firstObject;
 }
 
-+(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
-{
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSPredicate *predicateMajor = [NSPredicate predicateWithFormat: @"(%@==%d)", CD_MAJOR, major.intValue];
-    NSPredicate *predicateMinor = [NSPredicate predicateWithFormat: @"(%@==%d)", CD_MINOR, minor.intValue];
-    NSPredicate *predicateActive = [NSPredicate predicateWithFormat: @"(%@==%d)", CD_ACIVE, minor.boolValue];
-    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor,predicateActive]];
-   
-    NSError *error;
-    NSArray *featured = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-    
-    if(error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return nil;
-    }
-    
-    return featured.firstObject;
-}
-
-
-+ (void)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
     }
+    
+    Boolean complete=YES;
 
     NSError *error;
     Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
@@ -126,17 +112,19 @@
         PFFile *image=object[P_IMAGE];
         
         NSData *pulledImage=[image getData:&error];
-                 if(!error)
+        if(!error)
         {
             if(pulledImage!=nil)
                 deal.image = pulledImage;
             else
+            {
                 NSLog(@"Image offer is missing");
+            }
         }
         else
         {
             NSLog(@"%@",[error localizedDescription]);
-            return;
+            complete=NO;
         }
     }
     
@@ -150,25 +138,32 @@
         [linkedBusiness addLinkedOffersObject:deal];
     }
     else
+    {
         NSLog(@"Linked business wasn't found");
+        complete=NO;
+    }
+    
+    return complete;
 }
 
--(void)refreshFromParse
+-(Boolean)refreshFromParse
 {
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
-        return;
+        return NO;
     }
     
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
+        return NO;
     }
     
+    Boolean complete=YES;
+
     self.fullName=self.parseObject[P_FULLNAME];
     self.title=self.parseObject[P_TITLE];
     self.details=self.parseObject[P_DETAILS];
@@ -184,12 +179,14 @@
             if(pulledImage!=nil)
                 self.image = pulledImage;
             else
+            {
                 NSLog(@"Image offer is missing");
+            }
         }
         else
         {
             NSLog(@"%@",[error localizedDescription]);
-            return;
+            complete=NO;
         }
     }
     
@@ -206,9 +203,53 @@
             [linkedBusiness addLinkedOffersObject:self];
         }
         else
+        {
             NSLog(@"Linked business wasn't found");
+            complete=NO;
+        }
     }
+    
+    return complete;
 }
+
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
+}
+
+
++(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSPredicate *predicateMajor = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@=%d)", CD_MAJOR, major.intValue]];
+    NSPredicate *predicateMinor = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@=%d)", CD_MINOR, minor.intValue]];
+    NSPredicate *predicateActive = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@=%d)", CD_ACIVE, minor.boolValue]];
+    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor,predicateActive]];
+   
+    NSError *error;
+    NSArray *featured = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    
+    return featured.firstObject;
+}
+
+
+
 
 -(NSSet*)findContextTags:(NSSet*) lookupTags
 {
@@ -237,7 +278,7 @@
 -(void) processLike:(double)effect
 {
     //update likeness scores for tags
-    NSMutableArray* alreadyProcessed=[NSMutableArray array];
+    NSMutableSet* alreadyProcessed=[NSMutableSet set];
     for(TagSet* tagset in self.linkedTagSets)
     {
         if( tagset.linkedTag) [tagset.linkedTag processLike:effect*tagset.weight.doubleValue AlreadyProcessed:&alreadyProcessed];

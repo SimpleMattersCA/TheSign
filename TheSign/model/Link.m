@@ -24,6 +24,10 @@
 @dynamic linkedBusiness;
 
 
+
+
+#pragma mark - Sign Entity Protocol
+
 @synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"Link";}
@@ -42,7 +46,7 @@
 +(Link*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Link.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -56,14 +60,16 @@
 }
 
 
-+ (void)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object
 {
     if([Link checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
     }
     
+    Boolean complete=YES;
+
     Link *link = [NSEntityDescription insertNewObjectForEntityForName:Link.entityName
                                                inManagedObjectContext:[Model sharedModel].managedObjectContext];
     link.parseObject=object;
@@ -79,25 +85,32 @@
         [linkedBusiness addLinkedLinksObject:link];
     }
     else
+    {
         NSLog(@"Linked business wasn't found");
+        complete=NO;
+    }
+    
+    return complete;
 }
 
--(void)refreshFromParse
+-(Boolean)refreshFromParse
 {
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
-        return;
+        return NO;
     }
     
     if([Link checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
+        return NO;
     }
     
+    Boolean complete=YES;
+
     self.url=self.parseObject[P_URL];
     
     //careful, incomplete object - only objectId property is there
@@ -112,8 +125,28 @@
             [linkedBusiness addLinkedLinksObject:self];
         }
         else
+        {
             NSLog(@"Linked business wasn't found");
+            complete=NO;
+        }
     }
+    
+    return complete;
+}
+
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
 }
 
 @end

@@ -26,10 +26,14 @@
 @dynamic linkedLocations;
 
 
+
+
+#pragma mark - Sign Entity Protocol
+
 @synthesize parseObject=_parseObject;
 
-+(NSString*) entityName {return @"Location";}
-+(NSString*) parseEntityName {return @"Locations";}
++(NSString*) entityName {return @"Area";}
++(NSString*) parseEntityName {return @"Area";}
 
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
@@ -41,7 +45,7 @@
 +(Area*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Area.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -56,14 +60,15 @@
 
 
 
-+ (void)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object
 {
     if([Area checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
     }
-    
+    Boolean complete=YES;
+
     Area *area = [NSEntityDescription insertNewObjectForEntityForName:[Area entityName]
                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
     area.parseObject=object;
@@ -71,27 +76,47 @@
     area.currentTemperature=object[P_TEMPERATURE];
     area.currentWeather=object[P_WEATHER];
     area.weatherTimestamp=object.updatedAt;
+    
+    return complete;
 }
 
--(void)refreshFromParse
+-(Boolean)refreshFromParse
 {
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
-        return;
+        return NO;
     }
     
     if([Area checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
+        return NO;
     }
-    
+    Boolean complete=YES;
+
     self.currentTemperature=self.parseObject[P_TEMPERATURE];
     self.currentWeather=self.parseObject[P_WEATHER];
     self.weatherTimestamp=self.parseObject.updatedAt;
+    
+    return complete;
+}
+
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
 }
 
 

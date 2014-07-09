@@ -25,6 +25,11 @@
 @dynamic probability;
 @dynamic linkedTags;
 
+
+
+
+#pragma mark - Sign Entity Protocol
+
 @synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"Context";}
@@ -41,7 +46,7 @@
 +(Context*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
+    NSString *predicate = [NSString stringWithFormat: [NSString stringWithFormat:@"%@=='%@'", OBJECT_ID, identifier]];
     request.predicate=[NSPredicate predicateWithFormat:predicate];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -56,42 +61,65 @@
 }
 
 
-+ (void)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
     }
     
+    Boolean complete=YES;
+
     Context *context = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
     context.parseObject=object;
     context.pObjectID=object.objectId;
     context.name=object[P_NAME];
     context.probability=object[P_PROBABILITY];
+    
+    return complete;
+
 }
 
--(void)refreshFromParse
+-(Boolean)refreshFromParse
 {
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
-        return;
+        return NO;
     }
-    
+
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
+        return NO;
     }
     
+    Boolean complete=YES;
+
     self.name=self.parseObject[P_NAME];
     self.probability=self.parseObject[P_PROBABILITY];
+    
+    return complete;
 }
 
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
+}
 
 -(Tag*)getContextTagByName:(NSString*)name;
 {

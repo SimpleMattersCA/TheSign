@@ -36,12 +36,6 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 
 - (NSURL *)applicationDocumentsDirectory;
 
-/**
- Getting data from Parse and putting it to CoreData
- */
-- (void) pullFromCloud;
-
-
 -(void) saveContext;
 
 
@@ -55,7 +49,8 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 
 
 //********* For testign purpoces *********//
--(void)checkModel;
+-(Boolean)checkModel;
+-(void)deleteModel;
 
 
 @end

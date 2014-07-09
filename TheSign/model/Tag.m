@@ -34,6 +34,11 @@
 @dynamic linkedCategoryTemplates;
 @dynamic linkedContextTemplates;
 
+
+
+
+#pragma mark - Sign Entity Protocol
+
 @synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"Tag";}
@@ -50,8 +55,7 @@
 +(Tag*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -65,21 +69,23 @@
 }
 
 
-+ (void)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
     }
     
+    Boolean complete=YES;
+
     Tag *tag = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
     tag.parseObject=object;
     tag.pObjectID=object.objectId;
     tag.name=object[P_NAME];
-    if(!object[P_INTEREST]) tag.interest=object[P_INTEREST];
-    if(!object[P_CONTEXT])
+    if(object[P_INTEREST]) tag.interest=object[P_INTEREST];
+    if(object[P_CONTEXT])
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseContext=object[P_CONTEXT];
@@ -90,29 +96,36 @@
             [linkedContext addLinkedTagsObject:tag];
         }
         else
+        {
             NSLog(@"Linked context wasn't found");
+            complete=NO;
+        }
     }
+    
+    return complete;
 }
 
--(void)refreshFromParse
+-(Boolean)refreshFromParse
 {
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
-        return;
+        return NO;
     }
     
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
+        return NO;
     }
     
+    Boolean complete=YES;
+
     self.name=self.parseObject[P_NAME];
-    if(!self.parseObject[P_INTEREST]) self.interest=self.parseObject[P_INTEREST];
-    if(!self.parseObject[P_CONTEXT])
+    if(self.parseObject[P_INTEREST]) self.interest=self.parseObject[P_INTEREST];
+    if(self.parseObject[P_CONTEXT])
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseContext=self.parseObject[P_CONTEXT];
@@ -123,12 +136,31 @@
             [linkedContext addLinkedTagsObject:self];
         }
         else
+        {
             NSLog(@"Linked context wasn't found");
+            complete=NO;
+        }
     }
+    
+    return complete;
 }
 
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
+}
 
--(void)processLike:(double)effect AlreadyProcessed:(NSMutableArray**)processedTags
+-(void)processLike:(double)effect AlreadyProcessed:(NSMutableSet**)processedTags
 {
     if(effect>=[Model sharedModel].settings.minLike.doubleValue && self.linkedContext==nil)
     {

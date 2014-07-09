@@ -14,12 +14,12 @@
 #import "Featured.h"
 
 #define P_WEIGHT (@"weight")
-#define P_CONTROL_TAG (@"linkedTagFrom")
-#define P_RELATED_TAG (@"linkedTagTo")
+#define P_CONTROL_TAG (@"controlTag")
+#define P_RELATED_TAG (@"relatedTag")
 
 #define CD_WEIGHT (@"weight")
-#define CD_CONTROL_TAG (@"controlTag")
-#define CD_RELATED_TAG (@"relatedTag")
+#define CD_CONTROL_TAG (@"linkedTagFrom")
+#define CD_RELATED_TAG (@"linkedTagTo")
 
 @implementation TagConnection
 
@@ -44,7 +44,7 @@
 +(TagConnection*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:@"%@=='%@'", OBJECT_ID, identifier];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -57,14 +57,16 @@
         return (TagConnection*)result.firstObject;
 }
 
-+ (void)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
     }
     
+    Boolean complete=YES;
+
     TagConnection *connection = [NSEntityDescription insertNewObjectForEntityForName:[self entityName]
                                                               inManagedObjectContext:[Model sharedModel].managedObjectContext];
     connection.parseObject=object;
@@ -80,8 +82,10 @@
         [linkedTagFrom addLinkedConnectionsFromObject:connection];
     }
     else
+    {
         NSLog(@"Linked tag wasn't found");
-    
+        complete=NO;
+    }
     //careful, incomplete object - only objectId property is there
     PFObject *parseTagTo=object[P_RELATED_TAG];
     Tag *linkedTagTo=[Tag getByID:parseTagTo.objectId];
@@ -91,25 +95,32 @@
         [linkedTagTo addLinkedConnectionsToObject:connection];
     }
     else
+    {
         NSLog(@"Linked tag wasn't found");
+        complete=NO;
+    }
+    
+    return complete;
 }
 
--(void)refreshFromParse
+-(Boolean)refreshFromParse
 {
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
-        return;
+        return NO;
     }
     
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
+        return NO;
     }
     
+    Boolean complete=YES;
+
     //rescoring relevancy if we changed the weight
    /* if(self.weight!=self.parseObject[P_WEIGHT])
     {
@@ -131,8 +142,10 @@
         [linkedTagFrom addLinkedConnectionsFromObject:self];
     }
     else
+    {
         NSLog(@"Linked tag wasn't found");
-    
+        complete=NO;
+    }
     //careful, incomplete object - only objectId property is there
     PFObject *parseTagTo=self.parseObject[P_RELATED_TAG];
     Tag *linkedTagTo=[Tag getByID:parseTagTo.objectId];
@@ -142,9 +155,27 @@
         [linkedTagTo addLinkedConnectionsToObject:self];
     }
     else
+    {
         NSLog(@"Linked tag wasn't found");
+        complete=NO;
+    }
+    
+    return complete;
 }
 
-
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
+}
 
 @end

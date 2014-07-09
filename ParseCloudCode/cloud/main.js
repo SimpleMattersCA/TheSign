@@ -89,6 +89,32 @@ Parse.Cloud.afterSave("TagConnection", function(request) {
   });
 });
 
+Parse.Cloud.afterSave("Area", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("UuEC4qvQn2", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+Parse.Cloud.afterSave("Context", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("QPVTlUILC9", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
 Parse.Cloud.afterSave("Settings", function(request) {
   query = new Parse.Query("UpdateTimestamps");
   query.get("F4w80xGg39", {
@@ -101,6 +127,22 @@ Parse.Cloud.afterSave("Settings", function(request) {
     }
   });
 });
+
+Parse.Cloud.afterSave("Templates", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("mc77vjW8HQ", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+
+
 
 Parse.Cloud.beforeDelete("Business", function(request, response) {
   	var DeleteHistory = Parse.Object.extend("DeleteHistory");
@@ -180,6 +222,42 @@ Parse.Cloud.beforeDelete("TagSet", function(request, response) {
   	var newDeleteEntry = new DeleteHistory();
   	newDeleteEntry.set("delObjectID",request.object.id);
   	newDeleteEntry.set("table","TagSet");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
+
+Parse.Cloud.beforeDelete("Area", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","Area");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
+
+Parse.Cloud.beforeDelete("Context", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","Context");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
+
+Parse.Cloud.beforeDelete("Templates", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","Templates");
 	newDeleteEntry.save(null).then(function(message) {
     	response.success();
   }, function(error) {

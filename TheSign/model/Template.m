@@ -23,6 +23,11 @@
 @dynamic linkedContextTag;
 @dynamic linkedCategoryTag;
 
+
+
+
+#pragma mark - Sign Entity Protocol
+
 @synthesize parseObject=_parseObject;
 
 +(NSString*) entityName {return @"Template";}
@@ -40,8 +45,7 @@
 +(Template*) getByID:(NSString*)identifier
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSString *predicate = [NSString stringWithFormat: @"%@=='%@'", OBJECT_ID, identifier];
-    request.predicate=[NSPredicate predicateWithFormat:predicate];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -55,21 +59,23 @@
 }
 
 
-+ (void)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",object.objectId);
-        return;
+        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        return NO;
     }
     
+    Boolean complete=YES;
+
     Template *template = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
     template.parseObject=object;
     template.pObjectID=object.objectId;
     template.messageText=object[P_MESSAGE];
 
-    if(!object[P_CONTEXT])
+    if(object[P_CONTEXT])
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseTag=object[P_CONTEXT];
@@ -80,10 +86,13 @@
             [linkedTag addLinkedContextTemplatesObject:template];
         }
         else
+        {
             NSLog(@"Linked context tag wasn't found");
+            complete=NO;
+        }
     }
     
-    if(!object[P_CATEGORY])
+    if(object[P_CATEGORY])
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseTag=object[P_CATEGORY];
@@ -94,29 +103,36 @@
             [linkedTag addLinkedCategoryTemplatesObject:template];
         }
         else
+        {
             NSLog(@"Linked categoory tag wasn't found");
+            complete=NO;
+        }
     }
+    
+    return complete;
 }
 
--(void)refreshFromParse
+-(Boolean)refreshFromParse
 {
     NSError *error;
     [self.parseObject refresh:&error];
     if(error)
     {
         NSLog(@"%@",[error localizedDescription]);
-        return;
+        return NO;
     }
     
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return;
+        return NO;
     }
     
+    Boolean complete=YES;
+
     self.messageText=self.parseObject[P_MESSAGE];
     
-    if(!self.parseObject[P_CONTEXT])
+    if(self.parseObject[P_CONTEXT])
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseTag=self.parseObject[P_CONTEXT];
@@ -127,10 +143,13 @@
             [linkedTag addLinkedContextTemplatesObject:self];
         }
         else
+        {
             NSLog(@"Linked context tag wasn't found");
+            complete=NO;
+        }
     }
     
-    if(!self.parseObject[P_CATEGORY])
+    if(self.parseObject[P_CATEGORY])
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseTag=self.parseObject[P_CATEGORY];
@@ -141,8 +160,28 @@
             [linkedTag addLinkedCategoryTemplatesObject:self];
         }
         else
+        {
             NSLog(@"Linked category tag wasn't found");
+            complete=NO;
+        }
     }
+    
+    return complete;
+}
+
++(NSInteger)getRowCount
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return 0;
+    }
+    else
+        return result;
 }
 
 

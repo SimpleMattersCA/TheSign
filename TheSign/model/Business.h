@@ -34,7 +34,7 @@
 
 +(Business*) getBusinessByUID:(NSNumber*)identifier;
 
-
++(NSArray*) getBusinesses;
 
 
 @end
