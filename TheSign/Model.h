@@ -38,6 +38,8 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 
 -(void) saveContext;
 
+-(double)getLikeValueForAction:(OfferLike)action;
+
 
 //********* Commonly used methods from Statistics Class *********//
 -(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor;

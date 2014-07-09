@@ -115,14 +115,13 @@
                 [[Model sharedModel] saveContext];
             }
         }];
-#warning find friends in USER table for this facebook account
     }
     
-    if(newUser.twID==nil && [PFTwitterUtils isLinkedWithUser:user])
+  /*  if(newUser.twID==nil && [PFTwitterUtils isLinkedWithUser:user])
     {
 #warning fill image, name and followers from twitter api
         //fields id, birthday, firs_name,gender,
-    }
+    }*/
 }
 
 -(Boolean)refreshFromParse
@@ -211,6 +210,61 @@ static User* _currentUser;
         
     }
     return _currentUser;
+}
+
+-(void)findFriends
+{
+    // Issue a Facebook Graph API request to get your user's friend list
+    [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            // result will contain an array with your user's friends in the "data" key
+            NSArray *friendObjects = [result objectForKey:@"data"];
+            NSMutableArray *friendIds = [NSMutableArray arrayWithCapacity:friendObjects.count];
+            // Create a list of friends' Facebook IDs
+            for (NSDictionary *friendObject in friendObjects) {
+                [friendIds addObject:[friendObject objectForKey:@"id"]];
+            }
+            
+            // Construct a PFUser query that will find friends whose facebook ids
+            // are contained in the current user's friend list.
+            PFQuery *friendQuery = [PFUser query];
+            [friendQuery whereKey:@"fbID" containedIn:friendIds];
+            
+            // findObjects will return a list of PFUsers that are friends
+            // with the current user
+            NSArray *friendUsers = [friendQuery findObjects];
+            
+            for(PFUser* friend in friendUsers)
+                [User createFromParse:friend];
+            
+            //clean the friends list
+            if(self.linkedFriends)
+                [self removeLinkedFriends:self.linkedFriends];
+                
+            for(User* friend in [User getUsers])
+                [self addLinkedFriendsObject:friend];
+            
+        }
+    }];
+}
+
+
+/**
+ Returns the list of users excluding the main one.
+ */
++(NSArray*)getUsers
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:User.entityName];
+    NSError *error;
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAIN, NO]];    NSArray *users = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    
+    return users;
 }
 
 

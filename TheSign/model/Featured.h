@@ -38,8 +38,6 @@
 
 +(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
 
--(NSSet*)findContextTags:(NSSet*) lookupTags;
-
 -(Boolean)checkContextTag:(Tag*) lookupTag;
 
 

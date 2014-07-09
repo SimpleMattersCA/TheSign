@@ -52,16 +52,7 @@
     self.liked=@(newLike);
     
     //the likeness effect that will go through Tag graph
-    double effect;
-    switch(newLike)
-    {
-        case LK_None:effect=[Model sharedModel].settings.lk_none.doubleValue;
-            break;
-        case LK_Dislike:effect=[Model sharedModel].settings.lk_dislike.doubleValue;
-            break;
-        case LK_Like:effect=[Model sharedModel].settings.lk_like.doubleValue;
-            break;
-    }
+    double effect=[[Model sharedModel] getLikeValueForAction:newLike];
     [self.linkedOffer processLike:effect];
 }
 

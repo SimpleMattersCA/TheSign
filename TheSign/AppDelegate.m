@@ -236,7 +236,7 @@ Preparing and starting geofence and beacon monitoring
     Statistics* stat=[[Model sharedModel] recordStatisticsFromGPS:major];
     
     UILocalNotification *notification = [[UILocalNotification alloc] init];
-    notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor];
+    notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:major];
 
     
     NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:major,@"Major",stat,@"StatisticsObject", nil];

@@ -244,7 +244,6 @@ static NSArray* _businessTypes;
 
 +(NSArray*) getBusinesses
 {
-    
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
         NSError *error;
         NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -256,7 +255,6 @@ static NSArray* _businessTypes;
         }
         
         return business;
-    
 }
 
 +(NSArray*) getBusinessesByType:(NSString*)type

@@ -39,6 +39,20 @@
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
+-(double)getLikeValueForAction:(OfferLike)action
+{
+    switch(action)
+    {
+        case LK_None:
+            return [Model sharedModel].settings.lk_none.doubleValue;
+        case LK_Dislike:
+            return [Model sharedModel].settings.lk_dislike.doubleValue;
+        case LK_Like:
+            return [Model sharedModel].settings.lk_like.doubleValue;
+        default:
+            return 0;
+    }
+}
 
 - (Settings*) getSettings
 {

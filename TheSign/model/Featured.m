@@ -249,22 +249,6 @@
 }
 
 
-
-
--(NSSet*)findContextTags:(NSSet*) lookupTags
-{
-    NSMutableSet *results=[NSMutableSet set];
-    for(TagSet* tagset in self.linkedTagSets)
-    {
-        Tag *tag=tagset.linkedTag;
-        //look for context tags from lookupTags array
-        if(tag && [lookupTags containsObject:tag])
-            [results addObject:tag.pObjectID];
-        
-    }
-    return results;
-}
-
 -(Boolean)checkContextTag:(Tag*) lookupTag
 {
    for(TagSet* tagset in self.linkedTagSets)
