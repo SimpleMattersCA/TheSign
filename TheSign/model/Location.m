@@ -57,6 +57,7 @@
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Location.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
+
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -88,7 +89,7 @@
     location.address=object[P_ADDRESS];
     location.longitude=object[P_LONGITUDE];
     location.latitude=object[P_LATITUDE];
-    location.major=object[P_MAJOR];
+    location.major=(NSNumber*)(object[P_MAJOR]);
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseBusiness=object[P_BUSINESS];
     Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];

@@ -112,7 +112,8 @@
                 NSError* error;
                 NSData *imageData = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];
                 newUser.pic=imageData;
-                [[Model sharedModel] saveContext];
+                
+             //   [newUser findFriends];
             }
         }];
     }

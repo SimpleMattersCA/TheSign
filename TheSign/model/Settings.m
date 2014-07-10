@@ -16,6 +16,7 @@
 #define CD_LK_NONE (@"lk_none")
 #define CD_LK_LIKE (@"lk_like")
 #define CD_LK_DISLIKE (@"lk_dislike")
+#define CD_MINPROB (@"minProb")
 
 #define P_UUID (@"beaconUUID")
 #define P_PROB_PREF (@"prob_pref")
@@ -24,6 +25,7 @@
 #define P_LK_NONE (@"lk_none")
 #define P_LK_LIKE (@"lk_like")
 #define P_LK_DISLIKE (@"lk_dislike")
+#define P_MINPROB (@"minProb")
 
 
 @implementation Settings
@@ -38,7 +40,7 @@
 @dynamic lk_like;
 @dynamic lk_dislike;
 @dynamic pObjectID;
-
+@dynamic minProb;
 
 
 
@@ -95,6 +97,7 @@
     settings.lk_none=object[P_LK_NONE];
     settings.lk_dislike=object[P_LK_DISLIKE];
     settings.lk_like=object[P_LK_LIKE];
+    settings.minProb=object[P_MINPROB];
     
     return complete;
 }
@@ -117,7 +120,7 @@
     self.lk_none=self.parseObject[P_LK_NONE];
     self.lk_dislike=self.parseObject[P_LK_DISLIKE];
     self.lk_like=self.parseObject[P_LK_LIKE];
-    
+    self.minProb=self.parseObject[P_MINPROB];
     return complete;
 }
 
@@ -166,6 +169,7 @@
     settings.lk_none=@(0.1);
     settings.lk_dislike=@(-1);
     settings.lk_like=@(1);
+    settings.minProb=@(0.1);
     [[Model sharedModel] saveContext];
     return settings;
 }

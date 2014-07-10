@@ -83,7 +83,7 @@
     }
     else
     {
-        NSLog(@"Linked tag wasn't found");
+        NSLog(@"TagConnection: Linked tag wasn't found");
         complete=NO;
     }
     //careful, incomplete object - only objectId property is there
@@ -96,7 +96,7 @@
     }
     else
     {
-        NSLog(@"Linked tag wasn't found");
+        NSLog(@"TagConnection: Linked tag wasn't found");
         complete=NO;
     }
     
@@ -143,7 +143,7 @@
     }
     else
     {
-        NSLog(@"Linked tag wasn't found");
+        NSLog(@"TagConnection: Linked tag wasn't found");
         complete=NO;
     }
     //careful, incomplete object - only objectId property is there
@@ -156,7 +156,7 @@
     }
     else
     {
-        NSLog(@"Linked tag wasn't found");
+        NSLog(@"TagConnection: Linked tag wasn't found");
         complete=NO;
     }
     

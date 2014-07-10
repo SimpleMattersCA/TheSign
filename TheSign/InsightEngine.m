@@ -13,22 +13,10 @@
 #import "Location.h"
 #import "Template.h"
 #import "Context.h"
-
-@interface InsightEngine()
-
-@property (strong) NSDictionary* contextTags;
-
-
-
-@end
-
+#import "Tag.h"
+#import "Relevancy.h"
 
 @implementation InsightEngine
-
-
-static NSString* errorWelcomingMessage=@"";
-
-
 
 - (id)init
 {
@@ -77,8 +65,9 @@ static NSString* errorWelcomingMessage=@"";
     NSSet* activeOffers=[business getActiveOffers];
     
     Featured* chosenOffer;
-    
-    Template* template;
+    Tag* chosenContextTag;
+
+    Template* chosenTemplate;
 
     //check if we do have a business object that has active offers
     if(business && activeOffers && activeOffers.count!=0)
@@ -90,7 +79,6 @@ static NSString* errorWelcomingMessage=@"";
         
         if(activeContextTags && activeContextTags.count!=0)
         {
-            Tag* chosenContextTag;
             
             NSMutableDictionary* activeContextsWithOffers=[NSMutableDictionary dictionaryWithCapacity:activeContextTags.count];
             
@@ -99,47 +87,49 @@ static NSString* errorWelcomingMessage=@"";
             {
                 NSSet* offersForContext=[self findOffersFromSet:activeOffers ForContextTag:activeContextTags[i]];
                 if(offersForContext.count>0)
-                    [activeContextsWithOffers setObject:offersForContext forKey:@(i)];
+                    [activeContextsWithOffers setObject:offersForContext forKey:activeContextTags[i]];
             }
-            
-            
             
             if(activeContextsWithOffers.count>0)
             {
-                
                 if(activeContextsWithOffers.count>1)
-                {
-                    //choose the more appropriate context based on the probabilites
-                }
+                    //multiple active contexts with offers, randomly(with given probabilites) choose the one
+                    chosenContextTag=[self chooseContextFromArray:[activeContextsWithOffers allKeys]];
                 else
-                {
-                    id key = [[activeContextsWithOffers allKeys] objectAtIndex:0];
-                    NSSet* offersForContext=[activeContextsWithOffers objectForKey:key];
-                    
-                    chosenContextTag=activeContextTags[((NSNumber*)key).intValue];
-                }
+                    //one actve contexts with offers, choose it
+                    chosenContextTag=[[activeContextsWithOffers allKeys] firstObject];
                 
-                
+                //choose offer for the active context, if there are more than one - use relevancy score
+                chosenOffer=[self chooseOfferMostlyByRelevancy:[activeContextsWithOffers objectForKey:chosenContextTag]];
             }
             else
             {
-                //TODO: do the relevancy
+                chosenOffer=[self chooseOfferMostlyByRelevancy:activeOffers];
             }
-            
-        
         }
         //no contexts founds
         else
         {
-            // choose an active offer based on relevancy
-            
-        
+            chosenOffer=[self chooseOfferMostlyByRelevancy:activeOffers];
         }
         
+        //choose random template from those that are attaached to the context
+        if(chosenContextTag && chosenContextTag.linkedContextTemplates)
+        {
+            chosenTemplate=[[chosenContextTag.linkedContextTemplates allObjects] objectAtIndex:arc4random_uniform((short)chosenContextTag.linkedContextTemplates.count)];
+        }
+        //choose template unatached from tags
+        else
+        {
+            NSArray* genericTemplates=[Template getGenericTemplates];
+            if(genericTemplates)
+                chosenTemplate=genericTemplates[arc4random_uniform((short)genericTemplates.count)];
+            else
+                NSLog(@"No generic templates found");
+        }
         
-        
-        if(template)
-            return [template generateMessageForOffer:chosenOffer];
+        if(chosenTemplate)
+            return [chosenTemplate generateMessageForOffer:chosenOffer];
         else
             //no template
             return nil;
@@ -152,12 +142,40 @@ static NSString* errorWelcomingMessage=@"";
 }
 
 
--(Featured*)chooseOfferMostlyByRelevancyFrom:(NSSet*)offers
+-(Featured*)chooseOfferMostlyByRelevancy:(NSSet*)offers
 {
     Featured* result;
+
+    //get a sum of relevancies
+    double sum=0;
+    NSMutableArray* offersWithoutRelevancy=[NSMutableArray arrayWithCapacity:offers.count];
+    for(Featured* offer in offers)
+    {
+        if(offer.linkedScore)
+            sum+=offer.linkedScore.score.doubleValue;
+        else
+            [offersWithoutRelevancy addObject:offer];
+    }
+
+    //get a value of sum*value from settings for offers with no relevancies
+    double minValue=sum*[Model sharedModel].settings.minProb.doubleValue;
     
-//create a
+    //divide minvalue by number of offers with no relevancy
+    double bound=minValue/offersWithoutRelevancy.count;
     
+    //do a random select from 0 to sum of relevancies
+    double random=drand48()*sum+bound;
+    double cumulativeProbability = 0.0;
+    
+    for(Featured* offer in offers)
+    {
+        cumulativeProbability += offer.linkedScore.score.doubleValue;
+        if (random <= cumulativeProbability)
+            result=offer;
+        //if it fell to the group do a random choice among members of that group
+        else if(random<bound)
+            result=[offersWithoutRelevancy objectAtIndex:arc4random_uniform((short)offersWithoutRelevancy.count)];
+    }
     return result;
 }
 
@@ -174,14 +192,26 @@ static NSString* errorWelcomingMessage=@"";
     return offersForContext;
 }
 
-  /*  double p = Math.random();
+-(Tag*)chooseContextFromArray:(NSArray*)contexts
+{
+    double sum=0;
+    for(Tag* contextTag in contexts)
+        if(contextTag.linkedContext)
+            sum+=contextTag.linkedContext.probability.doubleValue;
+    double random=drand48()*sum;
+    
     double cumulativeProbability = 0.0;
-    for (Item item : items) {
-        cumulativeProbability += item.probability();
-        if (p <= cumulativeProbability) {
-            return item;
+    for(Tag* contextTag in contexts)
+    {
+        if(contextTag.linkedContext)
+        {
+            cumulativeProbability += contextTag.linkedContext.probability.doubleValue;
+            if (random <= cumulativeProbability)
+                return contextTag;
         }
-    }*/
+    }
+    return nil;
+}
     
 
 

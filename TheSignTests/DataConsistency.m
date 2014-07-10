@@ -38,24 +38,6 @@
     [super tearDown];
 }
 
-/*- (void)testBusinessLink {
-    [[Model sharedModel] checkModel];
-
-    NSArray* businesses=[Business getBusinesses];
-     for(Business* bus in businesses)
-     {
-     NSLog(@"%@",bus.pObjectID);
-     }
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
-    
-    request.predicate=[NSPredicate predicateWithFormat: @"%K='%@'", @"pObjectID", @"2dIgwcHC3J"];
-    //request.predicate=[NSPredicate predicateWithFormat: @"pObjectID='2dIgwcHC3J'"];
-    NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-    XCTAssertNotEqual(result.count, 0);
-}*/
-
 - (void)testDatabaseRefresh {
     [[Model sharedModel] deleteModel];
     XCTAssertTrue([[Model sharedModel] checkModel]);
@@ -64,8 +46,7 @@
 -(void)testCoreDataRowCounts{
     [[Model sharedModel] deleteModel];
     [[Model sharedModel] checkModel];
- //   NSInteger count=[Business getRowCount];
-   // NSLog(@"Count: %d",count);
+
     XCTAssertNotEqual([Business getRowCount], 0);
     XCTAssertNotEqual([Featured getRowCount], 0);
     XCTAssertNotEqual([Tag getRowCount], 0);
@@ -78,19 +59,6 @@
     XCTAssertNotEqual([Template getRowCount], 0);
     XCTAssertNotEqual([Link getRowCount], 0);
     
-
-    /*NSArray* businesses=[Business getBusinesses];
-    for(Business* bus in businesses)
-    {
-        NSLog(@"%@",bus.pObjectID);
-    }*/
-    
 }
-/*- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
-}*/
 
 @end

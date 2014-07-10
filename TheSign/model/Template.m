@@ -11,6 +11,11 @@
 #import "Model.h"
 #import "Featured.h"
 #import "Business.h"
+
+#define CD_MESSAGE (@"messageText")
+#define CD_CONTEXT (@"linkedContextTag")
+#define CD_CATEGORY (@"linkedCategoryTag")
+
 #define P_MESSAGE (@"messageText")
 #define P_CONTEXT (@"contextTag")
 #define P_CATEGORY (@"categoryTag")
@@ -193,7 +198,21 @@
         return nil;
 }
 
-
++(NSArray*)getGenericTemplates
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@=nil", CD_CONTEXT]];
+    NSError *error;
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    else
+        return result;
+}
 
 -(NSString*)generateGreeting
 {
@@ -202,6 +221,7 @@
     int random=arc4random_uniform((short)greetingOptions.count);
     return greetingOptions[random];
 }
+
 
 
 @end

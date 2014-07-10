@@ -92,7 +92,7 @@
     }
     else
     {
-        NSLog(@"Linked offer wasn't found");
+        NSLog(@"TagSet: Linked offer wasn't found");
         complete=NO;
     }
 
@@ -106,7 +106,7 @@
     }
     else
     {
-        NSLog(@"Linked tag wasn't found");
+        NSLog(@"TagSet: Linked tag wasn't found");
         complete=NO;
     }
     
@@ -125,7 +125,7 @@
     
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+        NSLog(@"TagSet: The object %@ is missing mandatory fields",self.parseObject.objectId);
         return NO;
     }
     
@@ -153,7 +153,7 @@
         }
         else
         {
-            NSLog(@"Linked offer wasn't found");
+            NSLog(@"TagSet: Linked offer wasn't found");
             complete=NO;
         }
     }
@@ -172,7 +172,7 @@
         }
         else
         {
-            NSLog(@"Linked tag wasn't found");
+            NSLog(@"TagSet: Linked tag wasn't found");
             complete=NO;
         }
     }

@@ -157,7 +157,7 @@
     {
         NSLog(@"Error in CheckModel: %@ %@", error, [error userInfo]);
     }
-    
+    [self saveContext];
     return completeData;
 }
 
@@ -205,7 +205,7 @@
 //The method for pulling data from Parse based on the requested table name
 -(Boolean)pullFromCloud:(NSString*)cloudEntityName
 {
-    Boolean complete=YES;;
+    Boolean completeFull=YES;;
     
     Class targetClass=[self getClassForParseEntity:cloudEntityName];
     NSDate* cdTimestamp=[TableTimestamp getUpdateTimestampForTable:cloudEntityName];
@@ -214,22 +214,26 @@
     if (cdTimestamp!=nil)[query whereKey:@"updatedAt" greaterThan:cdTimestamp];
     NSError *error;
     NSArray *result=[query findObjects:&error];
-
+    
+    
     if (!error)
     {
         //delete entity from coredata, so we can create a new one
       //  [self deleteEntity:entityName];
         //go through the objects we got from Parse
-        
-        
+        Boolean completeRecord=YES;;
+
         for (PFObject *object in result)
         {
             id cdObject=[targetClass getByID:object.objectId];
             
             if(cdObject!=nil)
-                complete=[cdObject refreshFromParse];
+                completeRecord=[cdObject refreshFromParse];
             else
-                complete=[targetClass createFromParse:object];
+                completeRecord=[targetClass createFromParse:object];
+            
+            if(completeFull && !completeRecord)
+                completeFull=NO;
         }
       
         
@@ -240,10 +244,10 @@
     else
     {
         NSLog(@"Pulling from cloud error: %@ %@", error, [error userInfo]);
-        complete=NO;
+        completeFull=NO;
     }
     
-    return complete;
+    return completeFull;
 }
 
 -(void)deleteObjectForClass:(Class)class ParseObjectID:(NSString*)pObjectID
@@ -370,8 +374,6 @@
          
          */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        [self deleteModel];
-        [self checkModel];
 
         //abort();
     }

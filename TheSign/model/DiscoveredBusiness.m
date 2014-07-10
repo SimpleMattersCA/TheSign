@@ -36,7 +36,6 @@
             discoveredBusiness.linkedDiscovery=newDiscovery;
             [newDiscovery.linkedUser addLinkedDiscoveriesObject:newDiscovery];
         }
-        [[Model sharedModel] saveContext];
     }
 }
 

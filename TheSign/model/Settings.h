@@ -17,6 +17,7 @@
 @property (nonatomic, retain) NSNumber * prob_pref;
 @property (nonatomic, retain) NSNumber * relevancyDepth;
 @property (nonatomic, retain) NSNumber * minLike;
+@property (nonatomic, retain) NSNumber * minProb;
 @property (nonatomic, retain) NSNumber * lk_none;
 @property (nonatomic, retain) NSNumber * lk_like;
 @property (nonatomic, retain) NSNumber * lk_dislike;
