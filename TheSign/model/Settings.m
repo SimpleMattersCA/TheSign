@@ -118,7 +118,7 @@
 +(Settings*)getValueForParamName:(NSString*)paramName
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Settings.entityName];
-    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, paramName]];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", P_NAME, paramName]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     

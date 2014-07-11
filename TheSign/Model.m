@@ -298,13 +298,12 @@
 
 
 #pragma mark - Settings properties
-@synthesize beaconUUID=_beaconUUID;
 -(NSString*) beaconUUID
 {
     if(!_beaconUUID)
     {
         Settings* param=[Settings getValueForParamName:@"beaconUUID"];
-        if(param )
+        if(param)
             _beaconUUID=param.paramStr;
         else
             _beaconUUID=@"B9407F30-F5F8-466E-AFF9-25556B57FE6D";
@@ -312,7 +311,6 @@
     return _beaconUUID;
 }
 
-@synthesize prob_pref=_prob_pref;
 -(NSNumber*) prob_pref
 {
     if(!_prob_pref)
@@ -326,7 +324,6 @@
     return _prob_pref;
 }
 
-@synthesize min_negativeScore=_min_negativeScore;
 -(NSNumber*) min_negativeScore
 {
     if(!_min_negativeScore)
@@ -340,7 +337,6 @@
     return _min_negativeScore;
 }
 
-@synthesize relevancyDepth=_relevancyDepth;
 -(NSNumber*) relevancyDepth
 {
     if(!_relevancyDepth)
@@ -353,7 +349,6 @@
     }
     return _relevancyDepth;
 }
-@synthesize min_like_level=_min_like_level;
 -(NSNumber*) min_like_level
 {
     if(!_min_like_level)
@@ -367,7 +362,6 @@
     return _min_like_level;
 }
 
-@synthesize prob_no_relev=_prob_no_relev;
 -(NSNumber*) prob_no_relev
 {
     if(!_prob_no_relev)
@@ -381,7 +375,6 @@
     return _prob_no_relev;
 }
 
-@synthesize  lk_none=_lk_none;
 -(NSNumber*) lk_none
 {
     if(!_lk_none)
@@ -395,7 +388,6 @@
     return _lk_none;
 }
 
-@synthesize lk_like=_lk_like;
 -(NSNumber*) lk_like
 {
     if(!_lk_like)
@@ -409,7 +401,6 @@
     return _lk_like;
 }
 
-@synthesize lk_dislike=_lk_dislike;
 -(NSNumber*) lk_dislike
 {
     if(!_lk_dislike)
