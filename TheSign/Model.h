@@ -25,8 +25,15 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 @interface Model : NSObject 
 
 
-@property (nonatomic, retain) Settings* settings;
-
+@property (nonatomic, retain) NSString * beaconUUID;
+@property (nonatomic, retain) NSNumber * prob_pref;
+@property (nonatomic, retain) NSNumber * relevancyDepth;
+@property (nonatomic, retain) NSNumber * min_like_level;
+@property (nonatomic, retain) NSNumber * prob_no_relev;
+@property (nonatomic, retain) NSNumber * lk_none;
+@property (nonatomic, retain) NSNumber * lk_like;
+@property (nonatomic, retain) NSNumber * lk_dislike;
+@property (nonatomic, retain) NSNumber * min_negativeScore;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;

@@ -162,7 +162,7 @@
 
 -(void)processLike:(double)effect AlreadyProcessed:(NSMutableSet**)processedTags
 {
-    if(effect>=[Model sharedModel].settings.minLike.doubleValue && self.linkedContext==nil)
+    if(effect>=[Model sharedModel].min_like_level.doubleValue && self.linkedContext==nil)
     {
         [Like changeLikenessForTag:self ByValue:@(effect)];
         for (TagConnection* connection in self.linkedConnectionsFrom)
@@ -188,7 +188,7 @@
 {
     double cumulativeScore=0;
     //we go only for a certain levels deep into the tag graph
-    if(depth<=[Model sharedModel].settings.relevancyDepth.integerValue)
+    if(depth<=[Model sharedModel].relevancyDepth.integerValue)
     {
         if(self.linkedLike && self.linkedContext==nil)
             cumulativeScore=self.linkedLike.likeness.doubleValue;

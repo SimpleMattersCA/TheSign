@@ -93,23 +93,24 @@
                 }
             }
             
-            if(contextTagsWithOffers.count>0)
-            {
-                //multiple active contexts with offers, randomly(with given probabilites) choose the one
-                if(contextTagsWithOffers.count>1)
-                    chosenContextTag  =[self chooseContextFromArray:contextTagsWithOffers];
-                //one actve contexts with offers, choose it
-                else
-                    chosenContextTag=[contextTagsWithOffers firstObject];
-
-                //choose offer for the active context, if there are more than one - use relevancy score
-                NSUInteger keyIndex=[contextTagsWithOffers indexOfObject:chosenContextTag];
-                chosenOffer=[self chooseOfferMostlyByRelevancy:[offerArrays objectAtIndex:keyIndex]];
-            }
-            else
+            if(contextTagsWithOffers.count==0)
             {
                 //no active contexts, choose based on relevancy
                 chosenOffer=[self chooseOfferMostlyByRelevancy:activeOffers];
+            }
+            else if(contextTagsWithOffers.count==1)
+            {
+                //one actve contexts with offers, choose it
+                chosenContextTag=[contextTagsWithOffers firstObject];
+                chosenOffer=[self chooseOfferMostlyByRelevancy:[offerArrays firstObject]];
+            }
+            else if(contextTagsWithOffers.count>1)
+            {
+                //multiple active contexts with offers, randomly(with given probabilites) choose the one
+                chosenContextTag  =[self chooseContextFromArray:contextTagsWithOffers];
+                NSUInteger keyIndex=[contextTagsWithOffers indexOfObject:chosenContextTag];
+                //choose offer for the active context, if there are more than one - use relevancy score
+                chosenOffer=[self chooseOfferMostlyByRelevancy:[offerArrays objectAtIndex:keyIndex]];
             }
         }
         //no contexts founds
@@ -149,21 +150,42 @@
 
 -(Featured*)chooseOfferMostlyByRelevancy:(NSSet*)offers
 {
+    if(offers.count==0 || offers.count==1)
+        return [offers anyObject];
+    
+    //clean from 0 and negative relevancy scores
+    NSMutableSet *offersClean=[NSMutableSet setWithSet:offers];
     Featured* result;
 
+    double minNegScore=[Model sharedModel].min_negativeScore.doubleValue;
     //get a sum of relevancies
     double sum=0;
     NSMutableArray* offersWithoutRelevancy=[NSMutableArray arrayWithCapacity:offers.count];
     for(Featured* offer in offers)
     {
-        if(offer.linkedScore)
-            sum+=offer.linkedScore.score.doubleValue;
+        if(offer.linkedScore && offer.linkedScore!=0)
+        {
+            if(offer.linkedScore>0)
+                sum+=offer.linkedScore.score.doubleValue;
+            else
+            {
+                [offersClean removeObject:offer];
+                if(offer.linkedScore.score.doubleValue>minNegScore)
+                    [offersWithoutRelevancy addObject:offer];
+            }
+        }
         else
+        {
             [offersWithoutRelevancy addObject:offer];
+            [offersClean removeObject:offer];
+        }
     }
 
+    if(offersClean.count==0)
+        return  result=[offersWithoutRelevancy objectAtIndex:arc4random_uniform((short)offersWithoutRelevancy.count)];
+
     //get a value of sum*value from settings for offers with no relevancies
-    double minValue=sum*[Model sharedModel].settings.minProb.doubleValue;
+    double minValue=sum*[Model sharedModel].prob_no_relev.doubleValue;
     
     //divide minvalue by number of offers with no relevancy
     double bound=minValue/offersWithoutRelevancy.count;
@@ -172,14 +194,16 @@
     double random=drand48()*sum+bound;
     double cumulativeProbability = 0.0;
     
-    for(Featured* offer in offers)
+    
+    //if it fell to the group do a random choice among members of that group
+    if(random<bound)
+       return  result=[offersWithoutRelevancy objectAtIndex:arc4random_uniform((short)offersWithoutRelevancy.count)];
+    
+    for(Featured* offer in offersClean)
     {
         cumulativeProbability += offer.linkedScore.score.doubleValue;
         if (random <= cumulativeProbability)
             result=offer;
-        //if it fell to the group do a random choice among members of that group
-        else if(random<bound)
-            result=[offersWithoutRelevancy objectAtIndex:arc4random_uniform((short)offersWithoutRelevancy.count)];
     }
     return result;
 }

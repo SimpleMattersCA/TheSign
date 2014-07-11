@@ -13,15 +13,14 @@
 @interface Settings : NSManagedObject <SignEntityProtocol>
 
 @property (nonatomic, retain) NSString * pObjectID;
-@property (nonatomic, retain) NSString * beaconUUID;
-@property (nonatomic, retain) NSNumber * prob_pref;
-@property (nonatomic, retain) NSNumber * relevancyDepth;
-@property (nonatomic, retain) NSNumber * minLike;
-@property (nonatomic, retain) NSNumber * minProb;
-@property (nonatomic, retain) NSNumber * lk_none;
-@property (nonatomic, retain) NSNumber * lk_like;
-@property (nonatomic, retain) NSNumber * lk_dislike;
+@property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSString * paramStr;
+@property (nonatomic, retain) NSNumber * paramInt;
+@property (nonatomic, retain) NSDate * paramDate;
 
-+(Settings*)getSettingsSet;
+
+
+
++(Settings*)getValueForParamName:(NSString*)paramName;
 
 @end

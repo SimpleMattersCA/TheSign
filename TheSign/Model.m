@@ -44,22 +44,16 @@
     switch(action)
     {
         case LK_None:
-            return [Model sharedModel].settings.lk_none.doubleValue;
+            return self.lk_none.doubleValue;
         case LK_Dislike:
-            return [Model sharedModel].settings.lk_dislike.doubleValue;
+            return self.lk_dislike.doubleValue;
         case LK_Like:
-            return [Model sharedModel].settings.lk_like.doubleValue;
+            return self.lk_like.doubleValue;
         default:
             return 0;
     }
 }
 
-- (Settings*) getSettings
-{
-    if(!_settings)
-        _settings=[Settings getSettingsSet];
-    return _settings;
-}
 
 #pragma mark - model initialization
 - (id)init
@@ -299,6 +293,140 @@
         }
     }
 }
+
+
+
+
+#pragma mark - Settings properties
+@synthesize beaconUUID=_beaconUUID;
+-(NSString*) beaconUUID
+{
+    if(!_beaconUUID)
+    {
+        Settings* param=[Settings getValueForParamName:@"beaconUUID"];
+        if(param )
+            _beaconUUID=param.paramStr;
+        else
+            _beaconUUID=@"B9407F30-F5F8-466E-AFF9-25556B57FE6D";
+    }
+    return _beaconUUID;
+}
+
+@synthesize prob_pref=_prob_pref;
+-(NSNumber*) prob_pref
+{
+    if(!_prob_pref)
+    {
+        Settings* param=[Settings getValueForParamName:@"prob_pref"];
+        if(param)
+            _prob_pref=param.paramInt;
+        else
+            _prob_pref=@(0.5);
+    }
+    return _prob_pref;
+}
+
+@synthesize min_negativeScore=_min_negativeScore;
+-(NSNumber*) min_negativeScore
+{
+    if(!_min_negativeScore)
+    {
+        Settings* param=[Settings getValueForParamName:@"min_negativeScore"];
+        if(param)
+            _min_negativeScore=param.paramInt;
+        else
+            _min_negativeScore=@(-0.1);
+    }
+    return _min_negativeScore;
+}
+
+@synthesize relevancyDepth=_relevancyDepth;
+-(NSNumber*) relevancyDepth
+{
+    if(!_relevancyDepth)
+    {
+        Settings* param=[Settings getValueForParamName:@"relevancyDepth"];
+        if(param)
+            _relevancyDepth=param.paramInt;
+        else
+            _relevancyDepth=@(2);
+    }
+    return _relevancyDepth;
+}
+@synthesize min_like_level=_min_like_level;
+-(NSNumber*) min_like_level
+{
+    if(!_min_like_level)
+    {
+        Settings* param=[Settings getValueForParamName:@"min_like_level"];
+        if(param)
+            _min_like_level=param.paramInt;
+        else
+            _min_like_level=@(0.1);
+    }
+    return _min_like_level;
+}
+
+@synthesize prob_no_relev=_prob_no_relev;
+-(NSNumber*) prob_no_relev
+{
+    if(!_prob_no_relev)
+    {
+        Settings* param=[Settings getValueForParamName:@"prob_no_relev"];
+        if(param)
+            _prob_no_relev=param.paramInt;
+        else
+            _prob_no_relev=@(0.1);
+    }
+    return _prob_no_relev;
+}
+
+@synthesize  lk_none=_lk_none;
+-(NSNumber*) lk_none
+{
+    if(!_lk_none)
+    {
+        Settings* param=[Settings getValueForParamName:@"lk_none"];
+        if(param)
+            _lk_none=param.paramInt;
+        else
+            _lk_none=@(0.1);
+    }
+    return _lk_none;
+}
+
+@synthesize lk_like=_lk_like;
+-(NSNumber*) lk_like
+{
+    if(!_lk_like)
+    {
+        Settings* param=[Settings getValueForParamName:@"lk_like"];
+        if(param)
+            _lk_like=param.paramInt;
+        else
+            _lk_like=@(1);
+    }
+    return _lk_like;
+}
+
+@synthesize lk_dislike=_lk_dislike;
+-(NSNumber*) lk_dislike
+{
+    if(!_lk_dislike)
+    {
+        Settings* param=[Settings getValueForParamName:@"lk_dislike"];
+        if(param)
+            _lk_dislike=param.paramInt;
+        else
+            _lk_dislike=@(-1);
+    }
+    return _lk_dislike;
+}
+
+
+
+
+
 
 
 #pragma mark - Core Data stack

@@ -123,7 +123,7 @@ Preparing and starting geofence and beacon monitoring
          //********* Beacon monitoring *********//
         
         //Beacon UUID, the identifier common for all the beacons
-        NSUUID *proximityUUID=  [[NSUUID alloc] initWithUUIDString:[Model sharedModel].settings.beaconUUID
+        NSUUID *proximityUUID=  [[NSUUID alloc] initWithUUIDString:[Model sharedModel].beaconUUID
 ];
         self.beaconRegion = [[CLBeaconRegion alloc]
                                         initWithProximityUUID:proximityUUID

@@ -38,6 +38,18 @@
     [super tearDown];
 }
 
+- (void)testSettings {
+    NSLog(@"Min prob: %@",[Model sharedModel].prob_no_relev.stringValue);
+    NSLog(@"Beacon UUID: %@",[Model sharedModel].beaconUUID);
+    NSLog(@"Prob pref: %@",[Model sharedModel].prob_pref.stringValue);
+    NSLog(@"Relevancy depth: %@",[Model sharedModel].relevancyDepth.stringValue);
+    NSLog(@"Lk none: %@",[Model sharedModel].lk_none.stringValue);
+    NSLog(@"Lk like: %@",[Model sharedModel].lk_like.stringValue);
+    NSLog(@"Lk dislike: %@",[Model sharedModel].lk_dislike.stringValue);
+    NSLog(@"Min neg score: %@",[Model sharedModel].min_negativeScore.stringValue);
+
+}
+
 - (void)testDatabaseRefresh {
     [[Model sharedModel] deleteModel];
     XCTAssertTrue([[Model sharedModel] checkModel]);
