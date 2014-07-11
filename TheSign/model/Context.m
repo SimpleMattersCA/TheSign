@@ -144,7 +144,7 @@
         return nil;
     }
     
-    NSMutableArray* currentContexts;
+    NSMutableArray* currentContexts=[NSMutableArray arrayWithCapacity:fetchedContexts.count];
     Tag* contextTag;
     for(Context *context in fetchedContexts)
     {
@@ -181,9 +181,9 @@
     NSNumber* curTemperature=[location getTemperature];
     
     if(curTemperature.integerValue < 10)
-        contextTagTemp=[self getContextTagByName:@"Cold"];
+        contextTagTemp=[self getContextTagByName:@"Cold Weather"];
     else if(curTemperature.integerValue > 25)
-        contextTagTemp=[self getContextTagByName:@"Hot"];
+        contextTagTemp=[self getContextTagByName:@"Hot Weather"];
     
     if([curWeather isEqualToString:@"wind"])
         contextTagWeather=[self getContextTagByName:@"Wind"];

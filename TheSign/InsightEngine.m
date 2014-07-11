@@ -66,7 +66,6 @@
     
     Featured* chosenOffer;
     Tag* chosenContextTag;
-
     Template* chosenTemplate;
 
     //check if we do have a business object that has active offers
@@ -80,30 +79,36 @@
         if(activeContextTags && activeContextTags.count!=0)
         {
             
-            NSMutableDictionary* activeContextsWithOffers=[NSMutableDictionary dictionaryWithCapacity:activeContextTags.count];
-            
+            NSMutableArray* contextTagsWithOffers=[NSMutableArray arrayWithCapacity:activeContextTags.count];
+            NSMutableArray* offerArrays=[NSMutableArray arrayWithCapacity:activeContextTags.count];
+
             //find if there are offers for active contexts, get arrays of those offers
-            for(int i=0; i<activeContextTags.count;i++)
+            for(Tag* contextTag in activeContextTags)
             {
-                NSSet* offersForContext=[self findOffersFromSet:activeOffers ForContextTag:activeContextTags[i]];
+                NSSet* offersForContext=[self findOffersFromSet:activeOffers ForContextTag:contextTag];
                 if(offersForContext.count>0)
-                    [activeContextsWithOffers setObject:offersForContext forKey:activeContextTags[i]];
+                {
+                    [offerArrays addObject:offersForContext];
+                    [contextTagsWithOffers addObject:contextTag];
+                }
             }
             
-            if(activeContextsWithOffers.count>0)
+            if(contextTagsWithOffers.count>0)
             {
-                if(activeContextsWithOffers.count>1)
-                    //multiple active contexts with offers, randomly(with given probabilites) choose the one
-                    chosenContextTag=[self chooseContextFromArray:[activeContextsWithOffers allKeys]];
+                //multiple active contexts with offers, randomly(with given probabilites) choose the one
+                if(contextTagsWithOffers.count>1)
+                    chosenContextTag  =[self chooseContextFromArray:contextTagsWithOffers];
+                //one actve contexts with offers, choose it
                 else
-                    //one actve contexts with offers, choose it
-                    chosenContextTag=[[activeContextsWithOffers allKeys] firstObject];
-                
+                    chosenContextTag=[contextTagsWithOffers firstObject];
+
                 //choose offer for the active context, if there are more than one - use relevancy score
-                chosenOffer=[self chooseOfferMostlyByRelevancy:[activeContextsWithOffers objectForKey:chosenContextTag]];
+                NSUInteger keyIndex=[contextTagsWithOffers indexOfObject:chosenContextTag];
+                chosenOffer=[self chooseOfferMostlyByRelevancy:[offerArrays objectAtIndex:keyIndex]];
             }
             else
             {
+                //no active contexts, choose based on relevancy
                 chosenOffer=[self chooseOfferMostlyByRelevancy:activeOffers];
             }
         }
