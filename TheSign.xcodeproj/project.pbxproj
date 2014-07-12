@@ -299,6 +299,7 @@
 		559774431936B791008FDD45 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				55EC54E21950FE16009494E4 /* FeedCell.xib */,
 				55EE37C418B7057C002A121C /* Main.storyboard */,
 			);
 			name = View;
@@ -358,7 +359,6 @@
 			children = (
 				55EC54E01950FE16009494E4 /* FeedCell.h */,
 				55EC54E11950FE16009494E4 /* FeedCell.m */,
-				55EC54E21950FE16009494E4 /* FeedCell.xib */,
 				55EC54E6195160A5009494E4 /* FeedController.h */,
 				55EC54E7195160A5009494E4 /* FeedController.m */,
 			);

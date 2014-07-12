@@ -9,7 +9,7 @@
 #import "LoginController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "User.h"
-
+#import "FeedController.h"
 @interface LoginController ()
 
 
@@ -72,7 +72,11 @@
 // Sent to the delegate when a PFUser is logged in.
 - (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
     [self dismissViewControllerAnimated:YES completion:NULL];
-    [User createFromParse:user];
+    [User createUserFromParse:user];
+    UINavigationController *navigation=(UINavigationController*)self.view.window.rootViewController;
+    FeedController *feed=[navigation.storyboard instantiateViewControllerWithIdentifier:@"FeedView"];
+    [navigation pushViewController:feed animated:YES];
+
 }
 
 // Sent to the delegate when the log in screen is dismissed.

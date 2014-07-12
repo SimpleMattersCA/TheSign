@@ -34,7 +34,7 @@
 
 @property PFUser* parseObject;
 
-+(void)createFromParse:(PFUser *)user;
++(void)createUserFromParse:(PFUser *)user;
 +(User*) currentUser;
 
 

@@ -29,7 +29,7 @@
                                                                          inManagedObjectContext:[Model sharedModel].managedObjectContext];
         newLike.likeness=value;
         newLike.linkedTag=tag;
-        newLike.linkedUser=[User currentUser];
+        newLike.linkedUser=[Model sharedModel].currentUser;
         tag.linkedLike=newLike;
     }
 }

@@ -62,7 +62,7 @@
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
     newStat.byBeacon=@(YES);
     newStat.date=[NSDate date];
-    newStat.linkedUser=[User currentUser];
+    newStat.linkedUser=[Model sharedModel].currentUser;
     newStat.major=major;
     newStat.minor=minor;
     [DiscoveredBusiness updateDiscoveryList:major];
@@ -76,7 +76,7 @@
                                                         inManagedObjectContext:[Model sharedModel].managedObjectContext];
     newStat.byBeacon=@(NO);
     newStat.date=[NSDate date];
-    newStat.linkedUser=[User currentUser];
+    newStat.linkedUser=[Model sharedModel].currentUser;
     newStat.major=businessUID;
     [DiscoveredBusiness updateDiscoveryList:businessUID];
     [[Model sharedModel] saveContext];

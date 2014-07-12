@@ -32,7 +32,7 @@
                                                       inManagedObjectContext:[Model sharedModel].managedObjectContext];
             newDiscovery.date=[NSDate date];
             newDiscovery.linkedBusiness=discoveredBusiness;
-            newDiscovery.linkedUser=[User currentUser];
+            newDiscovery.linkedUser=[Model sharedModel].currentUser;
             discoveredBusiness.linkedDiscovery=newDiscovery;
             [newDiscovery.linkedUser addLinkedDiscoveriesObject:newDiscovery];
         }

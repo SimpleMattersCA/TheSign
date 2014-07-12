@@ -76,7 +76,7 @@
         return (User*)result.firstObject;
 }
 
-+(void)createFromParse:(PFUser *)user
++(void)createUserFromParse:(PFUser *)user
 {
  //   NSError *error;
     User *newUser = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
@@ -123,6 +123,7 @@
 #warning fill image, name and followers from twitter api
         //fields id, birthday, firs_name,gender,
     }*/
+    
 }
 
 -(Boolean)refreshFromParse
@@ -184,33 +185,29 @@
 
 
 
-static User* _currentUser;
 
 +(User*) currentUser
 {
-    if(!_currentUser)
+
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAIN, YES]];
+    NSError *error;
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
     {
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-        request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAIN, YES]];
-        NSError *error;
-        NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-        
-        if(error)
-        {
-            NSLog(@"%@",[error localizedDescription]);
-            return nil;
-        }
-        else
-            if(result.count!=1)
-            {
-                NSLog(@"No current user or more than one current user specified");
-                return nil;
-            }
-            else
-                _currentUser= (User*)result.firstObject;
-        
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
     }
-    return _currentUser;
+    
+    if(result.count==1)
+        return result.firstObject;
+    else
+    {
+        NSLog(@"No current user or more than one current user specified");
+        return nil;
+    }
+    
 }
 
 -(void)findFriends
@@ -236,7 +233,7 @@ static User* _currentUser;
             NSArray *friendUsers = [friendQuery findObjects];
             
             for(PFUser* friend in friendUsers)
-                [User createFromParse:friend];
+                [User createUserFromParse:friend];
             
             //clean the friends list
             if(self.linkedFriends)

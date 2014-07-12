@@ -216,7 +216,7 @@
 
 -(NSString*)generateGreeting
 {
-    NSArray *greetingOptions=[NSArray arrayWithObjects:@"Hi there!",@"Hello stranger!",@"Hi!",@"Hey!", nil];
+    NSArray *greetingOptions=[NSArray arrayWithObjects:@"Hi there!",@"Hello!",@"Hi!",@"Hey!", nil];
     
     int random=arc4random_uniform((short)greetingOptions.count);
     return greetingOptions[random];

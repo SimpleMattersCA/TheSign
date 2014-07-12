@@ -35,9 +35,21 @@
 }
 
 - (void)testLikeProcessing {
+    [[Model sharedModel] deleteModel];
+    [[Model sharedModel] checkModel];
+
+    
     double newLike=[[Model sharedModel] getLikeValueForAction:LK_Like];
     double newDisLike=[[Model sharedModel] getLikeValueForAction:LK_Dislike];
     double newNonLike=[[Model sharedModel] getLikeValueForAction:LK_None];
+    
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Featured.entityName];
+    NSError *error;
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    for(Featured* offer in result)
+        NSLog(@"ObjectID: %@",offer.pObjectID);
     
     Featured* whiteChocolateMocha=[Featured getByID:@"Jasy3NnWGj"];
     [whiteChocolateMocha processLike:newLike];
@@ -77,7 +89,7 @@
 - (void)testPerformanceWelcomeTextGeneration {
     // This is an example of a performance test case.
     [self measureBlock:^{
-        NSString* result=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(1)];
+        NSString* result=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(3)];
         NSLog(@"%@",result);
 
         // Put the code you want to measure the time of here.

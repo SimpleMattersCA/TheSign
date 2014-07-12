@@ -28,7 +28,7 @@
     {
         Relevancy *newScore = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                       inManagedObjectContext:[Model sharedModel].managedObjectContext];
-        newScore.linkedUser=[User currentUser];
+        newScore.linkedUser=[Model sharedModel].currentUser;
         newScore.linkedOffer=offer;
         newScore.score=value;
     }

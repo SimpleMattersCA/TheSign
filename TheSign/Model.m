@@ -21,7 +21,7 @@
 #import "Area.h"
 #import "Context.h"
 #import "Template.h"
-
+#import "User.h"
 
 
 @interface Model()
@@ -151,6 +151,9 @@
     {
         NSLog(@"Error in CheckModel: %@ %@", error, [error userInfo]);
     }
+    
+    [self checkDeleteHistory];
+    
     [self saveContext];
     return completeData;
 }
@@ -160,9 +163,27 @@
  */
 -(void)deleteModel
 {
+    [self deleteEntity:TableTimestamp.entityName];
+    [self deleteEntity:Settings.entityName];
+    [self deleteEntity:Context.entityName];
+    [self deleteEntity:Business.entityName];
+    [self deleteEntity:Link.entityName];
+    [self deleteEntity:Featured.entityName];
+    [self deleteEntity:Tag.entityName];
+    [self deleteEntity:TagSet.entityName];
+    [self deleteEntity:TagConnection.entityName];
+    [self deleteEntity:Location.entityName];
+    [self deleteEntity:Area.entityName];
+    [self deleteEntity:Template.entityName];
+    [self saveContext];
+}
+
+-(void)deleteDataStore
+{
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"SignModel.sqlite"];
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
 }
+
 
 -(Class)getClassForParseEntity:(NSString*)entityName
 {
@@ -253,9 +274,43 @@
 
 -(void)checkDeleteHistory
 {
+    NSDateComponents *components = [[NSCalendar currentCalendar] components: NSHourCalendarUnit fromDate:[NSDate date]];
+    [components setMonth:-1];
+    NSDate* monthAgo=[[NSCalendar currentCalendar] dateFromComponents:components];
     PFQuery *query = [PFQuery queryWithClassName:@"DeleteHistory"];
-    [query whereKey:@"playerName" equalTo:@"Dan Stemkoski"];
+    [query whereKey:@"updatedAt" greaterThan:monthAgo];
+    
+    NSError *error;
+    NSArray *deletedObjects=[query findObjects:&error];
+    
+    for(PFObject *deletedObject in deletedObjects)
+    {
+        Class entityClass=[self getClassForParseEntity:deletedObject[@"table"]];
+        [self deleteObjectForClass:entityClass ParseObjectID:deletedObject[@"delObjectID"]];
+    }
 
+}
+
+-(NSArray*) getObjectsDeletedFromParse
+{
+    NSMutableArray* result=[NSMutableArray array];
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"DeleteHistory"];
+    
+    NSError *error;
+    NSManagedObject* cdObjectToDelete;
+
+    NSArray *deletedObjects=[query findObjects:&error];
+    
+    for(PFObject *deletedObject in deletedObjects)
+    {
+        Class entityClass=[self getClassForParseEntity:deletedObject[@"table"]];
+        cdObjectToDelete=[entityClass getByID:deletedObject[@"delObjectID"]];
+        if(cdObjectToDelete)
+            [result addObject:cdObjectToDelete];
+    }
+    
+    return result;
 
 }
 
@@ -531,4 +586,10 @@
     return [Business getClosestBusinessToLocation:location];
 }
 
+-(User*) currentUser
+{
+    if(!_currentUser)
+        _currentUser=[User currentUser];
+    return _currentUser;
+}
 @end

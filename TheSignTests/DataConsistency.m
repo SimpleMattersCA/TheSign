@@ -38,6 +38,14 @@
     [super tearDown];
 }
 
+-(void)testEntryDeletion{
+    [[Model sharedModel] checkDeleteHistory];
+
+    NSArray* result=[[Model sharedModel] getObjectsDeletedFromParse];
+    XCTAssertEqual(result.count, 0);
+
+}
+
 - (void)testSettings {
     NSLog(@"Min prob: %@",[Model sharedModel].prob_no_relev.stringValue);
     XCTAssertNotNil([Settings getValueForParamName:@"lk_dislike"]);

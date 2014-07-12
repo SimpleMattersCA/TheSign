@@ -18,22 +18,25 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 };
 
 
-@class Business,Statistics,Location;
+@class Business,Statistics,Location,User;
 /**
  Encapsulated some of the basics of the model such as pulling data from Parse and filling CoreData
  */
 @interface Model : NSObject 
 
 
-@property (nonatomic, retain) NSString * beaconUUID;
-@property (nonatomic, retain) NSNumber * prob_pref;
-@property (nonatomic, retain) NSNumber * relevancyDepth;
-@property (nonatomic, retain) NSNumber * min_like_level;
-@property (nonatomic, retain) NSNumber * prob_no_relev;
-@property (nonatomic, retain) NSNumber * lk_none;
-@property (nonatomic, retain) NSNumber * lk_like;
-@property (nonatomic, retain) NSNumber * lk_dislike;
-@property (nonatomic, retain) NSNumber * min_negativeScore;
+@property (nonatomic, strong) User * currentUser;
+
+
+@property (nonatomic, strong) NSString * beaconUUID;
+@property (nonatomic, strong) NSNumber * prob_pref;
+@property (nonatomic, strong) NSNumber * relevancyDepth;
+@property (nonatomic, strong) NSNumber * min_like_level;
+@property (nonatomic, strong) NSNumber * prob_no_relev;
+@property (nonatomic, strong) NSNumber * lk_none;
+@property (nonatomic, strong) NSNumber * lk_like;
+@property (nonatomic, strong) NSNumber * lk_dislike;
+@property (nonatomic, strong) NSNumber * min_negativeScore;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
@@ -48,6 +51,7 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 -(double)getLikeValueForAction:(OfferLike)action;
 
 
+
 //********* Commonly used methods from Statistics Class *********//
 -(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor;
 -(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID;
@@ -60,6 +64,8 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 //********* For testign purpoces *********//
 -(Boolean)checkModel;
 -(void)deleteModel;
+-(void)checkDeleteHistory;
+-(NSArray*) getObjectsDeletedFromParse;
 
 
 @end

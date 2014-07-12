@@ -12,8 +12,6 @@
 #import "WelcomeScreenViewController.h"
 #import "Location.h"
 #import "Business.h"
-#import "Settings.h"
-
 @import UIKit.UINavigationController;
 @import CoreLocation;
 
@@ -64,14 +62,14 @@ NSNumber *detectedBeaconMajor;
     
     
     //first-time ever defaults check and set
- /*   if([[NSUserDefaults standardUserDefaults] boolForKey:@"FirstRun"]!=NO)
+   if([[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]!=YES || ![Model sharedModel].currentUser)
     {
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
-        WelcomeScreenViewController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"WelcomeScreenView"];
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FirstRun"];
+        WelcomeScreenViewController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"LoginView"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SetUpCompleted"];
         [navigation pushViewController:firstRun animated:YES];
     }
-    */
+    
     NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     
     if(remoteNotification)
