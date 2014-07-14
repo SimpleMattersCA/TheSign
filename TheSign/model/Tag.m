@@ -40,6 +40,19 @@
 
 @synthesize parseObject=_parseObject;
 
+-(PFObject*)parseObject
+{
+    if(!_parseObject)
+    {
+        NSError *error;
+        if(!error)
+            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }
+    return _parseObject;
+}
+
 +(NSString*) entityName {return @"Tag";}
 +(NSString*) parseEntityName {return @"Tag";}
 
@@ -80,7 +93,6 @@
 
     Tag *tag = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    tag.parseObject=object;
     tag.pObjectID=object.objectId;
     tag.name=object[P_NAME];
     if(object[P_INTEREST]) tag.interest=object[P_INTEREST];
@@ -106,11 +118,9 @@
 
 -(Boolean)refreshFromParse
 {
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
+    if(!self.parseObject)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
         return NO;
     }
     
@@ -161,7 +171,7 @@
 
 -(void)processLike:(double)effect AlreadyProcessed:(NSMutableSet**)processedTags
 {
-    if(effect>=[Model sharedModel].min_like_level.doubleValue && self.linkedContext==nil)
+    if(fabs(effect)>=[Model sharedModel].min_like_level.doubleValue && self.linkedContext==nil)
     {
         [self changeLikenessByValue:@(effect)];
         for (TagConnection* connection in self.linkedConnectionsFrom)

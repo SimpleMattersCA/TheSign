@@ -25,6 +25,8 @@
 
 - (void)setUp {
     [super setUp];
+    [[Model sharedModel] checkModel];
+
     // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
@@ -34,38 +36,32 @@
 }
 
 - (void)testLikeProcessing {
-    [[Model sharedModel] deleteModel];
-    [[Model sharedModel] checkModel];
-
     
     double newLike=[[Model sharedModel] getLikeValueForAction:LK_Like];
     double newDisLike=[[Model sharedModel] getLikeValueForAction:LK_Dislike];
     double newNonLike=[[Model sharedModel] getLikeValueForAction:LK_None];
     
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Featured.entityName];
-    NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
-    
-    for(Featured* offer in result)
-        NSLog(@"ObjectID: %@",offer.pObjectID);
+    double currentVal;
     
     Featured* whiteChocolateMocha=[Featured getByID:@"Jasy3NnWGj"];
+    currentVal=whiteChocolateMocha.score.doubleValue;
     [whiteChocolateMocha processLike:newLike];
-    XCTAssertNotEqual(whiteChocolateMocha.score.doubleValue, 0);
+    XCTAssertNotEqual(whiteChocolateMocha.score.doubleValue, currentVal);
 
     Featured* bananaCrepe=[Featured getByID:@"yACWNUI39G"];
+    currentVal=whiteChocolateMocha.score.doubleValue;
     [bananaCrepe processLike:newDisLike];
-    XCTAssertNotEqual(bananaCrepe.score.doubleValue, 0);
+    XCTAssertNotEqual(bananaCrepe.score.doubleValue, currentVal);
     
     Featured* dressShirt=[Featured getByID:@"sG8HkUF5S6"];
+    currentVal=whiteChocolateMocha.score.doubleValue;
     [dressShirt processLike:newNonLike];
-    XCTAssertNotEqual(dressShirt.score.doubleValue, 0);
+    XCTAssertNotEqual(dressShirt.score.doubleValue, currentVal);
 }
 
 
 - (void)testWelcomeTextGeneration {
-    
+
     NSString * starbucksBurnaby=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(4)];
     NSLog(@"Starbucks Burnaby: %@ ",starbucksBurnaby);
     XCTAssertNotNil(starbucksBurnaby);
@@ -84,6 +80,36 @@
 
 }
 
+-(void)testOffersFeed{
+
+    NSArray* discoveredBusinesses=[Business getDiscoveredBusinesses];
+
+    NSMutableArray* offers=[NSMutableArray array];
+    
+    double minNegScore=[Model sharedModel].min_negativeScore.doubleValue;
+    
+    for(Business *business in discoveredBusinesses)
+    {
+        if(business.linkedOffers)
+        {
+            for(Featured* offer in business.linkedOffers)
+            {
+                if(offer.active.boolValue)
+                {
+                    if(offer.score.doubleValue>minNegScore)
+                        [offers addObject:offer];
+                }
+            }
+            
+        }
+    }
+    
+    NSArray* result=[[Model sharedModel] getDealsForFeed];
+    
+    XCTAssertEqual(offers.count, result.count);
+
+
+}
 
 - (void)testPerformanceWelcomeTextGeneration {
     // This is an example of a performance test case.

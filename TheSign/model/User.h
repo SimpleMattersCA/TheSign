@@ -32,7 +32,7 @@
 
 @property (nonatomic, retain) User *linkedUser;
 
-@property PFUser* parseObject;
+@property (nonatomic, retain) PFUser* parseObject;
 
 +(void)createUserFromParse:(PFUser *)user;
 +(User*) currentUser;

@@ -32,6 +32,19 @@
 
 @synthesize parseObject=_parseObject;
 
+-(PFObject*)parseObject
+{
+    if(!_parseObject)
+    {
+        NSError *error;
+        if(!error)
+            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }
+    return _parseObject;
+}
+
 +(NSString*) entityName {return @"Context";}
 +(NSString*) parseEntityName {return @"Context";}
 
@@ -72,7 +85,6 @@
 
     Context *context = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    context.parseObject=object;
     context.pObjectID=object.objectId;
     context.name=object[P_NAME];
     context.probability=object[P_PROBABILITY];
@@ -83,14 +95,12 @@
 
 -(Boolean)refreshFromParse
 {
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
+    if(!self.parseObject)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
         return NO;
     }
-
+    
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
@@ -243,7 +253,7 @@
     //get current time
     NSDateComponents *nowComp = [[NSCalendar currentCalendar] components:(NSHourCalendarUnit)  fromDate:[NSDate date]];
     
-    if (nowComp.hour>=7 && nowComp.hour<9)
+    if (nowComp.hour>=7 && nowComp.hour<10)
         contextTag=[self getContextTagByName:@"Morning"];
     else if (nowComp.hour>=12 && nowComp.hour<13)
         contextTag=[self getContextTagByName:@"Lunch"];

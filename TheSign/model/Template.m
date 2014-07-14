@@ -35,6 +35,19 @@
 
 @synthesize parseObject=_parseObject;
 
+-(PFObject*)parseObject
+{
+    if(!_parseObject)
+    {
+        NSError *error;
+        if(!error)
+            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }
+    return _parseObject;
+}
+
 +(NSString*) entityName {return @"Template";}
 +(NSString*) parseEntityName {return @"Templates";}
 
@@ -76,7 +89,6 @@
 
     Template *template = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                              inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    template.parseObject=object;
     template.pObjectID=object.objectId;
     template.messageText=object[P_MESSAGE];
 
@@ -119,11 +131,9 @@
 
 -(Boolean)refreshFromParse
 {
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
+    if(!self.parseObject)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
         return NO;
     }
     

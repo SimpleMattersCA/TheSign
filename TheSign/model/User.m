@@ -47,6 +47,19 @@
 
 @synthesize parseObject=_parseObject;
 
+-(PFUser*)parseObject
+{
+    if(!_parseObject)
+    {
+        NSError *error;
+        if(!error)
+            _parseObject=[PFQuery getUserObjectWithId:self.pObjectID error:&error];
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }
+    return _parseObject;
+}
+
 +(NSString*) entityName {return @"User";}
 +(NSString*) parseEntityName {return @"User";}
 
@@ -79,7 +92,6 @@
  //   NSError *error;
     User *newUser = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                   inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    newUser.parseObject=user;
     newUser.pObjectID=user.objectId;
     
     
@@ -126,11 +138,9 @@
 
 -(Boolean)refreshFromParse
 {
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
+    if(!self.parseObject)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
         return NO;
     }
     
@@ -145,6 +155,7 @@
     self.name=self.parseObject[P_NAME];
     
     PFFile *pic=self.parseObject[P_PIC];
+    NSError* error;
     NSData *pulledImage;
     pulledImage=[pic getData:&error];
     if(!error)

@@ -50,6 +50,19 @@
 
 @synthesize parseObject=_parseObject;
 
+-(PFObject*)parseObject
+{
+    if(!_parseObject)
+    {
+        NSError *error;
+        if(!error)
+            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }
+    return _parseObject;
+}
+
 +(NSString*) entityName {return @"Business";}
 +(NSString*) parseEntityName {return @"Business";}
 
@@ -104,7 +117,6 @@ static NSArray* _businessTypes;
     NSError *error;
     Business *business = [NSEntityDescription insertNewObjectForEntityForName:Business.entityName
                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    business.parseObject=object;
     business.pObjectID=object.objectId;
     business.name=object[P_NAME];
     business.welcomeText=object[P_WELCOMETEXT];
@@ -137,11 +149,9 @@ static NSArray* _businessTypes;
 
 -(Boolean)refreshFromParse
 {
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
+    if(!self.parseObject)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
         return NO;
     }
     
@@ -159,7 +169,7 @@ static NSArray* _businessTypes;
     self.businessType=self.parseObject[P_TYPE];
     
     PFFile *logo=self.parseObject[P_LOGO];
-    
+    NSError *error;
     NSData *pulledLogo;
     pulledLogo=[logo getData:&error];
     if(!error)
@@ -291,14 +301,13 @@ static NSArray* _businessTypes;
 {
     if(self.linkedOffers)
         return [self.linkedOffers objectsPassingTest:^(id obj, BOOL *stop) {
-            if(((Featured*)obj).active)
+            if(((Featured*)obj).active.boolValue)
                 return YES;
             else
                 return NO;
         }];
     return nil;
 }
-
 
 +(NSArray*)getDiscoveredBusinesses
 {

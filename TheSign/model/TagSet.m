@@ -34,6 +34,19 @@
 
 @synthesize parseObject=_parseObject;
 
+-(PFObject*)parseObject
+{
+    if(!_parseObject)
+    {
+        NSError *error;
+        if(!error)
+            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }
+    return _parseObject;
+}
+
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
     if(object[P_OFFER] && object[P_TAG])
@@ -75,7 +88,6 @@
 
     TagSet *tagset = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    tagset.parseObject=object;
     tagset.pObjectID=object.objectId;
     if(object[P_WEIGHT])
         tagset.weight=object[P_WEIGHT];
@@ -114,11 +126,9 @@
 
 -(Boolean)refreshFromParse
 {
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
+    if(!self.parseObject)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
         return NO;
     }
     

@@ -41,6 +41,19 @@
 
 @synthesize parseObject=_parseObject;
 
+-(PFObject*)parseObject
+{
+    if(!_parseObject)
+    {
+        NSError *error;
+        if(!error)
+            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }
+    return _parseObject;
+}
+
 +(NSString*) entityName {return @"Location";}
 +(NSString*) parseEntityName {return @"Locations";}
 
@@ -84,7 +97,6 @@
     
     Location *location = [NSEntityDescription insertNewObjectForEntityForName:[Location entityName]
                                                inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    location.parseObject=object;
     location.pObjectID=object.objectId;
     location.address=object[P_ADDRESS];
     location.longitude=object[P_LONGITUDE];
@@ -123,11 +135,9 @@
 
 -(Boolean)refreshFromParse
 {
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
+    if(!self.parseObject)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
         return NO;
     }
     

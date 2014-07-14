@@ -123,7 +123,8 @@
             break;
     }
     */
-    
+    [self checkDeleteHistory];
+
     Boolean completeData=YES;
 
     //pull from cloud for
@@ -151,7 +152,6 @@
         NSLog(@"Error in CheckModel: %@ %@", error, [error userInfo]);
     }
     
-    [self checkDeleteHistory];
     
     [self saveContext];
     return completeData;
@@ -386,7 +386,7 @@
         if(param)
             _min_negativeScore=param.paramFloat;
         else
-            _min_negativeScore=@(-0.1);
+            _min_negativeScore=@(-3);
     }
     return _min_negativeScore;
 }
@@ -481,7 +481,18 @@
     return _offersFeedLimit;
 }
 
-
+-(NSNumber*) feed_swap_prob
+{
+    if(!_feed_swap_prob)
+    {
+        Settings* param=[Settings getValueForParamName:@"feed_swap_prob"];
+        if(param)
+            _feed_swap_prob=param.paramFloat;
+        else
+            _feed_swap_prob=@(0.5);
+    }
+    return _feed_swap_prob;
+}
 
 
 
@@ -612,8 +623,8 @@
     
     //get offers from those discovered businesses
     
-    NSMutableArray* offersWithRelevancy=[NSMutableArray array];
-    NSMutableArray* offersWithoutRelevancy=[NSMutableArray array];
+    NSMutableArray* offersWithScore=[NSMutableArray array];
+    NSMutableArray* offersNoScore=[NSMutableArray array];
     
     double minNegScore=[Model sharedModel].min_negativeScore.doubleValue;
     double sum=0;
@@ -631,10 +642,10 @@
                         if(offer.score.doubleValue>0)
                         {
                             sum+=offer.score.doubleValue;
-                            [offersWithRelevancy addObject:offer];
+                            [offersWithScore addObject:offer];
                         }
                         else
-                            [offersWithoutRelevancy addObject:offer];
+                            [offersNoScore addObject:offer];
                     }
                 }
             }
@@ -642,54 +653,78 @@
         }
     }
     
-    //sort offers with relevancies mostly by relevancy
-    
-    
-    //randomize the list off offers without relevancies (Knuth-Fisher-Yates shuffle algorithm)
-    NSInteger r;
-    for (NSInteger i = offersWithoutRelevancy.count - 1; i > 0; i--)
+    //ordering offers with scores.
+    if(offersWithScore.count>1)
     {
-        r = arc4random_uniform((int)i + 1);
-        [offersWithoutRelevancy exchangeObjectAtIndex:i withObjectAtIndex:r];
+        //sort offers with relevancies scores mostly by relevancy
+        //first, sort offers by their relevancy scores in descending order
+        NSSortDescriptor *scoreDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"score"
+                                                                          ascending:NO];
+        NSArray *sortedOffers = [offersWithScore sortedArrayUsingDescriptors:[NSArray arrayWithObject:scoreDescriptor]];
+        //slightly randomize the order
+        double randomBound=self.feed_swap_prob.doubleValue;
+        NSInteger startInt=0;
+        NSInteger endInt=1;
+        NSInteger lengthInt=1;
+        
+        //cleaning up the array, it's going to store the result
+        offersWithScore=[NSMutableArray array];
+        
+        BOOL loop=YES;
+        while(loop)
+        {
+            double startVal=((Featured*)sortedOffers[startInt]).score.doubleValue;
+            double endVal=((Featured*)sortedOffers[endInt]).score.doubleValue;
+            
+            double r=drand48();
+            //depending on how close scores are for the offer at the start of the interval and at the end we determien probabiliy of the swap.
+            if(r<randomBound*endVal/startVal)
+            {
+                //shuffling the interval
+                [offersWithScore addObjectsFromArray:[self shuffleArray:[offersWithScore objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startInt, lengthInt+1)]]]];
+            }
+            else
+            {
+                //copying offers from sorted array
+                [offersWithScore addObjectsFromArray:[sortedOffers objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startInt, lengthInt+1)]]];
+            }
+            lengthInt*=2;
+            startInt=endInt+1;
+            endInt=startInt+lengthInt;
+            
+            //handling the end of the interval
+            if(endInt>=sortedOffers.count)
+            {
+                //adding the remainder in the sorted order
+                if(startInt<sortedOffers.count)
+                {
+                    [offersWithScore addObjectsFromArray:[sortedOffers objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startInt, sortedOffers.count-startInt)]]];
+                }
+                loop=NO;
+            }
+        }
     }
     
-    NSSortDescriptor *dateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"startDateTime"
-                                                                     ascending:YES];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:dateDescriptor];
-   // NSArray *sortedEventArray = [nodeEventArray sortedArrayUsingDescriptors:sortDescriptors];
+    //shuffling offers with zero or acceptably negative relevancy score
+    offersNoScore=[self shuffleArray:offersNoScore];
     
-    
-    return [offersWithRelevancy arrayByAddingObjectsFromArray:offersWithoutRelevancy];
+    return [offersWithScore arrayByAddingObjectsFromArray:offersNoScore];
 }
 
-
-
-/*-(Featured*)sortOffesrMostlyByRelevancy:(NSArray*)offers WithScoreSum:(double)sum
+/**
+ Shuffle the array (Knuth-Fisher-Yates shuffle algorithm)
+*/
+-(NSMutableArray*)shuffleArray:(NSArray*)array;
 {
-
-    
-    //do a random select from 0 to sum of relevancies
-    double random=drand48()*sum;
-    double cumulativeProbability = 0.0;
-    
-    
-    for(Featured* offer in offers)
+    NSMutableArray* result=[NSMutableArray arrayWithArray:array];
+    NSInteger r;
+    for (NSInteger i = array.count - 1; i > 0; i--)
     {
-        cumulativeProbability += offer.linkedScore.score.doubleValue;
-        if (random <= cumulativeProbability)
-            result=offer;
+        r = arc4random_uniform((int)i + 1);
+        [result exchangeObjectAtIndex:i withObjectAtIndex:r];
     }
     return result;
-}*/
-
-
-
-
-
-
-
-
-
+}
 
 
 

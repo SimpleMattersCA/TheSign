@@ -39,6 +39,19 @@
 
 @synthesize parseObject=_parseObject;
 
+-(PFObject*)parseObject
+{
+    if(!_parseObject)
+    {
+        NSError *error;
+        if(!error)
+            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }
+    return _parseObject;
+}
+
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
     if(object[P_NAME] && (object[P_PARAM_STR] || object[P_PARAM_INT] || object[P_PARAM_DATE] || object[P_PARAM_FLOAT] || object[P_PARAM_BOOL]))
@@ -76,7 +89,6 @@
 
     Settings *settings = [NSEntityDescription insertNewObjectForEntityForName:[Settings entityName]
                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    settings.parseObject=object;
     settings.pObjectID=object.objectId;
     settings.name=object[P_NAME];
     settings.paramStr=object[P_PARAM_STR];
@@ -90,11 +102,9 @@
 
 -(Boolean)refreshFromParse
 {
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
+    if(!self.parseObject)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
         return NO;
     }
     Boolean complete=YES;

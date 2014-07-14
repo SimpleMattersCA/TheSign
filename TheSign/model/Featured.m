@@ -54,6 +54,19 @@
 
 @synthesize parseObject=_parseObject;
 
+-(PFObject*)parseObject
+{
+    if(!_parseObject)
+    {
+        NSError *error;
+        if(!error)
+            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }
+    return _parseObject;
+}
+
 +(NSString*) entityName {return @"Featured";}
 +(NSString*) parseEntityName {return @"Info";}
 
@@ -95,7 +108,6 @@
     NSError *error;
     Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                    inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    deal.parseObject=object;
     deal.pObjectID=object.objectId;
     
     if(object[P_FULLNAME]!=nil) deal.fullName=object[P_FULLNAME];
@@ -147,11 +159,9 @@
 
 -(Boolean)refreshFromParse
 {
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
+    if(!self.parseObject)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
         return NO;
     }
     
@@ -171,6 +181,7 @@
     
     if(self.parseObject[P_IMAGE]!=nil)
     {
+        NSError *error;
         PFFile *image=self.parseObject[P_IMAGE];
         NSData *pulledImage=[image getData:&error];
         if(!error)
@@ -252,6 +263,7 @@
 {
    for(TagSet* tagset in self.linkedTagSets)
    {
+       NSLog(@"%@ - %@",tagset.linkedTag.name,lookupTag.name);
        if (tagset && tagset.linkedTag && [tagset.linkedTag.pObjectID isEqualToString:lookupTag.pObjectID])
            return YES;
    }

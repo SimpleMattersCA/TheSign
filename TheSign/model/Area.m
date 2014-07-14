@@ -32,6 +32,19 @@
 
 @synthesize parseObject=_parseObject;
 
+-(PFObject*)parseObject
+{
+    if(!_parseObject)
+    {
+        NSError *error;
+        if(!error)
+            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+        else
+            NSLog(@"%@",[error localizedDescription]);
+    }
+    return _parseObject;
+}
+
 +(NSString*) entityName {return @"Area";}
 +(NSString*) parseEntityName {return @"Area";}
 
@@ -71,7 +84,6 @@
 
     Area *area = [NSEntityDescription insertNewObjectForEntityForName:[Area entityName]
                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    area.parseObject=object;
     area.pObjectID=object.objectId;
     area.currentTemperature=object[P_TEMPERATURE];
     area.currentWeather=object[P_WEATHER];
@@ -82,11 +94,9 @@
 
 -(Boolean)refreshFromParse
 {
-    NSError *error;
-    [self.parseObject refresh:&error];
-    if(error)
+    if(!self.parseObject)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
         return NO;
     }
     
