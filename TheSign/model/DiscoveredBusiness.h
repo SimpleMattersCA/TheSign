@@ -19,4 +19,6 @@
 
 +(void)updateDiscoveryList:(NSNumber*)businessUID;
 
++(NSArray*)getDiscoveredBusinesses;
+
 @end

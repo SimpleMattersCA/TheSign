@@ -56,7 +56,7 @@
         return nil;
     }
     else
-        return (Context*)result.firstObject;
+        return result.firstObject;
 }
 
 

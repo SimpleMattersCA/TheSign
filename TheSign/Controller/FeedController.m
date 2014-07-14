@@ -7,6 +7,7 @@
 //
 
 #import "FeedController.h"
+#import "FeedCell.h"
 
 @interface FeedController ()
 
@@ -64,12 +65,13 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DealCell" forIndexPath:indexPath];
+    FeedCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DealCell" forIndexPath:indexPath];
     
     // Configure the cell...
     
     return cell;
 }
+
 
 
 /*

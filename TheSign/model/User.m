@@ -73,7 +73,7 @@
         return nil;
     }
     else
-        return (User*)result.firstObject;
+        return result.firstObject;
 }
 
 +(void)createUserFromParse:(PFUser *)user

@@ -60,7 +60,7 @@
         return nil;
     }
     else
-        return (TableTimestamp*)result.firstObject;
+        return result.firstObject;
 }
 
 + (Boolean)createFromParse:(PFObject *)object

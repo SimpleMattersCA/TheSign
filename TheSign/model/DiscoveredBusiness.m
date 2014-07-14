@@ -19,6 +19,23 @@
 
 +(NSString*) entityName {return @"DiscoveredBusiness";}
 
+
++(NSArray*)getDiscoveredBusinesses
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    else
+        return result;
+
+}
+
 +(void)updateDiscoveryList:(NSNumber*)businessUID
 {
     Business *discoveredBusiness=[Business getBusinessByUID:businessUID];

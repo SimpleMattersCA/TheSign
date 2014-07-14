@@ -60,7 +60,7 @@
         return nil;
     }
     else
-        return (Template*)result.firstObject;
+        return result.firstObject;
 }
 
 

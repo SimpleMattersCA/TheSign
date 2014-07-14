@@ -152,7 +152,7 @@
         <element name="Relevancy" positionX="-2817" positionY="-43" width="128" height="88"/>
         <element name="Settings" positionX="-3483" positionY="-725" width="128" height="118"/>
         <element name="Statistics" positionX="-2495" positionY="-232" width="128" height="178"/>
-        <element name="TableTimestamp" positionX="-3314" positionY="-652" width="128" height="103"/>
+        <element name="TableTimestamp" positionX="-3321" positionY="-724" width="128" height="103"/>
         <element name="Tag" positionX="-3143" positionY="-306" width="128" height="208"/>
         <element name="TagConnection" positionX="-3332" positionY="-261" width="128" height="103"/>
         <element name="TagSet" positionX="-2952" positionY="-265" width="128" height="103"/>

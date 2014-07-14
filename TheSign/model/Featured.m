@@ -81,7 +81,7 @@
         return nil;
     }
     else
-        return (Featured*)result.firstObject;
+        return result.firstObject;
 }
 
 + (Boolean)createFromParse:(PFObject *)object

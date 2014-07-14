@@ -59,7 +59,7 @@
         return nil;
     }
     else
-        return (TagSet*)result.firstObject;
+        return result.firstObject;
 }
 
 

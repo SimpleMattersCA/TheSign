@@ -22,7 +22,8 @@
 #import "Context.h"
 #import "Template.h"
 #import "User.h"
-
+#import "DiscoveredBusiness.h"
+#import "Relevancy.h"
 
 @interface Model()
 
@@ -469,7 +470,18 @@
     return _lk_dislike;
 }
 
-
+-(NSNumber*) offersFeedLimit
+{
+    if(!_offersFeedLimit)
+    {
+        Settings* param=[Settings getValueForParamName:@"offersFeedLimit"];
+        if(param)
+            _offersFeedLimit=param.paramInt;
+        else
+            _offersFeedLimit=@(50);
+    }
+    return _offersFeedLimit;
+}
 
 
 
@@ -556,9 +568,6 @@
 }
 
 
-
-
-
 #pragma mark - Application's Documents directory
 
 // Returns the URL to the application's Documents directory.
@@ -592,4 +601,102 @@
         _currentUser=[User currentUser];
     return _currentUser;
 }
+
+
+
+
+
+
+-(NSArray*)getDealsForFeed
+{
+    //get discovered businesses
+    NSArray* discoveredBusinesses=[DiscoveredBusiness getDiscoveredBusinesses];
+    
+    //get offers from those discovered businesses
+    
+    NSMutableArray* offersWithRelevancy=[NSMutableArray array];
+    NSMutableArray* offersWithoutRelevancy=[NSMutableArray array];
+    
+    double minNegScore=[Model sharedModel].min_negativeScore.doubleValue;
+    double sum=0;
+    
+    NSInteger limit=self.offersFeedLimit.integerValue;
+    
+    for(DiscoveredBusiness *disc in discoveredBusinesses)
+    {
+        if(disc.linkedBusiness && disc.linkedBusiness.linkedOffers)
+        {
+            for(Featured* offer in disc.linkedBusiness.linkedOffers)
+            {
+                if(offer.active.boolValue)
+                {
+                    if(offer.linkedScore)
+                    {
+                        if(offer.linkedScore.score.doubleValue>minNegScore)
+                        {
+                            if(offer.linkedScore.score.doubleValue>0)
+                                sum+=offer.linkedScore.score.doubleValue;
+                            [offersWithoutRelevancy addObject:offer];
+                        }
+                    }
+                    else
+                        [offersWithoutRelevancy addObject:offer];
+                
+                }
+            }
+        
+        }
+    }
+    
+    //sort offers with relevancies mostly by relevancy
+    
+    
+    //randomize the list off offers without relevancies (Knuth-Fisher-Yates shuffle algorithm)
+    NSInteger r;
+    for (NSInteger i = offersWithoutRelevancy.count - 1; i > 0; i--)
+    {
+        r = arc4random_uniform((int)i + 1);
+        [offersWithoutRelevancy exchangeObjectAtIndex:i withObjectAtIndex:r];
+    }
+    
+    NSSortDescriptor *dateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"startDateTime"
+                                                                     ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:dateDescriptor];
+    NSArray *sortedEventArray = [nodeEventArray sortedArrayUsingDescriptors:sortDescriptors];
+    
+    
+    return [offersWithRelevancy arrayByAddingObjectsFromArray:offersWithoutRelevancy];
+}
+
+
+
+-(Featured*)sortOffesrMostlyByRelevancy:(NSArray*)offers WithScoreSum:(double)sum
+{
+
+    
+    //do a random select from 0 to sum of relevancies
+    double random=drand48()*sum;
+    double cumulativeProbability = 0.0;
+    
+    
+    for(Featured* offer in offersClean)
+    {
+        cumulativeProbability += offer.linkedScore.score.doubleValue;
+        if (random <= cumulativeProbability)
+            result=offer;
+    }
+    return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 @end

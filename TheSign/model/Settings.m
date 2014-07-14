@@ -44,7 +44,7 @@
 
 +(Settings*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Settings.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -55,7 +55,7 @@
         return nil;
     }
     else
-        return (Settings*)result.firstObject;
+        return result.firstObject;
 }
 
 

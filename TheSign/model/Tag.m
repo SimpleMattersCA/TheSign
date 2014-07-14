@@ -65,7 +65,7 @@
         return nil;
     }
     else
-        return (Tag*)result.firstObject;
+        return result.firstObject;
 }
 
 

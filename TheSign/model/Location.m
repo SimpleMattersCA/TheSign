@@ -55,7 +55,7 @@
 
 +(Location*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Location.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
 
     NSError *error;
@@ -67,7 +67,7 @@
         return nil;
     }
     else
-        return (Location*)result.firstObject;
+        return result.firstObject;
 }
 
 

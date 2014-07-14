@@ -37,6 +37,7 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 @property (nonatomic, strong) NSNumber * lk_like;
 @property (nonatomic, strong) NSNumber * lk_dislike;
 @property (nonatomic, strong) NSNumber * min_negativeScore;
+@property (nonatomic, strong) NSNumber * offersFeedLimit;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;

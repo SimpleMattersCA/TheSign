@@ -54,7 +54,7 @@
         return nil;
     }
     else
-        return (TagConnection*)result.firstObject;
+        return result.firstObject;
 }
 
 + (Boolean)createFromParse:(PFObject *)object

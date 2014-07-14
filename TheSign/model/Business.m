@@ -61,7 +61,7 @@ static NSArray* _businessTypes;
 
 +(Business*) getByID:(NSString*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     
     request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
@@ -73,11 +73,11 @@ static NSArray* _businessTypes;
         return nil;
     }
     else
-        return (Business*)result.firstObject;
+        return result.firstObject;
 }
 +(Business*) getBusinessByUID:(NSNumber*)identifier
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@=%d", CD_UID, identifier.intValue]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -88,7 +88,7 @@ static NSArray* _businessTypes;
         return nil;
     }
     else
-        return (Business*)result.firstObject;
+        return result.firstObject;
 }
 
 +(Boolean)createFromParse:(PFObject *)object
