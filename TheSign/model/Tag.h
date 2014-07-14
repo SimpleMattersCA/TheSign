@@ -19,7 +19,7 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSSet *linkedConnectionsFrom;
-@property (nonatomic, retain) Like *linkedLike;
+@property (nonatomic, retain) NSNumber * likeness;
 @property (nonatomic, retain) Context *linkedContext;
 
 @property (nonatomic, retain) NSSet *linkedTagSets;
@@ -33,6 +33,7 @@
  */
 -(void)processLike:(double)effect AlreadyProcessed:(NSMutableSet**)processedTags;
 -(double) calculateRelevancyOnLevel:(NSInteger)depth;
+-(void)changeLikenessByValue:(NSNumber*)value;
 
 @end
 

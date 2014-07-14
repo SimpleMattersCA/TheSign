@@ -9,7 +9,6 @@
 #import "TagSet.h"
 #import "Featured.h"
 #import "Tag.h"
-#import "Relevancy.h"
 #import "Model.h"
 
 #define CD_WEIGHT (@"weight")

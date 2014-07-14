@@ -10,8 +10,8 @@
 #import "Featured.h"
 #import "User.h"
 #import "Model.h"
-#import "DiscoveredBusiness.h"
 #import "Parse/PFObject.h"
+#import "Business.h"
 
 #define P_DATE (@"date")
 #define P_LIKED (@"liked")
@@ -65,7 +65,8 @@
     newStat.linkedUser=[Model sharedModel].currentUser;
     newStat.major=major;
     newStat.minor=minor;
-    [DiscoveredBusiness updateDiscoveryList:major];
+    [Business discoverBusinessByID:major];
+    
     [[Model sharedModel] saveContext];
     return newStat;
 }
@@ -78,7 +79,7 @@
     newStat.date=[NSDate date];
     newStat.linkedUser=[Model sharedModel].currentUser;
     newStat.major=businessUID;
-    [DiscoveredBusiness updateDiscoveryList:businessUID];
+    [Business discoverBusinessByID:businessUID];
     [[Model sharedModel] saveContext];
     return newStat;
 

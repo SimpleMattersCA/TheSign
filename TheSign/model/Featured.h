@@ -18,14 +18,13 @@
 @property (nonatomic, retain) NSString * fullName;
 @property (nonatomic, retain) NSString * welcomeText;
 @property (nonatomic, retain) NSString * details;
-
+@property (nonatomic, retain) NSNumber * score;
 @property (nonatomic, retain) NSNumber * active;
 @property (nonatomic, retain) NSData * image;
 @property (nonatomic, retain) NSNumber * major;
 @property (nonatomic, retain) NSNumber * minor;
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) Business *linkedBusiness;
-@property (nonatomic, retain) Relevancy *linkedScore;
 
 @property (nonatomic, retain) NSSet *linkedStats;
 @property (nonatomic, retain) NSSet *linkedTagSets;
@@ -40,6 +39,7 @@
 
 -(Boolean)checkContextTag:(Tag*) lookupTag;
 
+-(void)changeRelevancyByValue:(NSNumber*)value;
 
 @end
 

@@ -10,7 +10,6 @@
 #import "Tag.h"
 #import "Model.h"
 #import "TagSet.h"
-#import "Relevancy.h"
 #import "Featured.h"
 
 #define P_WEIGHT (@"weight")

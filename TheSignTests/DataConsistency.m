@@ -77,6 +77,11 @@
     XCTAssertTrue([[Model sharedModel] checkModel]);
 }
 
+- (void)testDeleteDatastore{
+    [[Model sharedModel] deleteDataStore];
+    XCTAssertTrue(YES);
+}
+
 -(void)testCoreDataRowCounts{
     [[Model sharedModel] deleteModel];
     [[Model sharedModel] checkModel];

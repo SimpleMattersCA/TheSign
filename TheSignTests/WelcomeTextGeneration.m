@@ -14,7 +14,6 @@
 #import "Link.h"
 #import "Statistics.h"
 #import "Location.h"
-#import "Relevancy.h"
 
 #import "InsightEngine.h"
 
@@ -53,15 +52,15 @@
     
     Featured* whiteChocolateMocha=[Featured getByID:@"Jasy3NnWGj"];
     [whiteChocolateMocha processLike:newLike];
-    XCTAssertNotEqual(whiteChocolateMocha.linkedScore.score.doubleValue, 0);
+    XCTAssertNotEqual(whiteChocolateMocha.score.doubleValue, 0);
 
     Featured* bananaCrepe=[Featured getByID:@"yACWNUI39G"];
     [bananaCrepe processLike:newDisLike];
-    XCTAssertNotEqual(bananaCrepe.linkedScore.score.doubleValue, 0);
+    XCTAssertNotEqual(bananaCrepe.score.doubleValue, 0);
     
     Featured* dressShirt=[Featured getByID:@"sG8HkUF5S6"];
     [dressShirt processLike:newNonLike];
-    XCTAssertNotEqual(dressShirt.linkedScore.score.doubleValue, 0);
+    XCTAssertNotEqual(dressShirt.score.doubleValue, 0);
 }
 
 

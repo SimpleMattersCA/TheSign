@@ -13,7 +13,6 @@
 #import "Tag.h"
 #import "TagConnection.h"
 #import "Model.h"
-#import "Relevancy.h"
 
 #define CD_TITLE (@"title")
 #define CD_DETAILS (@"details")
@@ -47,8 +46,7 @@
 @dynamic linkedTagSets;
 @dynamic linkedBusiness;
 @dynamic linkedStats;
-@dynamic linkedScore;
-
+@dynamic score;
 
 
 
@@ -270,15 +268,19 @@
     }
 
     //update relevancy score
-    double score=0;
+    double score=0.0;
     for(TagSet* tagset in self.linkedTagSets)
         if( tagset.linkedTag) score+=[tagset.linkedTag calculateRelevancyOnLevel:0];
     
-    [Relevancy changeRelevancyForOffer:self ByValue:@(score)];
+    [self changeRelevancyByValue:@(score)];
 }
 
 
 
+-(void)changeRelevancyByValue:(NSNumber*)value
+{
+    self.score=@(self.score.doubleValue+value.doubleValue);
+}
 
 
 

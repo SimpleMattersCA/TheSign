@@ -14,6 +14,9 @@
 #define P_NAME (@"name")
 #define P_PARAM_STR (@"paramStr")
 #define P_PARAM_INT (@"paramInt")
+#define P_PARAM_FLOAT (@"paramFloat")
+#define P_PARAM_BOOL (@"paramBool")
+
 #define P_PARAM_DATE (@"paramDate")
 
 
@@ -24,6 +27,8 @@
 @dynamic name;
 @dynamic paramStr;
 @dynamic paramInt;
+@dynamic paramFloat;
+@dynamic paramBool;
 @dynamic paramDate;
 
 
@@ -36,7 +41,7 @@
 
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
-    if(object[P_NAME] && (object[P_PARAM_STR] || object[P_PARAM_INT] || object[P_PARAM_DATE]))
+    if(object[P_NAME] && (object[P_PARAM_STR] || object[P_PARAM_INT] || object[P_PARAM_DATE] || object[P_PARAM_FLOAT] || object[P_PARAM_BOOL]))
         return YES;
     else
         return NO;
@@ -76,7 +81,10 @@
     settings.name=object[P_NAME];
     settings.paramStr=object[P_PARAM_STR];
     settings.paramInt=object[P_PARAM_INT];
+    settings.paramFloat=object[P_PARAM_FLOAT];
+    settings.paramBool=object[P_PARAM_BOOL];
     settings.paramDate=object[P_PARAM_DATE];
+    
     return complete;
 }
 
@@ -94,6 +102,8 @@
     self.name=self.parseObject[P_NAME];
     self.paramStr=self.parseObject[P_PARAM_STR];
     self.paramInt=self.parseObject[P_PARAM_INT];
+    self.paramFloat=self.parseObject[P_PARAM_FLOAT];
+    self.paramBool=self.parseObject[P_PARAM_BOOL];
     self.paramDate=self.parseObject[P_PARAM_DATE];
     
     return complete;

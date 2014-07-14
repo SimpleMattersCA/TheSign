@@ -21,10 +21,13 @@
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSNumber * uid;
 @property (nonatomic, retain) NSString * welcomeText;
-@property (nonatomic, retain) DiscoveredBusiness *linkedDiscovery;
+@property (nonatomic, retain) NSNumber * discovered;
+@property (nonatomic, retain) NSDate * discoveryDate;
 @property (nonatomic, retain) NSSet *linkedOffers;
 @property (nonatomic, retain) NSSet *linkedLinks;
 @property (nonatomic, retain) NSSet *linkedLocations;
+
+
 
 +(NSArray*) getBusinessesByType:(NSString*)type;
 +(NSArray*) getTypes;
@@ -35,6 +38,9 @@
 +(Business*) getBusinessByUID:(NSNumber*)identifier;
 
 +(NSArray*) getBusinesses;
+
++(void)discoverBusinessByID:(NSNumber*)businessUID;
++(NSArray*)getDiscoveredBusinesses;
 
 
 @end

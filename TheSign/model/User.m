@@ -7,8 +7,6 @@
 //
 
 #import "User.h"
-#import "DiscoveredBusiness.h"
-#import "Like.h"
 #import "Statistics.h"
 #import "User.h"
 #import "Model.h"

@@ -16,6 +16,8 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * paramStr;
 @property (nonatomic, retain) NSNumber * paramInt;
+@property (nonatomic, retain) NSNumber * paramFloat;
+@property (nonatomic, retain) NSNumber * paramBool;
 @property (nonatomic, retain) NSDate * paramDate;
 
 

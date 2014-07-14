@@ -14,8 +14,6 @@
 		028F57D018D670BB00372167 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0283E2AB18D6694B007173FA /* Parse.framework */; };
 		5508F94A196CD78900C22B9B /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5508F948196CD74600C22B9B /* XCTest.framework */; };
 		550C80F6195371B600716D25 /* Link.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C80F5195371B600716D25 /* Link.m */; };
-		550C80F9195371B700716D25 /* DiscoveredBusiness.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C80F8195371B700716D25 /* DiscoveredBusiness.m */; };
-		550C80FC195371B700716D25 /* Like.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C80FB195371B700716D25 /* Like.m */; };
 		550C80FF195371B700716D25 /* TagConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C80FE195371B700716D25 /* TagConnection.m */; };
 		550C8102195371B700716D25 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C8101195371B700716D25 /* User.m */; };
 		550C8105195371B700716D25 /* Business.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C8104195371B700716D25 /* Business.m */; };
@@ -28,7 +26,6 @@
 		5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB151931BB1D00B256FF /* TableTimestamp.m */; };
 		55692CF61952A98200DE60F7 /* BusinessCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 55692CF41952A98200DE60F7 /* BusinessCell.m */; };
 		55692CF71952A98200DE60F7 /* BusinessCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55692CF51952A98200DE60F7 /* BusinessCell.xib */; };
-		5575AAEB19569EB400344313 /* Relevancy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5575AAEA19569EB400344313 /* Relevancy.m */; };
 		559A426D19529B34007D0D66 /* BusinessListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 559A426C19529B34007D0D66 /* BusinessListController.m */; };
 		559A427319529F46007D0D66 /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 559A427219529F46007D0D66 /* ProfileController.m */; };
 		559F76DE1967656D00905390 /* Context.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76DD1967656D00905390 /* Context.m */; };
@@ -119,10 +116,6 @@
 		5508F948196CD74600C22B9B /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		550C80F4195371B600716D25 /* Link.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Link.h; path = model/Link.h; sourceTree = "<group>"; };
 		550C80F5195371B600716D25 /* Link.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Link.m; path = model/Link.m; sourceTree = "<group>"; };
-		550C80F7195371B700716D25 /* DiscoveredBusiness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DiscoveredBusiness.h; path = model/DiscoveredBusiness.h; sourceTree = "<group>"; };
-		550C80F8195371B700716D25 /* DiscoveredBusiness.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DiscoveredBusiness.m; path = model/DiscoveredBusiness.m; sourceTree = "<group>"; };
-		550C80FA195371B700716D25 /* Like.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Like.h; path = model/Like.h; sourceTree = "<group>"; };
-		550C80FB195371B700716D25 /* Like.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Like.m; path = model/Like.m; sourceTree = "<group>"; };
 		550C80FD195371B700716D25 /* TagConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TagConnection.h; path = model/TagConnection.h; sourceTree = "<group>"; };
 		550C80FE195371B700716D25 /* TagConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TagConnection.m; path = model/TagConnection.m; sourceTree = "<group>"; };
 		550C8100195371B700716D25 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User.h; path = model/User.h; sourceTree = "<group>"; };
@@ -145,8 +138,6 @@
 		55692CF31952A98200DE60F7 /* BusinessCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BusinessCell.h; path = Controller/BusinessCell.h; sourceTree = "<group>"; };
 		55692CF41952A98200DE60F7 /* BusinessCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BusinessCell.m; path = Controller/BusinessCell.m; sourceTree = "<group>"; };
 		55692CF51952A98200DE60F7 /* BusinessCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BusinessCell.xib; path = Controller/BusinessCell.xib; sourceTree = "<group>"; };
-		5575AAE919569EB400344313 /* Relevancy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Relevancy.h; path = model/Relevancy.h; sourceTree = "<group>"; };
-		5575AAEA19569EB400344313 /* Relevancy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Relevancy.m; path = model/Relevancy.m; sourceTree = "<group>"; };
 		559A426B19529B34007D0D66 /* BusinessListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BusinessListController.h; path = Controller/BusinessListController.h; sourceTree = "<group>"; };
 		559A426C19529B34007D0D66 /* BusinessListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BusinessListController.m; path = Controller/BusinessListController.m; sourceTree = "<group>"; };
 		559A427119529F46007D0D66 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfileController.h; path = Controller/ProfileController.h; sourceTree = "<group>"; };
@@ -250,12 +241,6 @@
 			children = (
 				55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */,
 				5557BB1A1931C28700B256FF /* SignEntityProtocol.h */,
-				5575AAE919569EB400344313 /* Relevancy.h */,
-				5575AAEA19569EB400344313 /* Relevancy.m */,
-				550C80FA195371B700716D25 /* Like.h */,
-				550C80FB195371B700716D25 /* Like.m */,
-				550C80F7195371B700716D25 /* DiscoveredBusiness.h */,
-				550C80F8195371B700716D25 /* DiscoveredBusiness.m */,
 				5557BB2A1934588A00B256FF /* Parse */,
 			);
 			name = Model;
@@ -584,7 +569,6 @@
 				5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */,
 				55B746EB18DCAECA00F61354 /* Model.m in Sources */,
 				55A5A072193FCE6400DDF688 /* TutorialViewController.m in Sources */,
-				550C80F9195371B700716D25 /* DiscoveredBusiness.m in Sources */,
 				55EC54E8195160A5009494E4 /* FeedController.m in Sources */,
 				559A427319529F46007D0D66 /* ProfileController.m in Sources */,
 				55EC54E31950FE16009494E4 /* FeedCell.m in Sources */,
@@ -595,13 +579,11 @@
 				559A426D19529B34007D0D66 /* BusinessListController.m in Sources */,
 				55A5A06F193FCE2A00DDF688 /* WelcomeScreenViewController.m in Sources */,
 				55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */,
-				550C80FC195371B700716D25 /* Like.m in Sources */,
 				550C8108195371B700716D25 /* Featured.m in Sources */,
 				559F76DE1967656D00905390 /* Context.m in Sources */,
 				550C80F6195371B600716D25 /* Link.m in Sources */,
 				55EC54EE195175BF009494E4 /* LoginController.m in Sources */,
 				550C8111195371B700716D25 /* Tag.m in Sources */,
-				5575AAEB19569EB400344313 /* Relevancy.m in Sources */,
 				55EE37BF18B7057C002A121C /* main.m in Sources */,
 				550C80FF195371B700716D25 /* TagConnection.m in Sources */,
 			);

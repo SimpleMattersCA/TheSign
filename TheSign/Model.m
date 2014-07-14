@@ -22,8 +22,6 @@
 #import "Context.h"
 #import "Template.h"
 #import "User.h"
-#import "DiscoveredBusiness.h"
-#import "Relevancy.h"
 
 @interface Model()
 
@@ -373,7 +371,7 @@
     {
         Settings* param=[Settings getValueForParamName:@"prob_pref"];
         if(param)
-            _prob_pref=param.paramInt;
+            _prob_pref=param.paramFloat;
         else
             _prob_pref=@(0.5);
     }
@@ -386,7 +384,7 @@
     {
         Settings* param=[Settings getValueForParamName:@"min_negativeScore"];
         if(param)
-            _min_negativeScore=param.paramInt;
+            _min_negativeScore=param.paramFloat;
         else
             _min_negativeScore=@(-0.1);
     }
@@ -411,7 +409,7 @@
     {
         Settings* param=[Settings getValueForParamName:@"min_like_level"];
         if(param)
-            _min_like_level=param.paramInt;
+            _min_like_level=param.paramFloat;
         else
             _min_like_level=@(0.1);
     }
@@ -424,7 +422,7 @@
     {
         Settings* param=[Settings getValueForParamName:@"prob_no_relev"];
         if(param)
-            _prob_no_relev=param.paramInt;
+            _prob_no_relev=param.paramFloat;
         else
             _prob_no_relev=@(0.1);
     }
@@ -437,7 +435,7 @@
     {
         Settings* param=[Settings getValueForParamName:@"lk_none"];
         if(param)
-            _lk_none=param.paramInt;
+            _lk_none=param.paramFloat;
         else
             _lk_none=@(0.1);
     }
@@ -450,7 +448,7 @@
     {
         Settings* param=[Settings getValueForParamName:@"lk_like"];
         if(param)
-            _lk_like=param.paramInt;
+            _lk_like=param.paramFloat;
         else
             _lk_like=@(1);
     }
@@ -463,7 +461,7 @@
     {
         Settings* param=[Settings getValueForParamName:@"lk_dislike"];
         if(param)
-            _lk_dislike=param.paramInt;
+            _lk_dislike=param.paramFloat;
         else
             _lk_dislike=@(-1);
     }
@@ -610,7 +608,7 @@
 -(NSArray*)getDealsForFeed
 {
     //get discovered businesses
-    NSArray* discoveredBusinesses=[DiscoveredBusiness getDiscoveredBusinesses];
+    NSArray* discoveredBusinesses=[Business getDiscoveredBusinesses];
     
     //get offers from those discovered businesses
     
@@ -620,28 +618,24 @@
     double minNegScore=[Model sharedModel].min_negativeScore.doubleValue;
     double sum=0;
     
-    NSInteger limit=self.offersFeedLimit.integerValue;
-    
-    for(DiscoveredBusiness *disc in discoveredBusinesses)
+    for(Business *business in discoveredBusinesses)
     {
-        if(disc.linkedBusiness && disc.linkedBusiness.linkedOffers)
+        if(business.linkedOffers)
         {
-            for(Featured* offer in disc.linkedBusiness.linkedOffers)
+            for(Featured* offer in business.linkedOffers)
             {
                 if(offer.active.boolValue)
                 {
-                    if(offer.linkedScore)
+                    if(offer.score.doubleValue>minNegScore)
                     {
-                        if(offer.linkedScore.score.doubleValue>minNegScore)
+                        if(offer.score.doubleValue>0)
                         {
-                            if(offer.linkedScore.score.doubleValue>0)
-                                sum+=offer.linkedScore.score.doubleValue;
-                            [offersWithoutRelevancy addObject:offer];
+                            sum+=offer.score.doubleValue;
+                            [offersWithRelevancy addObject:offer];
                         }
+                        else
+                            [offersWithoutRelevancy addObject:offer];
                     }
-                    else
-                        [offersWithoutRelevancy addObject:offer];
-                
                 }
             }
         
@@ -662,7 +656,7 @@
     NSSortDescriptor *dateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"startDateTime"
                                                                      ascending:YES];
     NSArray *sortDescriptors = [NSArray arrayWithObject:dateDescriptor];
-    NSArray *sortedEventArray = [nodeEventArray sortedArrayUsingDescriptors:sortDescriptors];
+   // NSArray *sortedEventArray = [nodeEventArray sortedArrayUsingDescriptors:sortDescriptors];
     
     
     return [offersWithRelevancy arrayByAddingObjectsFromArray:offersWithoutRelevancy];
@@ -670,7 +664,7 @@
 
 
 
--(Featured*)sortOffesrMostlyByRelevancy:(NSArray*)offers WithScoreSum:(double)sum
+/*-(Featured*)sortOffesrMostlyByRelevancy:(NSArray*)offers WithScoreSum:(double)sum
 {
 
     
@@ -679,14 +673,14 @@
     double cumulativeProbability = 0.0;
     
     
-    for(Featured* offer in offersClean)
+    for(Featured* offer in offers)
     {
         cumulativeProbability += offer.linkedScore.score.doubleValue;
         if (random <= cumulativeProbability)
             result=offer;
     }
     return result;
-}
+}*/
 
 
 

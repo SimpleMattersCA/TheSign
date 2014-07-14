@@ -7,7 +7,6 @@
 //
 
 #import "Tag.h"
-#import "Like.h"
 #import "TagConnection.h"
 #import "TagSet.h"
 #import "Model.h"
@@ -25,9 +24,9 @@
 
 @dynamic interest;
 @dynamic name;
+@dynamic likeness;
 @dynamic pObjectID;
 @dynamic linkedConnectionsFrom;
-@dynamic linkedLike;
 @dynamic linkedTagSets;
 @dynamic linkedConnectionsTo;
 @dynamic linkedContext;
@@ -164,7 +163,7 @@
 {
     if(effect>=[Model sharedModel].min_like_level.doubleValue && self.linkedContext==nil)
     {
-        [Like changeLikenessForTag:self ByValue:@(effect)];
+        [self changeLikenessByValue:@(effect)];
         for (TagConnection* connection in self.linkedConnectionsFrom)
         {
             if(connection.linkedTagTo && ![*processedTags containsObject:connection.linkedTagTo.pObjectID])
@@ -190,15 +189,14 @@
     //we go only for a certain levels deep into the tag graph
     if(depth<=[Model sharedModel].relevancyDepth.integerValue)
     {
-        if(self.linkedLike && self.linkedContext==nil)
-            cumulativeScore=self.linkedLike.likeness.doubleValue;
+        if(self.linkedContext==nil)
+            cumulativeScore=self.likeness.doubleValue;
         
         for (TagConnection* connection in self.linkedConnectionsFrom)
         {
             if(connection.linkedTagTo)
             {
-                if(connection.linkedTagTo.linkedLike)
-                    cumulativeScore+=connection.linkedTagTo.linkedLike.likeness.doubleValue;
+                cumulativeScore+=connection.linkedTagTo.likeness.doubleValue;
                 cumulativeScore+=[connection.linkedTagTo calculateRelevancyOnLevel:depth+1];
             }
         }
@@ -206,13 +204,19 @@
         {
             if(connection.linkedTagFrom)
             {
-                if(connection.linkedTagFrom.linkedLike)
-                    cumulativeScore+=connection.linkedTagFrom.linkedLike.likeness.doubleValue;
+                cumulativeScore+=connection.linkedTagFrom.likeness.doubleValue;
                 cumulativeScore+=[connection.linkedTagFrom calculateRelevancyOnLevel:depth+1];
             }
         }
     }
     return cumulativeScore;
 }
+
+
+-(void)changeLikenessByValue:(NSNumber*)value
+{
+    self.likeness=@(self.likeness.doubleValue+value.doubleValue);
+}
+
 
 @end

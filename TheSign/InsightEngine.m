@@ -14,7 +14,6 @@
 #import "Template.h"
 #import "Context.h"
 #import "Tag.h"
-#import "Relevancy.h"
 
 @implementation InsightEngine
 
@@ -159,25 +158,19 @@
 
     double minNegScore=[Model sharedModel].min_negativeScore.doubleValue;
     //get a sum of relevancies
-    double sum=0;
+    double sum=0.0;
     NSMutableArray* offersWithoutRelevancy=[NSMutableArray arrayWithCapacity:offers.count];
     for(Featured* offer in offers)
     {
-        if(offer.linkedScore && offer.linkedScore!=0)
+        if(offer.score.doubleValue>minNegScore)
         {
-            if(offer.linkedScore>0)
-                sum+=offer.linkedScore.score.doubleValue;
+            if(offer.score.doubleValue>0.0)
+                sum+=offer.score.doubleValue;
             else
             {
                 [offersClean removeObject:offer];
-                if(offer.linkedScore.score.doubleValue>minNegScore)
-                    [offersWithoutRelevancy addObject:offer];
+                [offersWithoutRelevancy addObject:offer];
             }
-        }
-        else
-        {
-            [offersWithoutRelevancy addObject:offer];
-            [offersClean removeObject:offer];
         }
     }
 
@@ -201,7 +194,7 @@
     
     for(Featured* offer in offersClean)
     {
-        cumulativeProbability += offer.linkedScore.score.doubleValue;
+        cumulativeProbability += offer.score.doubleValue;
         if (random <= cumulativeProbability)
             result=offer;
     }

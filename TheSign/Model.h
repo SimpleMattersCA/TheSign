@@ -65,6 +65,7 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 //********* For testign purpoces *********//
 -(Boolean)checkModel;
 -(void)deleteModel;
+-(void) deleteDataStore;
 -(void)checkDeleteHistory;
 -(NSArray*) getObjectsDeletedFromParse;
 

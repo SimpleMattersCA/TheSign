@@ -7,7 +7,6 @@
 //
 
 #import "Business.h"
-#import "DiscoveredBusiness.h"
 #import "Featured.h"
 #import "Link.h"
 #import "Model.h"
@@ -20,6 +19,7 @@
 #define CD_TYPE (@"businessType")
 #define CD_LATTITUDE (@"locaitonLatt")
 #define CD_LONGITUDE (@"locationLong")
+#define CD_DISCOVERED (@"discovered")
 
 #define P_NAME (@"name")
 #define P_LOGO (@"logo")
@@ -37,7 +37,8 @@
 @dynamic pObjectID;
 @dynamic uid;
 @dynamic welcomeText;
-@dynamic linkedDiscovery;
+@dynamic discovered;
+@dynamic discoveryDate;
 @dynamic linkedOffers;
 @dynamic linkedLinks;
 @dynamic linkedLocations;
@@ -298,5 +299,32 @@ static NSArray* _businessTypes;
     return nil;
 }
 
+
++(NSArray*)getDiscoveredBusinesses
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSError *error;
+    request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@=%d", CD_DISCOVERED, YES]];
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    else
+        return result;
+    
+}
+
++(void)discoverBusinessByID:(NSNumber*)businessUID
+{
+    Business *discoveredBusiness=[Business getBusinessByUID:businessUID];
+    if(discoveredBusiness!=nil)
+    {
+        discoveredBusiness.discovered=@(YES);
+        discoveredBusiness.discoveryDate=[NSDate date];
+    }
+}
 
 @end
