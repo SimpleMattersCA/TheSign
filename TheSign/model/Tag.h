@@ -32,8 +32,10 @@
  The minimal likeness to be used = 0.1
  */
 -(void)processLike:(double)effect AlreadyProcessed:(NSMutableSet**)processedTags;
--(double) calculateRelevancyOnLevel:(NSInteger)depth;
+-(double) calculateRelevancyOnLevel:(NSInteger)depth AlreadyProcessed:(NSMutableSet**)processedTags;
 -(void)changeLikenessByValue:(NSNumber*)value;
+
++(NSArray*)getInterests;
 
 @end
 

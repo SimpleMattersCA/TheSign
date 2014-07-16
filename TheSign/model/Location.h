@@ -24,6 +24,7 @@
 
 -(NSNumber*)getTemperature;
 -(NSString*)getWeather;
+-(NSDate*)getWeatherTime;
 
 +(Location*)getLocationByMajor:(NSNumber*)major;
 

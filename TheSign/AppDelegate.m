@@ -62,11 +62,13 @@ NSNumber *detectedBeaconMajor;
     
     
     //first-time ever defaults check and set
-   if([[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]!=YES || ![Model sharedModel].currentUser)
+    NSLog(@"First run %d",[[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]);
+   if([[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]==NO || ![Model sharedModel].currentUser)
     {
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
         WelcomeScreenViewController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"LoginView"];
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SetUpCompleted"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SetUpCompleted"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         [navigation pushViewController:firstRun animated:YES];
     }
     

@@ -122,7 +122,7 @@ static NSArray* _businessTypes;
     business.welcomeText=object[P_WELCOMETEXT];
     business.uid=object[P_UID];
     business.businessType=object[P_TYPE];
-    
+    business.discovered=@(YES);
     PFFile *logo=object[P_LOGO];
     NSData *pulledLogo;
     pulledLogo=[logo getData:&error];

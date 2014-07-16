@@ -189,6 +189,13 @@
     Tag* contextTagWeather;
     NSString* curWeather=[location getWeather];
     NSNumber* curTemperature=[location getTemperature];
+    NSDate* weatherTime=[location getWeatherTime];
+    NSTimeInterval diff = [weatherTime timeIntervalSinceNow];
+    double weatherPoll=[Model sharedModel].weather_poll.doubleValue;
+    if(fabs(diff)>weatherPoll)
+        return nil;
+    
+    
     
     if(curTemperature.integerValue < 10)
         contextTagTemp=[self getContextTagByName:@"Cold Weather"];

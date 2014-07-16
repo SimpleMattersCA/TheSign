@@ -32,8 +32,8 @@
     if (self) {
         self.delegate=self;
         self.facebookPermissions = @[@"public_profile,user_friends"];
-        self.fields =  PFLogInFieldsTwitter | PFLogInFieldsFacebook  | PFLogInFieldsDismissButton;
-        [self.view setBackgroundColor:UIColor.redColor];
+        self.fields = /* PFLogInFieldsTwitter |*/ PFLogInFieldsFacebook  | PFLogInFieldsDismissButton;
+        [self.view setBackgroundColor:[UIColor colorWithRed:(72.0/255.0) green:(82.0/255.0) blue:(84.0/255.0) alpha:1]];
         // Add your subviews here
         // self.contentView for content
         // self.backgroundView for the cell background

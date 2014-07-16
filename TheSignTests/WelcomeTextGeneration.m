@@ -25,9 +25,9 @@
 
 - (void)setUp {
     [super setUp];
-    [[Model sharedModel] checkModel];
+   // [[Model sharedModel] checkModel];
 
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    // Put setup cod=e here. This method is called before the invocation of each test method in the class.
 }
 
 - (void)tearDown {
@@ -45,37 +45,43 @@
     
     Featured* whiteChocolateMocha=[Featured getByID:@"Jasy3NnWGj"];
     currentVal=whiteChocolateMocha.score.doubleValue;
+    NSLog(@"Mocha: old value:%f",currentVal);
     [whiteChocolateMocha processLike:newLike];
+    NSLog(@"Mocha: new value:%f",whiteChocolateMocha.score.doubleValue);
     XCTAssertNotEqual(whiteChocolateMocha.score.doubleValue, currentVal);
-
+/*
     Featured* bananaCrepe=[Featured getByID:@"yACWNUI39G"];
-    currentVal=whiteChocolateMocha.score.doubleValue;
+    currentVal=bananaCrepe.score.doubleValue;
+    NSLog(@"Crepe: old value:%f",currentVal);
     [bananaCrepe processLike:newDisLike];
+    NSLog(@"Crepe: new value:%f",bananaCrepe.score.doubleValue);
     XCTAssertNotEqual(bananaCrepe.score.doubleValue, currentVal);
     
     Featured* dressShirt=[Featured getByID:@"sG8HkUF5S6"];
-    currentVal=whiteChocolateMocha.score.doubleValue;
+    currentVal=dressShirt.score.doubleValue;
+    NSLog(@"Shirt: old value:%f",currentVal);
     [dressShirt processLike:newNonLike];
-    XCTAssertNotEqual(dressShirt.score.doubleValue, currentVal);
+    NSLog(@"Shirt: new value:%f",dressShirt.score.doubleValue);
+    XCTAssertNotEqual(dressShirt.score.doubleValue, currentVal);*/
 }
 
 
 - (void)testWelcomeTextGeneration {
 
     NSString * starbucksBurnaby=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(4)];
-    NSLog(@"Starbucks Burnaby: %@ ",starbucksBurnaby);
+    NSLog(@"%@",starbucksBurnaby);
     XCTAssertNotNil(starbucksBurnaby);
     
     NSString * starbucksYaletown=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(3)];
-    NSLog(@"Starbucks Yaletown: %@ ",starbucksYaletown);
+    NSLog(@"%@",starbucksYaletown);
     XCTAssertNotNil(starbucksYaletown);
     
     NSString * bananaBurnaby=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(2)];
-    NSLog(@"Banana Republic: %@ ",bananaBurnaby);
+    NSLog(@"%@",bananaBurnaby);
     XCTAssertNotNil(bananaBurnaby);
     
     NSString * crepeYaletown=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(1)];
-    NSLog(@"Crepes: %@ ",crepeYaletown);
+    NSLog(@"%@",crepeYaletown);
     XCTAssertNotNil(crepeYaletown);
 
 }
@@ -106,6 +112,10 @@
     
     NSArray* result=[[Model sharedModel] getDealsForFeed];
     
+    NSLog(@"Deals in the feed:");
+    for(Featured* deal in result)
+        NSLog(@"%@",deal.fullName);
+    
     XCTAssertEqual(offers.count, result.count);
 
 
@@ -114,7 +124,7 @@
 - (void)testPerformanceWelcomeTextGeneration {
     // This is an example of a performance test case.
     [self measureBlock:^{
-        NSString* result=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(3)];
+        NSString* result=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(4)];
         NSLog(@"%@",result);
 
         // Put the code you want to measure the time of here.

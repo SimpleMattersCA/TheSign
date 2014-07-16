@@ -19,6 +19,7 @@
 #define CD_NAME (@"name")
 #define CD_INTEREST (@"interest")
 #define CD_CONTEXT (@"context")
+#define CD_INTEREST (@"interest")
 
 @implementation Tag
 
@@ -171,14 +172,15 @@
 
 -(void)processLike:(double)effect AlreadyProcessed:(NSMutableSet**)processedTags
 {
-    if(fabs(effect)>=[Model sharedModel].min_like_level.doubleValue && self.linkedContext==nil)
+    if(self.linkedContext==nil && ![*processedTags containsObject:self.pObjectID] && fabs(effect)>=[Model sharedModel].min_like_level.doubleValue)
     {
+        [*processedTags addObject:self.pObjectID];
         [self changeLikenessByValue:@(effect)];
+        
         for (TagConnection* connection in self.linkedConnectionsFrom)
         {
             if(connection.linkedTagTo && ![*processedTags containsObject:connection.linkedTagTo.pObjectID])
             {
-                [*processedTags addObject:connection.linkedTagTo.pObjectID];
                 [connection.linkedTagTo processLike:effect*connection.weight.doubleValue AlreadyProcessed:processedTags];
             }
         }
@@ -186,36 +188,34 @@
         {
             if(connection.linkedTagFrom && ![*processedTags containsObject:connection.linkedTagFrom.pObjectID])
             {
-                [*processedTags addObject:connection.linkedTagFrom.pObjectID];
                 [connection.linkedTagFrom processLike:effect*connection.weight.doubleValue AlreadyProcessed:processedTags];
             }
+
         }
     }
 }
 
--(double) calculateRelevancyOnLevel:(NSInteger)depth
+-(double) calculateRelevancyOnLevel:(NSInteger)depth AlreadyProcessed:(NSMutableSet**)processedTags
 {
     double cumulativeScore=0;
     //we go only for a certain levels deep into the tag graph
-    if(depth<=[Model sharedModel].relevancyDepth.integerValue)
+    if(self.linkedContext==nil && ![*processedTags containsObject:self.pObjectID] && depth<=[Model sharedModel].relevancyDepth.integerValue)
     {
-        if(self.linkedContext==nil)
-            cumulativeScore=self.likeness.doubleValue;
+        [*processedTags addObject:self.pObjectID];
+        cumulativeScore=self.likeness.doubleValue;
         
         for (TagConnection* connection in self.linkedConnectionsFrom)
         {
-            if(connection.linkedTagTo)
+            if(connection.linkedTagTo && ![*processedTags containsObject:connection.linkedTagTo.pObjectID])
             {
-                cumulativeScore+=connection.linkedTagTo.likeness.doubleValue;
-                cumulativeScore+=[connection.linkedTagTo calculateRelevancyOnLevel:depth+1];
+                cumulativeScore+=[connection.linkedTagTo calculateRelevancyOnLevel:depth+1 AlreadyProcessed:processedTags];
             }
         }
         for (TagConnection* connection in self.linkedConnectionsTo)
         {
-            if(connection.linkedTagFrom)
+            if(connection.linkedTagFrom && ![*processedTags containsObject:connection.linkedTagFrom.pObjectID])
             {
-                cumulativeScore+=connection.linkedTagFrom.likeness.doubleValue;
-                cumulativeScore+=[connection.linkedTagFrom calculateRelevancyOnLevel:depth+1];
+                cumulativeScore+=[connection.linkedTagFrom calculateRelevancyOnLevel:depth+1 AlreadyProcessed:processedTags];
             }
         }
     }
@@ -226,6 +226,24 @@
 -(void)changeLikenessByValue:(NSNumber*)value
 {
     self.likeness=@(self.likeness.doubleValue+value.doubleValue);
+}
+
+
++(NSArray*)getInterests
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@=%d", CD_INTEREST, YES]];
+    NSError *error;
+    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    
+    if(error)
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        return nil;
+    }
+    else
+        return result;
+
 }
 
 

@@ -253,4 +253,11 @@
         return nil;
 }
 
+-(NSDate*)getWeatherTime
+{
+    if(self.linkedArea)
+        return self.linkedArea.weatherTimestamp;
+    else
+        return nil;
+}
 @end

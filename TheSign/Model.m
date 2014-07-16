@@ -494,7 +494,18 @@
     return _feed_swap_prob;
 }
 
-
+-(NSNumber*) weather_poll
+{
+    if(!_weather_poll)
+    {
+        Settings* param=[Settings getValueForParamName:@"weather_poll"];
+        if(param)
+            _weather_poll=param.paramFloat;
+        else
+            _weather_poll=@(60);
+    }
+    return _weather_poll;
+}
 
 #pragma mark - Core Data stack
 

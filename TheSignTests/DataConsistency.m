@@ -77,6 +77,7 @@
     XCTAssertTrue([[Model sharedModel] checkModel]);
 }
 
+
 - (void)testDeleteDatastore{
     [[Model sharedModel] deleteDataStore];
     XCTAssertTrue(YES);

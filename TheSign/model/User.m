@@ -93,7 +93,7 @@
     User *newUser = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                   inManagedObjectContext:[Model sharedModel].managedObjectContext];
     newUser.pObjectID=user.objectId;
-    
+    newUser.isMainUser=@(YES);
     
     if(newUser.fbID==nil && [PFFacebookUtils isLinkedWithUser:user])
     {
@@ -101,17 +101,19 @@
         [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
             if (!error)
             {
+                User* currentUser=[self currentUser];
+                
                 // result is a dictionary with the user's Facebook data
                 NSDictionary *userData = (NSDictionary *)result;
                 
-                newUser.fbID = userData[@"id"];
-                newUser.name = userData[@"first_name"];
+                currentUser.fbID = userData[@"id"];
+                currentUser.name = userData[@"first_name"];
                 
                 NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
                 [formatter setDateFormat:@"MM/dd/yyyy"];
-                newUser.birthdate = [formatter dateFromString: userData[@"birthday"]];
+                currentUser.birthdate = [formatter dateFromString: userData[@"birthday"]];
                 
-                newUser.gender = userData[@"gender"];
+                currentUser.gender = userData[@"gender"];
                 
                 NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", newUser.fbID]];
                 NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:pictureURL
@@ -121,8 +123,10 @@
                 NSURLResponse* response = nil;
                 NSError* error;
                 NSData *imageData = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];
-                newUser.pic=imageData;
+                currentUser.pic=imageData;
                 
+                
+                [[Model sharedModel] saveContext];
              //   [newUser findFriends];
             }
         }];

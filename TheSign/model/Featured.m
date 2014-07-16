@@ -263,7 +263,6 @@
 {
    for(TagSet* tagset in self.linkedTagSets)
    {
-       NSLog(@"%@ - %@",tagset.linkedTag.name,lookupTag.name);
        if (tagset && tagset.linkedTag && [tagset.linkedTag.pObjectID isEqualToString:lookupTag.pObjectID])
            return YES;
    }
@@ -281,10 +280,13 @@
 
     //update relevancy score
     double score=0.0;
+    alreadyProcessed=[NSMutableSet set];
     for(TagSet* tagset in self.linkedTagSets)
-        if( tagset.linkedTag) score+=[tagset.linkedTag calculateRelevancyOnLevel:0];
+        if( tagset.linkedTag) score+=[tagset.linkedTag calculateRelevancyOnLevel:0 AlreadyProcessed:&alreadyProcessed];
     
     [self changeRelevancyByValue:@(score)];
+    
+    [[Model sharedModel] saveContext];
 }
 
 

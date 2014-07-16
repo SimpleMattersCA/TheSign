@@ -11,6 +11,7 @@
 #import "Model.h"
 #import "Featured.h"
 #import "Business.h"
+#import "User.h"
 
 #define CD_MESSAGE (@"messageText")
 #define CD_CONTEXT (@"linkedContextTag")
@@ -226,7 +227,18 @@
 
 -(NSString*)generateGreeting
 {
-    NSArray *greetingOptions=[NSArray arrayWithObjects:@"Hi there!",@"Hello!",@"Hi!",@"Hey!", nil];
+    NSArray *greetingOptions;
+    
+    User* currentUser=[User currentUser];
+
+
+    if(currentUser && currentUser.name && ![currentUser.name isEqualToString:@""])
+        greetingOptions=[NSArray arrayWithObjects:
+                         [NSString stringWithFormat:@"Hi %@!",currentUser.name],
+                         [NSString stringWithFormat:@"Hello %@!",currentUser.name],
+                         [NSString stringWithFormat:@"Hey %@!",currentUser.name], nil];
+    else
+        greetingOptions=[NSArray arrayWithObjects:@"Hi there!",@"Hello!",@"Hi!",@"Hey!", nil];
     
     int random=arc4random_uniform((short)greetingOptions.count);
     return greetingOptions[random];
