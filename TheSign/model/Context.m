@@ -56,12 +56,12 @@
         return NO;
 }
 
-+(Context*) getByID:(NSString*)identifier
++(Context*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=='%@'", OBJECT_ID, identifier]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -73,7 +73,7 @@
 }
 
 
-+ (Boolean)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext *)context
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
@@ -83,17 +83,17 @@
     
     Boolean complete=YES;
 
-    Context *context = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
-                                             inManagedObjectContext:[Model sharedModel].managedObjectContext];
-    context.pObjectID=object.objectId;
-    context.name=object[P_NAME];
-    context.probability=object[P_PROBABILITY];
+    Context *newContext = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+                                             inManagedObjectContext:context];
+    newContext.pObjectID=object.objectId;
+    newContext.name=object[P_NAME];
+    newContext.probability=object[P_PROBABILITY];
     
     return complete;
 
 }
 
--(Boolean)refreshFromParse
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext *)context
 {
     if(!self.parseObject)
     {
@@ -115,11 +115,11 @@
     return complete;
 }
 
-+(NSInteger)getRowCount
++(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    NSInteger result = [context countForFetchRequest:request error:&error];
     
     if(error)
     {
@@ -142,11 +142,11 @@
 }
 
 
-+(NSArray*)getCurrentContextsForBusiness:(Business*)business AtLocation:(Location*)location
++(NSArray*)getCurrentContextsForBusiness:(Business*)business AtLocation:(Location*)location Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSArray *fetchedContexts = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *fetchedContexts = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -199,7 +199,7 @@
     
     if(curTemperature.integerValue < 10)
         contextTagTemp=[self getContextTagByName:@"Cold Weather"];
-    else if(curTemperature.integerValue > 25)
+    else if(curTemperature.integerValue > 22)
         contextTagTemp=[self getContextTagByName:@"Hot Weather"];
     
     if([curWeather isEqualToString:@"wind"])

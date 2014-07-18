@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ProfileController : UIViewController
+@interface ProfileController : UIViewController <UICollectionViewDataSource,UICollectionViewDelegate>
 
 @end

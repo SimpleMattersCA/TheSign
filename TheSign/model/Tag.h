@@ -35,7 +35,7 @@
 -(double) calculateRelevancyOnLevel:(NSInteger)depth AlreadyProcessed:(NSMutableSet**)processedTags;
 -(void)changeLikenessByValue:(NSNumber*)value;
 
-+(NSArray*)getInterests;
++(NSArray*)getInterestsForContext:(NSManagedObjectContext*)context;
 
 @end
 

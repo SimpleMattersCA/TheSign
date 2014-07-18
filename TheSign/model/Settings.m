@@ -60,12 +60,12 @@
         return NO;
 }
 
-+(Settings*) getByID:(NSString*)identifier
++(Settings*) getByID:(NSString*)identifier Context:(NSManagedObjectContext*)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -78,7 +78,7 @@
 
 
 
-+ (Boolean)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext*)context
 {
     if([Settings checkIfParseObjectRight:object]==NO)
     {
@@ -87,8 +87,8 @@
     }
     Boolean complete=YES;
 
-    Settings *settings = [NSEntityDescription insertNewObjectForEntityForName:[Settings entityName]
-                                                       inManagedObjectContext:[Model sharedModel].managedObjectContext];
+    Settings *settings = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+                                                       inManagedObjectContext:context];
     settings.pObjectID=object.objectId;
     settings.name=object[P_NAME];
     settings.paramStr=object[P_PARAM_STR];
@@ -100,7 +100,7 @@
     return complete;
 }
 
--(Boolean)refreshFromParse
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext*)context
 {
     if(!self.parseObject)
     {
@@ -119,11 +119,11 @@
     return complete;
 }
 
-+(NSInteger)getRowCount
++(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    NSInteger result = [context countForFetchRequest:request error:&error];
     
     if(error)
     {
@@ -135,12 +135,12 @@
 }
 
 
-+(Settings*)getValueForParamName:(NSString*)paramName
++(Settings*)getValueForParamName:(NSString*)paramName Context:(NSManagedObjectContext*)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Settings.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", P_NAME, paramName]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {

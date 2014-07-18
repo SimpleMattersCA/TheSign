@@ -10,6 +10,12 @@
 #import "Model.h"
 #import "Business.h"
 #import "BusinessCell.h"
+#import "Business.h"
+//TODO: remove after testing complete
+#import "InsightEngine.h"
+#import "Location.h"
+#import "BusinessProfileController.h"
+#import "DealViewController.h"
 
 @interface BusinessListController ()
 
@@ -31,9 +37,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.businesses=[Business getBusinessesByType:nil];
-    self.edgesForExtendedLayout = UIRectEdgeAll;
-    self.tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, CGRectGetHeight(self.tabBarController.tabBar.frame), 0.0f);
+    self.businesses=[Business getBusinessesForContext:[Model sharedModel].managedObjectContext];
+    //self.edgesForExtendedLayout = UIRectEdgeAll;
+    //self.tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, CGRectGetHeight(self.tabBarController.tabBar.frame), 0.0f);
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -82,7 +88,29 @@
     return cell;
 }
 
+//TODO: remove after testing complete
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    Business* selected=self.businesses[indexPath.row];
+    NSNumber* major=((Location*)selected.linkedLocations.anyObject).major;
+    Statistics* stat=[[Model sharedModel] recordStatisticsFromGPS:major];
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:major];
+    NSLog(@"%@",notification.alertBody);
+    notification.fireDate=[[NSDate date] dateByAddingTimeInterval:10];
+    
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:major,@"Major",/*stat,@"StatisticsID",*/ nil];
+    
+    
+    notification.userInfo=infoDict;
+    if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""])
+    {
+        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+    }
 
+
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -121,15 +149,31 @@
 }
 */
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    if([segue.identifier isEqualToString:@"ShowBusiness"] && [segue.destinationViewController isKindOfClass:[BusinessProfileController class]])
+    {
+        NSIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+        if(indexPath)
+        {
+            BusinessProfileController *dest = (BusinessProfileController *)segue.destinationViewController;
+            [dest setBusinessToShow:self.businesses[indexPath.row]];
+        }
+    }
+    if([segue.identifier isEqualToString:@"ShowDeal"] && [segue.destinationViewController isKindOfClass:[DealViewController class]])
+    {
+        NSIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+        if(indexPath)
+        {
+            BusinessProfileController *dest = (BusinessProfileController *)segue.destinationViewController;
+            [dest setBusinessToShow:self.businesses[indexPath.row]];
+        }
+    }
 }
-*/
+
 
 @end

@@ -10,6 +10,6 @@
 
 @interface FeedCell : UITableViewCell
 
--(void)setDealTitle:(NSString *)dTitle BusinessTitle:(NSString*)bTitle;
+-(void)setDealTitle:(NSString *)dTitle BusinessTitle:(NSString*)bTitle Adress:(NSString*)bAddress;
 
 @end

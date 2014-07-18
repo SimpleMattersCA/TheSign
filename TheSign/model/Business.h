@@ -29,18 +29,18 @@
 
 
 
-+(NSArray*) getBusinessesByType:(NSString*)type;
-+(NSArray*) getTypes;
-+(Location*)getClosestBusinessToLocation:(CLLocation*)location;
++(NSArray*) getBusinessesByType:(NSString*)type Context:(NSManagedObjectContext*)context;
++(NSArray*) getTypesForContext:(NSManagedObjectContext*)context;
++(Location*)getClosestBusinessToLocation:(CLLocation*)location Context:(NSManagedObjectContext*)context;
 
 -(NSSet*) getActiveOffers;
 
-+(Business*) getBusinessByUID:(NSNumber*)identifier;
++(Business*) getBusinessByUID:(NSNumber*)identifier Context:(NSManagedObjectContext*)context;
 
-+(NSArray*) getBusinesses;
++(NSArray*) getBusinessesForContext:(NSManagedObjectContext*)context;
 
-+(void)discoverBusinessByID:(NSNumber*)businessUID;
-+(NSArray*)getDiscoveredBusinesses;
++(void)discoverBusinessByID:(NSNumber*)businessUID Context:(NSManagedObjectContext*)context;
++(NSArray*)getDiscoveredBusinessesForContext:(NSManagedObjectContext*)context;
 
 
 @end

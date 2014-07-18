@@ -16,13 +16,13 @@
 
 @property PFObject* parseObject;
 
-+(instancetype) getByID:(NSString*)objectId;
-+(NSInteger) getRowCount;
++(instancetype) getByID:(NSString*)objectId Context:(NSManagedObjectContext*)context;
++(NSInteger) getRowCountForContext:(NSManagedObjectContext*)context;
 
-+(Boolean)createFromParse:(PFObject *)object;
++(Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext*)context;
 +(NSString*) entityName;
 +(NSString*) parseEntityName;
 
--(Boolean)refreshFromParse;
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext*)context;
 +(Boolean)checkIfParseObjectRight:(PFObject*)object;
 @end

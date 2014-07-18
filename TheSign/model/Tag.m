@@ -65,12 +65,12 @@
         return NO;
 }
 
-+(Tag*) getByID:(NSString*)identifier
++(Tag*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -82,7 +82,7 @@
 }
 
 
-+ (Boolean)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext *)context
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
@@ -93,7 +93,7 @@
     Boolean complete=YES;
 
     Tag *tag = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
-                                             inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                             inManagedObjectContext:context];
     tag.pObjectID=object.objectId;
     tag.name=object[P_NAME];
     if(object[P_INTEREST]) tag.interest=object[P_INTEREST];
@@ -101,7 +101,7 @@
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseContext=object[P_CONTEXT];
-        Context *linkedContext=[Context getByID:fromParseContext.objectId];
+        Context *linkedContext=[Context getByID:fromParseContext.objectId Context:context];
         if (linkedContext!=nil)
         {
             tag.linkedContext = linkedContext;
@@ -117,7 +117,7 @@
     return complete;
 }
 
--(Boolean)refreshFromParse
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext *)context
 {
     if(!self.parseObject)
     {
@@ -139,7 +139,7 @@
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseContext=self.parseObject[P_CONTEXT];
-        Context *linkedContext=[Context getByID:fromParseContext.objectId];
+        Context *linkedContext=[Context getByID:fromParseContext.objectId Context:context];
         if (linkedContext!=nil)
         {
             self.linkedContext = linkedContext;
@@ -155,11 +155,11 @@
     return complete;
 }
 
-+(NSInteger)getRowCount
++(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    NSInteger result = [context countForFetchRequest:request error:&error];
     
     if(error)
     {
@@ -229,12 +229,12 @@
 }
 
 
-+(NSArray*)getInterests
++(NSArray*)getInterestsForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@=%d", CD_INTEREST, YES]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {

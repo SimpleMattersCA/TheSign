@@ -36,6 +36,7 @@ NSNumber *detectedBeaconMajor;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
+    [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge categories:nil]];
 
     [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
                   clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
@@ -69,9 +70,10 @@ NSNumber *detectedBeaconMajor;
         WelcomeScreenViewController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"LoginView"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SetUpCompleted"];
         [[NSUserDefaults standardUserDefaults] synchronize];
+        //[Model sharedModel];
         [navigation pushViewController:firstRun animated:YES];
     }
-    
+    [Model sharedModel];
     NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     
     if(remoteNotification)

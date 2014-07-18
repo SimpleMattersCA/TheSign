@@ -35,7 +35,7 @@
  */
 -(void) processLike:(double)effect;
 
-+(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor;
++(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor Context:(NSManagedObjectContext*)context;
 
 -(Boolean)checkContextTag:(Tag*) lookupTag;
 

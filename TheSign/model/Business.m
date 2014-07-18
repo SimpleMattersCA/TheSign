@@ -73,13 +73,13 @@
 //just so I don't have to create another CoreData entity and fuck with the synchronization we gonna store business types in a hashtable. God I love hash tables. They sounds like hash browns..
 static NSArray* _businessTypes;
 
-+(Business*) getByID:(NSString*)identifier
++(Business*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     
     request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -89,12 +89,12 @@ static NSArray* _businessTypes;
     else
         return result.firstObject;
 }
-+(Business*) getBusinessByUID:(NSNumber*)identifier
++(Business*) getBusinessByUID:(NSNumber*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@=%d", CD_UID, identifier.intValue]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -105,7 +105,7 @@ static NSArray* _businessTypes;
         return result.firstObject;
 }
 
-+(Boolean)createFromParse:(PFObject *)object
++(Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext *)context
 {
     if([Business checkIfParseObjectRight:object]==NO)
     {
@@ -116,7 +116,7 @@ static NSArray* _businessTypes;
 
     NSError *error;
     Business *business = [NSEntityDescription insertNewObjectForEntityForName:Business.entityName
-                                                       inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                                       inManagedObjectContext:context];
     business.pObjectID=object.objectId;
     business.name=object[P_NAME];
     business.welcomeText=object[P_WELCOMETEXT];
@@ -147,7 +147,7 @@ static NSArray* _businessTypes;
 
 
 
--(Boolean)refreshFromParse
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext *)context
 {
     if(!self.parseObject)
     {
@@ -191,11 +191,11 @@ static NSArray* _businessTypes;
     return complete;
 }
 
-+(NSInteger)getRowCount
++(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    NSInteger result = [context countForFetchRequest:request error:&error];
     
     if(error)
     {
@@ -207,9 +207,9 @@ static NSArray* _businessTypes;
 }
 
 
-+(Location*)getClosestBusinessToLocation:(CLLocation*)curLocation
++(Location*)getClosestBusinessToLocation:(CLLocation*)curLocation Context:(NSManagedObjectContext *)context
 {
-    NSArray* businesses=[self getBusinesses];
+    NSArray* businesses=[self getBusinessesForContext:context];
     CLLocationDistance minDistance;
     CLLocation *closestLocation = nil;
     Location *closestBusinessLocation;
@@ -237,12 +237,12 @@ static NSArray* _businessTypes;
 
 
 
-+(NSArray*) getTypes
++(NSArray*) getTypesForContext:(NSManagedObjectContext *)context
 {
     if(!_businessTypes)
     {
         NSMutableArray* newTypes=[NSMutableArray array];
-        for (Business *business in [Business getBusinesses])
+        for (Business *business in [Business getBusinessesForContext:context])
         {
             if (![newTypes containsObject:business.businessType])
                 [newTypes addObject:business.businessType];
@@ -253,11 +253,11 @@ static NSArray* _businessTypes;
 }
 
 
-+(NSArray*) getBusinesses
++(NSArray*) getBusinessesForContext:(NSManagedObjectContext*)context
 {
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
         NSError *error;
-        NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+        NSArray *business = [context executeFetchRequest:request error:&error];
         
         if(error)
         {
@@ -268,13 +268,13 @@ static NSArray* _businessTypes;
         return business;
 }
 
-+(NSArray*) getBusinessesByType:(NSString*)type
++(NSArray*) getBusinessesByType:(NSString*)type Context:(NSManagedObjectContext *)context
 {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
     request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@='%@'", CD_TYPE, type]];
     NSError *error;
-    NSArray *business = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *business = [context executeFetchRequest:request error:&error];
         
     if(error)
     {
@@ -309,12 +309,12 @@ static NSArray* _businessTypes;
     return nil;
 }
 
-+(NSArray*)getDiscoveredBusinesses
++(NSArray*)getDiscoveredBusinessesForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
     request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@=%d", CD_DISCOVERED, YES]];
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -326,9 +326,9 @@ static NSArray* _businessTypes;
     
 }
 
-+(void)discoverBusinessByID:(NSNumber*)businessUID
++(void)discoverBusinessByID:(NSNumber*)businessUID Context:(NSManagedObjectContext *)context
 {
-    Business *discoveredBusiness=[Business getBusinessByUID:businessUID];
+    Business *discoveredBusiness=[Business getBusinessByUID:businessUID Context:context];
     if(discoveredBusiness!=nil)
     {
         discoveredBusiness.discovered=@(YES);

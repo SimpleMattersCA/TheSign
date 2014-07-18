@@ -71,12 +71,12 @@
         return NO;
 }
 
-+(User*) getByID:(NSString*)identifier
++(User*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -115,7 +115,7 @@
                 
                 currentUser.gender = userData[@"gender"];
                 
-                NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", newUser.fbID]];
+                NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", currentUser.fbID]];
                 NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:pictureURL
                                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                                       timeoutInterval:2.0f];
@@ -126,8 +126,8 @@
                 currentUser.pic=imageData;
                 
                 
-                [[Model sharedModel] saveContext];
-             //   [newUser findFriends];
+                //[[Model sharedModel] saveContext];
+             //   [currentUser findFriends];
             }
         }];
     }

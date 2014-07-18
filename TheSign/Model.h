@@ -42,14 +42,17 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 @property (nonatomic, strong) NSNumber * weather_poll;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContextBackground;
+
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 + (Model*) sharedModel;
+- (void) requestCloud;
 
 - (NSURL *)applicationDocumentsDirectory;
 
--(void) saveContext;
+-(void) saveContext:(NSManagedObjectContext*)context;
 
 -(double)getLikeValueForAction:(OfferLike)action;
 
@@ -64,10 +67,11 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 //********* Commonly used methods from Business Class *********//
 -(Location*)getClosestBusinessToLocation:(CLLocation*)location;
 
+-(NSArray*)getInterests;
 
 //********* For testign purpoces *********//
 -(Boolean)checkModel;
--(void)deleteModel;
+-(void)deleteModelForContext:(NSManagedObjectContext*)context;
 -(void) deleteDataStore;
 -(void)checkDeleteHistory;
 -(NSArray*) getObjectsDeletedFromParse;

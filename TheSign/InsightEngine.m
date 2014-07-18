@@ -40,20 +40,20 @@
 
 -(NSString*)generateWelcomeTextForGPSdetectedMajor:(NSNumber*)major
 {
-    Location *bizLocation=[Location getLocationByMajor:major];
+    Location *bizLocation=[Location getLocationByMajor:major Context:[Model sharedModel].managedObjectContext];
     return [self genereteWelcomeMessageForLocation:bizLocation];
 }
 
 
 -(NSString*)generateWelcomeTextForBeaconWithMajor: (NSNumber*)major andMinor:(NSNumber*)minor
 {
-    Featured* tiedOffer=[Featured getOfferByMajor:major andMinor:minor];
+    Featured* tiedOffer=[Featured getOfferByMajor:major andMinor:minor Context:[Model sharedModel].managedObjectContext];
     
     if(!tiedOffer)
         return tiedOffer.welcomeText;
     else
     {
-        Location *bizLocation=[Location getLocationByMajor:major];
+        Location *bizLocation=[Location getLocationByMajor:major Context:[Model sharedModel].managedObjectContext];
         return [self genereteWelcomeMessageForLocation:bizLocation];
     }
 }
@@ -72,7 +72,7 @@
     {
         
         //get current contexts (interesting time, day, weather etc.)
-        NSArray* activeContextTags=[Context getCurrentContextsForBusiness:business AtLocation:location];
+        NSArray* activeContextTags=[Context getCurrentContextsForBusiness:business AtLocation:location Context:[Model sharedModel].managedObjectContext];
         
         
         if(activeContextTags && activeContextTags.count!=0)
@@ -126,7 +126,7 @@
         //choose template unatached from tags
         else
         {
-            NSArray* genericTemplates=[Template getGenericTemplates];
+            NSArray* genericTemplates=[Template getGenericTemplatesForContext:[Model sharedModel].managedObjectContext];
             if(genericTemplates)
                 chosenTemplate=genericTemplates[arc4random_uniform((short)genericTemplates.count)];
             else

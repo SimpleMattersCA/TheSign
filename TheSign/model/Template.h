@@ -20,6 +20,6 @@
 
 -(NSString*) generateMessageForOffer:(Featured*)offer;
 
-+(NSArray*)getGenericTemplates;
++(NSArray*)getGenericTemplatesForContext:(NSManagedObjectContext*)context;
 
 @end

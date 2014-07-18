@@ -78,13 +78,13 @@
         return NO;
 }
 
-+(Featured*) getByID:(NSString*)identifier
++(Featured*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@='%@'", OBJECT_ID, identifier]];
 
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -95,7 +95,7 @@
         return result.firstObject;
 }
 
-+ (Boolean)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext *)context
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
@@ -107,7 +107,7 @@
 
     NSError *error;
     Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
-                                                   inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                                   inManagedObjectContext:context];
     deal.pObjectID=object.objectId;
     
     if(object[P_FULLNAME]!=nil) deal.fullName=object[P_FULLNAME];
@@ -141,7 +141,7 @@
     
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseBusiness=object[P_BUSINESS];
-    Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+    Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId Context:context];
     if (linkedBusiness!=nil)
     {
         deal.major=linkedBusiness.uid;
@@ -157,7 +157,7 @@
     return complete;
 }
 
--(Boolean)refreshFromParse
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext *)context
 {
     if(!self.parseObject)
     {
@@ -205,7 +205,7 @@
     if(self.linkedBusiness.pObjectID!=fromParseBusiness.objectId)
     {
         [self.linkedBusiness removeLinkedOffersObject:self];
-        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId Context:context];
         if(linkedBusiness!=nil)
         {
             self.major=linkedBusiness.uid;
@@ -222,11 +222,11 @@
     return complete;
 }
 
-+(NSInteger)getRowCount
++(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    NSInteger result = [context countForFetchRequest:request error:&error];
     
     if(error)
     {
@@ -238,7 +238,7 @@
 }
 
 
-+(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor
++(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSPredicate *predicateMajor = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@=%d)", CD_MAJOR, major.intValue]];
@@ -247,7 +247,7 @@
     request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor,predicateActive]];
    
     NSError *error;
-    NSArray *featured = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *featured = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -286,7 +286,7 @@
     
     [self changeRelevancyByValue:@(score)];
     
-    [[Model sharedModel] saveContext];
+   // [[Model sharedModel] saveContext:context];
 }
 
 

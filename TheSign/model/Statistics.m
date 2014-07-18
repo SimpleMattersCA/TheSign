@@ -56,37 +56,37 @@
     [self.linkedOffer processLike:effect];
 }
 
-+(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor
++(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor Context:(NSManagedObjectContext *)context
 {
     Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
-                                             inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                             inManagedObjectContext:context];
     newStat.byBeacon=@(YES);
     newStat.date=[NSDate date];
     newStat.linkedUser=[Model sharedModel].currentUser;
     newStat.major=major;
     newStat.minor=minor;
-    [Business discoverBusinessByID:major];
+    [Business discoverBusinessByID:major Context:context];
     
-    [[Model sharedModel] saveContext];
+    [[Model sharedModel] saveContext:context];
     return newStat;
 }
 
-+(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID
++(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID Context:(NSManagedObjectContext *)context
 {
     Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
-                                                        inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                                        inManagedObjectContext:context];
     newStat.byBeacon=@(NO);
     newStat.date=[NSDate date];
     newStat.linkedUser=[Model sharedModel].currentUser;
     newStat.major=businessUID;
-    [Business discoverBusinessByID:businessUID];
-    [[Model sharedModel] saveContext];
+    [Business discoverBusinessByID:businessUID Context:context];
+    [[Model sharedModel] saveContext:context];
     return newStat;
 
 }
 
 
-+(void)sendToCloud
++(void)sendToCloudForContext:(NSManagedObjectContext *)context
 {
     NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
     [dateComponents setMonth:-1];
@@ -98,7 +98,7 @@
     
     request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateBound,predicateSynced]];
     NSError *error;
-    NSArray *stats = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *stats = [context executeFetchRequest:request error:&error];
     
     if(error)
     {

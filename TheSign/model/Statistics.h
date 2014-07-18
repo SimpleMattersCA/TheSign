@@ -26,10 +26,10 @@
 @property (nonatomic, retain) NSNumber * byBeacon;
 
 
-+(void)sendToCloud;
++(void)sendToCloudForContext:(NSManagedObjectContext*)context;
 
-+(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor;
-+(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID;
++(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor Context:(NSManagedObjectContext*)context;
++(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID Context:(NSManagedObjectContext*)context;
 
 +(NSString*) entityName;
 +(NSString*) parseEntityName;

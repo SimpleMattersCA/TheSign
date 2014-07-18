@@ -36,14 +36,15 @@
 }
 
 - (void)testLikeProcessing {
+    Model* model=[Model sharedModel];
     
-    double newLike=[[Model sharedModel] getLikeValueForAction:LK_Like];
-    double newDisLike=[[Model sharedModel] getLikeValueForAction:LK_Dislike];
-    double newNonLike=[[Model sharedModel] getLikeValueForAction:LK_None];
+    double newLike=[model getLikeValueForAction:LK_Like];
+    double newDisLike=[model getLikeValueForAction:LK_Dislike];
+    double newNonLike=[model getLikeValueForAction:LK_None];
     
     double currentVal;
     
-    Featured* whiteChocolateMocha=[Featured getByID:@"Jasy3NnWGj"];
+    Featured* whiteChocolateMocha=[Featured getByID:@"Jasy3NnWGj" Context:model.managedObjectContext];
     currentVal=whiteChocolateMocha.score.doubleValue;
     NSLog(@"Mocha: old value:%f",currentVal);
     [whiteChocolateMocha processLike:newLike];
@@ -87,8 +88,9 @@
 }
 
 -(void)testOffersFeed{
+    Model* model=[Model sharedModel];
 
-    NSArray* discoveredBusinesses=[Business getDiscoveredBusinesses];
+    NSArray* discoveredBusinesses=[Business getDiscoveredBusinessesForContext:model.managedObjectContext];
 
     NSMutableArray* offers=[NSMutableArray array];
     

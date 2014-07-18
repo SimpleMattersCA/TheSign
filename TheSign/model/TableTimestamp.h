@@ -22,8 +22,8 @@
 +(NSString*)pTimeStamp;
 +(NSString*)pOrder;
 
-+(NSDate*) getUpdateTimestampForTable:(NSString*)tName;
-+ (NSArray*)getTableNames;
++(NSDate*) getUpdateTimestampForTable:(NSString*)tName Context:(NSManagedObjectContext*)context;
++ (NSArray*)getTableNamesForContext:(NSManagedObjectContext*)context;
 
 
 

@@ -35,6 +35,7 @@
 @implementation Model
 
 @synthesize managedObjectContext = _managedObjectContext;
+@synthesize managedObjectContextBackground = _managedObjectContextBackground;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
@@ -66,27 +67,29 @@
                                                    object:nil];
         
         //checking database every hour with tolerance of 10 minutes
-      //  self.networkTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(requestCloud) userInfo:nil repeats:YES];
-      //  [self.networkTimer setTolerance:600];
-      //  [self.networkTimer fire];
+
+        self.networkTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(requestCloud) userInfo:nil repeats:YES];
+        [self.networkTimer fire];
+        [self.networkTimer setTolerance:600];
         
+        //[self checkModel];
         
         //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
         //[self deleteModel];
-       // [self performSelectorInBackground:@selector(checkModel) withObject:nil];
+        //[self performSelectorInBackground:@selector(checkModel) withObject:nil];
         
     }
     return self;
 }
 
-- (void) requestCloud
+- (void)requestCloud
 {
     NSDateComponents *components = [[NSCalendar currentCalendar] components: NSHourCalendarUnit fromDate:[NSDate date]];
     //at night we pause database updates firing 8 hours from now
     if(components.hour>22)
         [self.networkTimer setFireDate:[[NSDate date] dateByAddingTimeInterval:60*60*8]];
     
-    [Statistics sendToCloud];
+    //[Statistics sendToCloudForContext:self.managedObjectContextBackground];
     [self performSelectorInBackground:@selector(checkModel) withObject:nil];
 }
 
@@ -138,7 +141,7 @@
         for (PFObject *object in objects)
         {
             NSString *tableName=object[TableTimestamp.pTableName];
-            NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName];
+            NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName Context:self.managedObjectContextBackground];
             if(![timestamp isEqualToDate:object[TableTimestamp.pTimeStamp]])
             {
                 if([self pullFromCloud:tableName]==NO)
@@ -153,14 +156,14 @@
     }
     
     
-    [self saveContext];
+    [self saveContext:self.managedObjectContextBackground];
     return completeData;
 }
 
 /**
  deleting the model
  */
--(void)deleteModel
+-(void)deleteModelForContext:(NSManagedObjectContext *)context
 {
     [self deleteEntity:TableTimestamp.entityName];
     [self deleteEntity:Settings.entityName];
@@ -174,7 +177,7 @@
     [self deleteEntity:Location.entityName];
     [self deleteEntity:Area.entityName];
     [self deleteEntity:Template.entityName];
-    [self saveContext];
+    [self saveContext:context];
 }
 
 -(void)deleteDataStore
@@ -222,7 +225,7 @@
     Boolean completeFull=YES;;
     
     Class targetClass=[self getClassForParseEntity:cloudEntityName];
-    NSDate* cdTimestamp=[TableTimestamp getUpdateTimestampForTable:cloudEntityName];
+    NSDate* cdTimestamp=[TableTimestamp getUpdateTimestampForTable:cloudEntityName Context:self.managedObjectContextBackground];
     
     PFQuery *query = [PFQuery queryWithClassName:cloudEntityName];
     if (cdTimestamp!=nil)[query whereKey:@"updatedAt" greaterThan:cdTimestamp];
@@ -239,12 +242,12 @@
 
         for (PFObject *object in result)
         {
-            id cdObject=[targetClass getByID:object.objectId];
+            id cdObject=[targetClass getByID:object.objectId Context:self.managedObjectContextBackground];
             
             if(cdObject!=nil)
-                completeRecord=[cdObject refreshFromParse];
+                completeRecord=[cdObject refreshFromParseForContext:self.managedObjectContextBackground];
             else
-                completeRecord=[targetClass createFromParse:object];
+                completeRecord=[targetClass createFromParse:object Context:self.managedObjectContextBackground];
             
             if(completeFull && !completeRecord)
                 completeFull=NO;
@@ -266,7 +269,7 @@
 
 -(void)deleteObjectForClass:(Class)class ParseObjectID:(NSString*)pObjectID
 {
-    NSManagedObject* objectToDelete=[class getByID:pObjectID];
+    NSManagedObject* objectToDelete=[class getByID:pObjectID Context:self.managedObjectContextBackground];
     if(objectToDelete)
         [self.managedObjectContext deleteObject:objectToDelete];
 }
@@ -304,7 +307,7 @@
     for(PFObject *deletedObject in deletedObjects)
     {
         Class entityClass=[self getClassForParseEntity:deletedObject[@"table"]];
-        cdObjectToDelete=[entityClass getByID:deletedObject[@"delObjectID"]];
+        cdObjectToDelete=[entityClass getByID:deletedObject[@"delObjectID"] Context:self.managedObjectContextBackground];
         if(cdObjectToDelete)
             [result addObject:cdObjectToDelete];
     }
@@ -324,14 +327,14 @@
         [self.managedObjectContext deleteObject:object];
     }
     
-    [self saveContext];
+    [self saveContext:self.managedObjectContextBackground];
 }
 
 
-- (void)saveContext
+- (void)saveContext:(NSManagedObjectContext*)context
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = context;
     if (managedObjectContext != nil) {
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
             NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
@@ -356,7 +359,7 @@
 {
     if(!_beaconUUID)
     {
-        Settings* param=[Settings getValueForParamName:@"beaconUUID"];
+        Settings* param=[Settings getValueForParamName:@"beaconUUID" Context:self.managedObjectContext];
         if(param)
             _beaconUUID=param.paramStr;
         else
@@ -369,7 +372,7 @@
 {
     if(!_prob_pref)
     {
-        Settings* param=[Settings getValueForParamName:@"prob_pref"];
+        Settings* param=[Settings getValueForParamName:@"prob_pref" Context:self.managedObjectContext];
         if(param)
             _prob_pref=param.paramFloat;
         else
@@ -382,7 +385,7 @@
 {
     if(!_min_negativeScore)
     {
-        Settings* param=[Settings getValueForParamName:@"min_negativeScore"];
+        Settings* param=[Settings getValueForParamName:@"min_negativeScore" Context:self.managedObjectContext];
         if(param)
             _min_negativeScore=param.paramFloat;
         else
@@ -395,7 +398,7 @@
 {
     if(!_relevancyDepth)
     {
-        Settings* param=[Settings getValueForParamName:@"relevancyDepth"];
+        Settings* param=[Settings getValueForParamName:@"relevancyDepth" Context:self.managedObjectContext];
         if(param)
             _relevancyDepth=param.paramInt;
         else
@@ -407,7 +410,7 @@
 {
     if(!_min_like_level)
     {
-        Settings* param=[Settings getValueForParamName:@"min_like_level"];
+        Settings* param=[Settings getValueForParamName:@"min_like_level" Context:self.managedObjectContext];
         if(param)
             _min_like_level=param.paramFloat;
         else
@@ -420,7 +423,7 @@
 {
     if(!_prob_no_relev)
     {
-        Settings* param=[Settings getValueForParamName:@"prob_no_relev"];
+        Settings* param=[Settings getValueForParamName:@"prob_no_relev" Context:self.managedObjectContext];
         if(param)
             _prob_no_relev=param.paramFloat;
         else
@@ -433,7 +436,7 @@
 {
     if(!_lk_none)
     {
-        Settings* param=[Settings getValueForParamName:@"lk_none"];
+        Settings* param=[Settings getValueForParamName:@"lk_none" Context:self.managedObjectContext];
         if(param)
             _lk_none=param.paramFloat;
         else
@@ -446,7 +449,7 @@
 {
     if(!_lk_like)
     {
-        Settings* param=[Settings getValueForParamName:@"lk_like"];
+        Settings* param=[Settings getValueForParamName:@"lk_like" Context:self.managedObjectContext];
         if(param)
             _lk_like=param.paramFloat;
         else
@@ -459,7 +462,7 @@
 {
     if(!_lk_dislike)
     {
-        Settings* param=[Settings getValueForParamName:@"lk_dislike"];
+        Settings* param=[Settings getValueForParamName:@"lk_dislike" Context:self.managedObjectContext];
         if(param)
             _lk_dislike=param.paramFloat;
         else
@@ -472,7 +475,7 @@
 {
     if(!_offersFeedLimit)
     {
-        Settings* param=[Settings getValueForParamName:@"offersFeedLimit"];
+        Settings* param=[Settings getValueForParamName:@"offersFeedLimit" Context:self.managedObjectContext];
         if(param)
             _offersFeedLimit=param.paramInt;
         else
@@ -485,7 +488,7 @@
 {
     if(!_feed_swap_prob)
     {
-        Settings* param=[Settings getValueForParamName:@"feed_swap_prob"];
+        Settings* param=[Settings getValueForParamName:@"feed_swap_prob" Context:self.managedObjectContext];
         if(param)
             _feed_swap_prob=param.paramFloat;
         else
@@ -498,7 +501,7 @@
 {
     if(!_weather_poll)
     {
-        Settings* param=[Settings getValueForParamName:@"weather_poll"];
+        Settings* param=[Settings getValueForParamName:@"weather_poll" Context:self.managedObjectContext];
         if(param)
             _weather_poll=param.paramFloat;
         else
@@ -526,6 +529,25 @@
     
     return _managedObjectContext;
 }
+
+// Returns the managed object context for the application.
+// If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
+- (NSManagedObjectContext *)managedObjectContextBackground
+{
+    if (_managedObjectContextBackground != nil) {
+        return _managedObjectContextBackground;
+    }
+    
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (coordinator != nil) {
+        _managedObjectContextBackground = [[NSManagedObjectContext alloc] init];
+        [_managedObjectContextBackground setPersistentStoreCoordinator:coordinator];
+    }
+    
+    
+    return _managedObjectContextBackground;
+}
+
 
 // Returns the managed object model for the application.
 // If the model doesn't already exist, it is created from the application's model.
@@ -601,19 +623,25 @@
 #pragma mark - Sending requests for commonly used methods to approrpiate classes
 //Commonly used methods from Statistics Class
 
--(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor
+-(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor 
 {
-    return [Statistics recordStatisticsFromBeaconMajor:major Minor:minor];
+    return [Statistics recordStatisticsFromBeaconMajor:major Minor:minor Context:self.managedObjectContext];
 }
 -(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID
 {
-    return [Statistics recordStatisticsFromGPS:businessUID];
+    return [Statistics recordStatisticsFromGPS:businessUID Context:self.managedObjectContext];
 }
 
 -(Location*)getClosestBusinessToLocation:(CLLocation*)location
 {
-    return [Business getClosestBusinessToLocation:location];
+    return [Business getClosestBusinessToLocation:location Context:self.managedObjectContext];
 }
+
+-(NSArray*)getInterests
+{
+    return [Tag getInterestsForContext:self.managedObjectContext];
+}
+
 
 -(User*) currentUser
 {
@@ -630,7 +658,7 @@
 -(NSArray*)getDealsForFeed
 {
     //get discovered businesses
-    NSArray* discoveredBusinesses=[Business getDiscoveredBusinesses];
+    NSArray* discoveredBusinesses=[Business getDiscoveredBusinessesForContext:self.managedObjectContext];
     
     //get offers from those discovered businesses
     

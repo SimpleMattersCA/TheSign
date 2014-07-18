@@ -56,12 +56,12 @@
 }
 
 
-+(Link*) getByID:(NSString*)identifier
++(Link*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -73,7 +73,7 @@
 }
 
 
-+ (Boolean)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext *)context
 {
     if([Link checkIfParseObjectRight:object]==NO)
     {
@@ -83,14 +83,14 @@
     
     Boolean complete=YES;
 
-    Link *link = [NSEntityDescription insertNewObjectForEntityForName:Link.entityName
-                                               inManagedObjectContext:[Model sharedModel].managedObjectContext];
+    Link *link = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+                                               inManagedObjectContext:context];
     link.pObjectID=object.objectId;
     if(object[P_URL]!=nil) link.url=object[P_URL];
     
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseBusiness=object[P_BUSINESS];
-    Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+    Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId Context:context];
     if (linkedBusiness!=nil)
     {
         link.linkedBusiness = linkedBusiness;
@@ -105,7 +105,7 @@
     return complete;
 }
 
--(Boolean)refreshFromParse
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext *)context
 {
     if(!self.parseObject)
     {
@@ -128,7 +128,7 @@
     if (fromParseBusiness.objectId!=self.linkedBusiness.pObjectID)
     {
         [self.linkedBusiness removeLinkedLinksObject:self];
-        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId Context:context];
         if (linkedBusiness!=nil)
         {
             self.linkedBusiness = linkedBusiness;
@@ -144,11 +144,11 @@
     return complete;
 }
 
-+(NSInteger)getRowCount
++(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    NSInteger result = [context countForFetchRequest:request error:&error];
     
     if(error)
     {

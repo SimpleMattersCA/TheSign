@@ -61,12 +61,12 @@
         return NO;
 }
 
-+(Template*) getByID:(NSString*)identifier
++(Template*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -78,7 +78,7 @@
 }
 
 
-+ (Boolean)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext *)context
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
@@ -89,7 +89,7 @@
     Boolean complete=YES;
 
     Template *template = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
-                                             inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                             inManagedObjectContext:context];
     template.pObjectID=object.objectId;
     template.messageText=object[P_MESSAGE];
 
@@ -97,7 +97,7 @@
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseTag=object[P_CONTEXT];
-        Tag *linkedTag=[Tag getByID:fromParseTag.objectId];
+        Tag *linkedTag=[Tag getByID:fromParseTag.objectId Context:context];
         if (linkedTag!=nil)
         {
             template.linkedContextTag = linkedTag;
@@ -114,7 +114,7 @@
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseTag=object[P_CATEGORY];
-        Tag *linkedTag=[Tag getByID:fromParseTag.objectId];
+        Tag *linkedTag=[Tag getByID:fromParseTag.objectId Context:context];
         if (linkedTag!=nil)
         {
             template.linkedCategoryTag = linkedTag;
@@ -130,7 +130,7 @@
     return complete;
 }
 
--(Boolean)refreshFromParse
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext *)context
 {
     if(!self.parseObject)
     {
@@ -152,7 +152,7 @@
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseTag=self.parseObject[P_CONTEXT];
-        Tag *linkedTag=[Tag getByID:fromParseTag.objectId];
+        Tag *linkedTag=[Tag getByID:fromParseTag.objectId Context:context];
         if (linkedTag!=nil)
         {
             self.linkedContextTag = linkedTag;
@@ -169,7 +169,7 @@
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseTag=self.parseObject[P_CATEGORY];
-        Tag *linkedTag=[Tag getByID:fromParseTag.objectId];
+        Tag *linkedTag=[Tag getByID:fromParseTag.objectId Context:context];
         if (linkedTag!=nil)
         {
             self.linkedCategoryTag = linkedTag;
@@ -185,11 +185,11 @@
     return complete;
 }
 
-+(NSInteger)getRowCount
++(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    NSInteger result = [context countForFetchRequest:request error:&error];
     
     if(error)
     {
@@ -209,12 +209,12 @@
         return nil;
 }
 
-+(NSArray*)getGenericTemplates
++(NSArray*)getGenericTemplatesForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@=nil", CD_CONTEXT]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {

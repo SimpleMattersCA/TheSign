@@ -58,12 +58,12 @@
 +(NSString*) entityName {return @"TagSet";}
 +(NSString*) parseEntityName {return @"TagSet";}
 
-+(TagSet*) getByID:(NSString*)identifier
++(TagSet*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -76,7 +76,7 @@
 
 
 
-+(Boolean)createFromParse:(PFObject *)object
++(Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext *)context
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
@@ -87,7 +87,7 @@
     Boolean complete=YES;
 
     TagSet *tagset = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
-                                                   inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                                   inManagedObjectContext:context];
     tagset.pObjectID=object.objectId;
     if(object[P_WEIGHT])
         tagset.weight=object[P_WEIGHT];
@@ -95,7 +95,7 @@
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseFeatured=object[P_OFFER];
     
-    Featured *linkedFeatured=[Featured getByID:fromParseFeatured.objectId];
+    Featured *linkedFeatured=[Featured getByID:fromParseFeatured.objectId Context:context];
     if(linkedFeatured)
     {
         tagset.linkedOffer = linkedFeatured;
@@ -109,7 +109,7 @@
 
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseTag=object[P_TAG];
-    Tag *linkedTag=[Tag getByID:fromParseTag.objectId];
+    Tag *linkedTag=[Tag getByID:fromParseTag.objectId Context:context];
     if(linkedTag)
     {
         tagset.linkedTag = linkedTag;
@@ -124,7 +124,7 @@
     return complete;
 }
 
--(Boolean)refreshFromParse
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext *)context
 {
     if(!self.parseObject)
     {
@@ -153,7 +153,7 @@
     if (fromParseFeatured.objectId!=self.linkedOffer.pObjectID)
     {
         [self.linkedOffer removeLinkedTagSetsObject:self];
-        Featured *linkedFeatured=[Featured getByID:fromParseFeatured.objectId];
+        Featured *linkedFeatured=[Featured getByID:fromParseFeatured.objectId Context:context];
         if(linkedFeatured!=nil)
         {
             self.linkedOffer = linkedFeatured;
@@ -172,7 +172,7 @@
     if (fromParseTag.objectId!=self.linkedTag.pObjectID)
     {
         [self.linkedTag removeLinkedTagSetsObject:self];
-        Tag *linkedTag=[Tag getByID:fromParseTag.objectId];
+        Tag *linkedTag=[Tag getByID:fromParseTag.objectId Context:context];
         if(linkedTag!=nil)
         {
             self.linkedTag = linkedTag;
@@ -189,11 +189,11 @@
     return complete;
 }
 
-+(NSInteger)getRowCount
++(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    NSInteger result = [context countForFetchRequest:request error:&error];
     
     if(error)
     {

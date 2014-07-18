@@ -66,13 +66,13 @@
 }
 
 
-+(Location*) getByID:(NSString*)identifier
++(Location*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
 
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -85,7 +85,7 @@
 
 
 
-+ (Boolean)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext *)context
 {
     if([Location checkIfParseObjectRight:object]==NO)
     {
@@ -96,7 +96,7 @@
     Boolean complete=YES;
     
     Location *location = [NSEntityDescription insertNewObjectForEntityForName:[Location entityName]
-                                               inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                               inManagedObjectContext:context];
     location.pObjectID=object.objectId;
     location.address=object[P_ADDRESS];
     location.longitude=object[P_LONGITUDE];
@@ -104,7 +104,7 @@
     location.major=(NSNumber*)(object[P_MAJOR]);
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseBusiness=object[P_BUSINESS];
-    Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+    Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId Context:context];
     if (linkedBusiness!=nil)
     {
         location.linkedBusiness = linkedBusiness;
@@ -118,7 +118,7 @@
     
     //careful, incomplete object - only objectId property is there
     PFObject *fromParseArea=object[P_AREA];
-    Area *linkedArea=[Area getByID:fromParseArea.objectId];
+    Area *linkedArea=[Area getByID:fromParseArea.objectId Context:context];
     if (linkedArea!=nil)
     {
         location.linkedArea = linkedArea;
@@ -133,7 +133,7 @@
     return complete;
 }
 
--(Boolean)refreshFromParse
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext *)context
 {
     if(!self.parseObject)
     {
@@ -159,7 +159,7 @@
     if (fromParseBusiness.objectId!=self.linkedBusiness.pObjectID)
     {
         [self.linkedBusiness removeLinkedLocationsObject:self];
-        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId];
+        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId Context:context];
         if (linkedBusiness!=nil)
         {
             self.linkedBusiness = linkedBusiness;
@@ -178,7 +178,7 @@
     {
         //careful, incomplete object - only objectId property is there
         PFObject *fromParseArea=self.parseObject[P_AREA];
-        Area *linkedArea=[Area getByID:fromParseArea.objectId];
+        Area *linkedArea=[Area getByID:fromParseArea.objectId Context:context];
         if (linkedArea!=nil)
         {
             self.linkedArea = linkedArea;
@@ -194,11 +194,11 @@
     return complete;
 }
 
-+(NSInteger)getRowCount
++(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    NSInteger result = [context countForFetchRequest:request error:&error];
     
     if(error)
     {
@@ -211,12 +211,12 @@
 
 
 
-+(Location*)getLocationByMajor:(NSNumber*)major
++(Location*)getLocationByMajor:(NSNumber*)major Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Location.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAJOR, major.intValue]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {

@@ -59,12 +59,12 @@
 }
 
 
-+(TableTimestamp*) getByID:(NSString*)identifier
++(TableTimestamp*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
-    NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -75,7 +75,7 @@
         return result.firstObject;
 }
 
-+ (Boolean)createFromParse:(PFObject *)object
++ (Boolean)createFromParse:(PFObject *)object Context:(NSManagedObjectContext *)context
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
@@ -86,7 +86,7 @@
     Boolean complete=YES;
 
     TableTimestamp *timeStamp = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
-                                                          inManagedObjectContext:[Model sharedModel].managedObjectContext];
+                                                          inManagedObjectContext:context];
     timeStamp.pObjectID=object.objectId;
     timeStamp.timeStamp=object[TableTimestamp.pTimeStamp];
     timeStamp.tableName=object[TableTimestamp.pTableName];
@@ -95,7 +95,7 @@
     return complete;
 }
 
--(Boolean)refreshFromParse
+-(Boolean)refreshFromParseForContext:(NSManagedObjectContext *)context
 {
     if(!self.parseObject)
     {
@@ -118,11 +118,11 @@
     return complete;
 }
 
-+(NSInteger)getRowCount
++(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
     NSError *error;
-    NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
+    NSInteger result = [context countForFetchRequest:request error:&error];
     
     if(error)
     {
@@ -134,14 +134,14 @@
 }
 
 
-+ (NSArray*)getTableNames
++ (NSArray*)getTableNamesForContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:TableTimestamp.entityName];
     NSError *error;
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
                                         initWithKey:CD_ORDER ascending:YES];
     [request setSortDescriptors:@[sortDescriptor]];
-    NSArray *timestamps = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *timestamps = [context executeFetchRequest:request error:&error];
     
     if(error)
     {
@@ -154,12 +154,12 @@
     }
 }
 
-+(NSDate*) getUpdateTimestampForTable:(NSString*)tName
++(NSDate*) getUpdateTimestampForTable:(NSString*)tName Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:TableTimestamp.entityName];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", CD_TABLE,tName]];
     NSError *error;
-    NSArray *timestamp = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *timestamp = [context executeFetchRequest:request error:&error];
     
     if(error)
     {

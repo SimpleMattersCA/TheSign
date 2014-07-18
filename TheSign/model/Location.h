@@ -26,7 +26,7 @@
 -(NSString*)getWeather;
 -(NSDate*)getWeatherTime;
 
-+(Location*)getLocationByMajor:(NSNumber*)major;
++(Location*)getLocationByMajor:(NSNumber*)major Context:(NSManagedObjectContext*)context;
 
 -(CLLocation*)getLocationObject;
 

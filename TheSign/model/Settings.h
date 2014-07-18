@@ -23,6 +23,6 @@
 
 
 
-+(Settings*)getValueForParamName:(NSString*)paramName;
++(Settings*)getValueForParamName:(NSString*)paramName Context:(NSManagedObjectContext*)context;
 
 @end
