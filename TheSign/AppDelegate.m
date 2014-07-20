@@ -12,6 +12,10 @@
 #import "WelcomeScreenViewController.h"
 #import "Location.h"
 #import "Business.h"
+#import "Statistics.h"
+#import "Featured.h"
+#import "FeedController.h"
+
 @import UIKit.UINavigationController;
 @import CoreLocation;
 
@@ -36,7 +40,7 @@ NSNumber *detectedBeaconMajor;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
-    [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge categories:nil]];
+   // [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge categories:nil]];
 
     [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
                   clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
@@ -191,24 +195,34 @@ Preparing and starting geofence and beacon monitoring
 
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
     if (application.applicationState == UIApplicationStateInactive ) {
-        UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
-   //     DetailsViewController *details =
-     //   [navigation.storyboard instantiateViewControllerWithIdentifier:@"DetailsView"];
         
-#warning do a goddamn notificaiton call right
-        //details setBusinessToShow:[notification.userInfo objectForKey:@"BeaconMajor"]];
-  //      [navigation pushViewController:details animated:NO];
         
-        // Process the received notification
-        //[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
-
-        //The application received the notification from an inactive state, i.e. the user tapped the "View" button for the alert.
-        //If the visible view controller in your view controller stack isn't the one you need then show the right one.
+        Statistics* stat=[[Model sharedModel] getStatisticsByURL:[notification.userInfo objectForKey:@"StatisticsObjectID"]];
+        Featured* offer;
+        
+        NSString* offerObjectID=(NSString*)[notification.userInfo objectForKey:@"StatisticsObjectID"];
+        if(offerObjectID)
+            offer=[Featured getByID:offerObjectID Context:[Model sharedModel].managedObjectContext];
+        
+        if(stat && offer)
+        {
+            [stat setDeal:offer];
+            
+            //present deal view
+            UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
+            [navigation popToRootViewControllerAnimated:NO];
+            FeedController* feed=(FeedController*)(navigation.topViewController);
+            [feed showDealAfterLoad:offer Statistics:stat];
+        }
+        
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
     }
     
-    if(application.applicationState == UIApplicationStateActive ) {
-        //The application received a notification in the active state, so you can display an alert view or do something appropriate.
+    if(application.applicationState == UIApplicationStateActive )
+    {
+        //TODO: process notification when application is in foreground
     }
 }
 
@@ -236,16 +250,16 @@ Preparing and starting geofence and beacon monitoring
 {
     NSNumber* major=@([region.identifier intValue]);
     Statistics* stat=[[Model sharedModel] recordStatisticsFromGPS:major];
-    
+    Featured* chosenOffer;
     UILocalNotification *notification = [[UILocalNotification alloc] init];
-    notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:major];
+    notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:major ChosenOffer:&chosenOffer];
 
     
-    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:major,@"Major",stat,@"StatisticsObject", nil];
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation,@"StatisticsObjectID", nil];
     
     
     notification.userInfo=infoDict;
-    if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""])
+    if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""] && chosenOffer!=nil)
     {
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
@@ -281,18 +295,18 @@ Preparing and starting geofence and beacon monitoring
         
         
         Statistics* stat=[[Model sharedModel] recordStatisticsFromBeaconMajor:detectedBeaconMajor Minor:detectedBeaconMinor];
-        
+        Featured* chosenOffer;
         
         UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor];
+        notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor ChosenOffer:&chosenOffer];
         
         
         
-        NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:closest.major,@"Major",stat,@"StatisticsObject", nil];
+        NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation,@"StatisticsObjectID", nil];
 
     
         notification.userInfo=infoDict;
-        if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""])
+        if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""] && chosenOffer!=nil)
         {
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
@@ -339,8 +353,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+    [[Model sharedModel] saveEverything];
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
@@ -359,6 +373,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    [[Model sharedModel] saveEverything];
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 

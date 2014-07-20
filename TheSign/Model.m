@@ -32,6 +32,51 @@
 
 @end
 
+@implementation NSManagedObjectContext (FetchedObjectFromURI)
+- (NSManagedObject *)objectWithURI:(NSURL *)uri
+{
+    NSManagedObjectID *objectID =
+    [[self persistentStoreCoordinator]
+     managedObjectIDForURIRepresentation:uri];
+    
+    if (!objectID)
+    {
+        return nil;
+    }
+    
+    NSManagedObject *objectForID = [self objectWithID:objectID];
+    if (![objectForID isFault])
+    {
+        return objectForID;
+    }
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[objectID entity]];
+    
+    // Equivalent to
+    // predicate = [NSPredicate predicateWithFormat:@"SELF = %@", objectForID];
+    NSPredicate *predicate =
+    [NSComparisonPredicate
+     predicateWithLeftExpression:
+     [NSExpression expressionForEvaluatedObject]
+     rightExpression:
+     [NSExpression expressionForConstantValue:objectForID]
+     modifier:NSDirectPredicateModifier
+     type:NSEqualToPredicateOperatorType
+     options:0];
+    [request setPredicate:predicate];
+    
+    NSArray *results = [self executeFetchRequest:request error:nil];
+    if ([results count] > 0 )
+    {
+        return [results objectAtIndex:0];
+    }
+    
+    return nil;
+}
+@end
+
+
 @implementation Model
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -45,10 +90,14 @@
     {
         case LK_None:
             return self.lk_none.doubleValue;
-        case LK_Dislike:
-            return self.lk_dislike.doubleValue;
         case LK_Like:
             return self.lk_like.doubleValue;
+        case LK_Dislike:
+            return self.lk_dislike.doubleValue;
+        case LK_UnLike:
+            return -self.lk_like.doubleValue;
+        case LK_UnDislike:
+            return -self.lk_dislike.doubleValue;
         default:
             return 0;
     }
@@ -128,13 +177,15 @@
     */
     [self checkDeleteHistory];
 
-    Boolean completeData=YES;
-
+    Boolean completeData=YES;    
+    
     //pull from cloud for
     PFQuery *query = [PFQuery queryWithClassName:TableTimestamp.parseEntityName];
     NSError *error;
     [query orderByAscending:TableTimestamp.pOrder];
     NSArray *objects=[query findObjects:&error];
+    
+    
     
     if (!error)
     {
@@ -146,6 +197,8 @@
             {
                 if([self pullFromCloud:tableName]==NO)
                     completeData=NO;
+                
+                
             }
         }
         [self pullFromCloud:TableTimestamp.parseEntityName];
@@ -252,11 +305,6 @@
             if(completeFull && !completeRecord)
                 completeFull=NO;
         }
-      
-        
-        // [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud"
-     //                                                       object:self
-        //                                                  userInfo:[NSDictionary dictionaryWithObject:entityName forKey:@"Entity"]];
     }
     else
     {
@@ -330,6 +378,11 @@
     [self saveContext:self.managedObjectContextBackground];
 }
 
+-(void)saveEverything
+{
+    [self saveContext:self.managedObjectContext];
+    [self saveContext:self.managedObjectContextBackground];
+}
 
 - (void)saveContext:(NSManagedObjectContext*)context
 {
@@ -631,6 +684,11 @@
 {
     return [Statistics recordStatisticsFromGPS:businessUID Context:self.managedObjectContext];
 }
+-(Statistics*)recordStatisticsFromFeed
+{
+    return [Statistics recordStatisticsFromFeedForContext:self.managedObjectContext];
+}
+
 
 -(Location*)getClosestBusinessToLocation:(CLLocation*)location
 {
@@ -720,7 +778,7 @@
             if(r<randomBound*endVal/startVal)
             {
                 //shuffling the interval
-                [offersWithScore addObjectsFromArray:[self shuffleArray:[offersWithScore objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startInt, lengthInt+1)]]]];
+                [offersWithScore addObjectsFromArray:[self shuffleArray:[sortedOffers objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(startInt, lengthInt+1)]]]];
             }
             else
             {
@@ -743,7 +801,6 @@
             }
         }
     }
-    
     //shuffling offers with zero or acceptably negative relevancy score
     offersNoScore=[self shuffleArray:offersNoScore];
     
@@ -766,5 +823,13 @@
 }
 
 
+-(Statistics*)getStatisticsByURL:(NSURL*)stringID
+{
+    return (Statistics*)[self.managedObjectContext objectWithURI:stringID];
+    
+}
+
+
 
 @end
+

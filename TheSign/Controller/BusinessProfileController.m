@@ -12,8 +12,8 @@
 
 @interface BusinessProfileController ()
 @property (weak, nonatomic) IBOutlet UIImageView *businessLogo;
-@property (weak, nonatomic) IBOutlet UILabel *businessTitle;
 @property (weak, nonatomic) IBOutlet UITableView *dealList;
+@property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
 
 @property (nonatomic, strong) NSArray* deals;
 @property (nonatomic, strong) Business* business;
@@ -24,10 +24,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    NSLog(@"%@", self.business.name);
     self.businessLogo.image=[UIImage imageWithData:self.business.logo];
-    self.businessTitle.text=self.business.name;
-    
+    self.navigationBar.title=self.business.name;
     // Do any additional setup after loading the view.
 }
 
@@ -50,6 +49,7 @@
 {
     self.business=business;
     self.deals=[[business getActiveOffers] allObjects];
+
 }
 #pragma mark - Table view data source
 
@@ -82,7 +82,6 @@
     // [cell setDealTitle:deal.fullName BusinessTitle:deal.linkedBusiness.name Adress:((Location*)(deal.linkedBusiness.linkedLocations.anyObject)).address];
     // Configure the cell...
     
-    return cell;
 }
 
 

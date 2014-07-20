@@ -336,4 +336,10 @@ static NSArray* _businessTypes;
     }
 }
 
+
+-(NSString*)getLocationAddressForDeal:(Featured*)deal
+{
+    return ((Location*)self.linkedLocations.anyObject).address;
+}
+
 @end

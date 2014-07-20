@@ -41,6 +41,9 @@
 
 -(void)changeRelevancyByValue:(NSNumber*)value;
 
+-(NSString*)getLocationAddress;
+-(NSString*)getBusinessName;
+
 @end
 
 @interface Featured (CoreDataGeneratedAccessors)

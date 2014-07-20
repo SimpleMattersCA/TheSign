@@ -26,8 +26,6 @@
 		55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */; };
 		55101D3E18D823ED0074B4D2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55101D3D18D823ED0074B4D2 /* CoreData.framework */; };
 		5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB151931BB1D00B256FF /* TableTimestamp.m */; };
-		55692CF61952A98200DE60F7 /* BusinessCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 55692CF41952A98200DE60F7 /* BusinessCell.m */; };
-		55692CF71952A98200DE60F7 /* BusinessCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55692CF51952A98200DE60F7 /* BusinessCell.xib */; };
 		559A427319529F46007D0D66 /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 559A427219529F46007D0D66 /* ProfileController.m */; };
 		559F76DE1967656D00905390 /* Context.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76DD1967656D00905390 /* Context.m */; };
 		559F76E11967C9E700905390 /* Area.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76E01967C9E700905390 /* Area.m */; };
@@ -45,7 +43,6 @@
 		55C89C37195BCED000CA16D9 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C89C36195BCED000CA16D9 /* Settings.m */; };
 		55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E15FE2191A062B00A8B826 /* InsightEngine.m */; };
 		55EC54E31950FE16009494E4 /* FeedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EC54E11950FE16009494E4 /* FeedCell.m */; };
-		55EC54E41950FE16009494E4 /* FeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55EC54E21950FE16009494E4 /* FeedCell.xib */; };
 		55EC54E8195160A5009494E4 /* FeedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EC54E7195160A5009494E4 /* FeedController.m */; };
 		55EC54EE195175BF009494E4 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EC54ED195175BF009494E4 /* LoginController.m */; };
 		55EE37B318B7057C002A121C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37B218B7057C002A121C /* Foundation.framework */; };
@@ -141,9 +138,6 @@
 		5557BB141931BB1D00B256FF /* TableTimestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TableTimestamp.h; path = model/TableTimestamp.h; sourceTree = "<group>"; };
 		5557BB151931BB1D00B256FF /* TableTimestamp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableTimestamp.m; path = model/TableTimestamp.m; sourceTree = "<group>"; };
 		5557BB1A1931C28700B256FF /* SignEntityProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SignEntityProtocol.h; sourceTree = "<group>"; };
-		55692CF31952A98200DE60F7 /* BusinessCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BusinessCell.h; path = Controller/BusinessCell.h; sourceTree = "<group>"; };
-		55692CF41952A98200DE60F7 /* BusinessCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BusinessCell.m; path = Controller/BusinessCell.m; sourceTree = "<group>"; };
-		55692CF51952A98200DE60F7 /* BusinessCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BusinessCell.xib; path = Controller/BusinessCell.xib; sourceTree = "<group>"; };
 		559A426B19529B34007D0D66 /* BusinessListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BusinessListController.h; path = Controller/BusinessListController.h; sourceTree = "<group>"; };
 		559A427119529F46007D0D66 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfileController.h; path = Controller/ProfileController.h; sourceTree = "<group>"; };
 		559A427219529F46007D0D66 /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProfileController.m; path = Controller/ProfileController.m; sourceTree = "<group>"; };
@@ -174,7 +168,6 @@
 		55E15FE2191A062B00A8B826 /* InsightEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InsightEngine.m; sourceTree = "<group>"; };
 		55EC54E01950FE16009494E4 /* FeedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedCell.h; path = Controller/FeedCell.h; sourceTree = "<group>"; };
 		55EC54E11950FE16009494E4 /* FeedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FeedCell.m; path = Controller/FeedCell.m; sourceTree = "<group>"; };
-		55EC54E21950FE16009494E4 /* FeedCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FeedCell.xib; path = Controller/FeedCell.xib; sourceTree = "<group>"; };
 		55EC54E6195160A5009494E4 /* FeedController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedController.h; path = Controller/FeedController.h; sourceTree = "<group>"; };
 		55EC54E7195160A5009494E4 /* FeedController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FeedController.m; path = Controller/FeedController.m; sourceTree = "<group>"; };
 		55EC54EC195175BF009494E4 /* LoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoginController.h; path = Controller/LoginController.h; sourceTree = "<group>"; };
@@ -302,7 +295,6 @@
 		559774431936B791008FDD45 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				55EC54E21950FE16009494E4 /* FeedCell.xib */,
 				55EE37C418B7057C002A121C /* Main.storyboard */,
 			);
 			name = View;
@@ -322,9 +314,6 @@
 			children = (
 				559A426B19529B34007D0D66 /* BusinessListController.h */,
 				5501A0F919765C610051F79D /* BusinessListController.m */,
-				55692CF31952A98200DE60F7 /* BusinessCell.h */,
-				55692CF41952A98200DE60F7 /* BusinessCell.m */,
-				55692CF51952A98200DE60F7 /* BusinessCell.xib */,
 			);
 			name = "Business List";
 			sourceTree = "<group>";
@@ -558,9 +547,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55692CF71952A98200DE60F7 /* BusinessCell.xib in Resources */,
 				55EE37CB18B7057C002A121C /* Images.xcassets in Resources */,
-				55EC54E41950FE16009494E4 /* FeedCell.xib in Resources */,
 				55EE37BD18B7057C002A121C /* InfoPlist.strings in Resources */,
 				55EE37C618B7057C002A121C /* Main.storyboard in Resources */,
 			);
@@ -585,7 +572,6 @@
 				550C8102195371B700716D25 /* User.m in Sources */,
 				550C810B195371B700716D25 /* TagSet.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
-				55692CF61952A98200DE60F7 /* BusinessCell.m in Sources */,
 				55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */,
 				55B4AFFA193A484400C5A71B /* CustomScrollView.m in Sources */,
 				5501A0FA19765C610051F79D /* BusinessListController.m in Sources */,

@@ -9,13 +9,12 @@
 #import "BusinessListController.h"
 #import "Model.h"
 #import "Business.h"
-#import "BusinessCell.h"
-#import "Business.h"
 //TODO: remove after testing complete
 #import "InsightEngine.h"
 #import "Location.h"
 #import "BusinessProfileController.h"
 #import "DealViewController.h"
+
 
 @interface BusinessListController ()
 
@@ -38,13 +37,6 @@
 {
     [super viewDidLoad];
     self.businesses=[Business getBusinessesForContext:[Model sharedModel].managedObjectContext];
-    //self.edgesForExtendedLayout = UIRectEdgeAll;
-    //self.tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, CGRectGetHeight(self.tabBarController.tabBar.frame), 0.0f);
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 
@@ -91,7 +83,7 @@
 //TODO: remove after testing complete
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Business* selected=self.businesses[indexPath.row];
+  /*  Business* selected=self.businesses[indexPath.row];
     NSNumber* major=((Location*)selected.linkedLocations.anyObject).major;
     Statistics* stat=[[Model sharedModel] recordStatisticsFromGPS:major];
     UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -99,7 +91,7 @@
     NSLog(@"%@",notification.alertBody);
     notification.fireDate=[[NSDate date] dateByAddingTimeInterval:10];
     
-    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:major,@"Major",/*stat,@"StatisticsID",*/ nil];
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:major,@"Major",stat,@"StatisticsID", nil];
     
     
     notification.userInfo=infoDict;
@@ -108,7 +100,7 @@
         [[UIApplication sharedApplication] scheduleLocalNotification:notification];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
     }
-
+*/
 
 }
 /*
@@ -157,7 +149,7 @@
 {
     if([segue.identifier isEqualToString:@"ShowBusiness"] && [segue.destinationViewController isKindOfClass:[BusinessProfileController class]])
     {
-        NSIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
         if(indexPath)
         {
             BusinessProfileController *dest = (BusinessProfileController *)segue.destinationViewController;
@@ -166,7 +158,7 @@
     }
     if([segue.identifier isEqualToString:@"ShowDeal"] && [segue.destinationViewController isKindOfClass:[DealViewController class]])
     {
-        NSIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
         if(indexPath)
         {
             BusinessProfileController *dest = (BusinessProfileController *)segue.destinationViewController;

@@ -7,37 +7,59 @@
 //
 
 #import "FeedCell.h"
+#import "Featured.h"
 
 @interface FeedCell()
-@property (weak, nonatomic) IBOutlet UILabel *dealTitleLabel;
-@property (weak, nonatomic) IBOutlet UILabel *businessTitleLabel;
-@property (weak, nonatomic) IBOutlet UILabel *businessAddressLabel;
 
+@property (weak, nonatomic) IBOutlet UIView *dealTile;
+@property (weak, nonatomic) IBOutlet UIView *businessTile;
 
 @end
 
+/*
+ 
 
+
+ */
 @implementation FeedCell
 
-- (IBAction)tapDeal:(id)sender {
-    NSLog(@"Deal");
-}
-- (IBAction)tapBusiness:(id)sender {
-    NSLog(@"Business");
 
+
+
+- (id)initWithCoder:(NSCoder*)aDecoder
+{
+    if(self = [super initWithCoder:aDecoder])
+    {
+    }
+    return self;
 }
 
 - (void)awakeFromNib
 {
+    self.dealTile.layer.borderWidth=0.5;
+    self.dealTile.layer.borderColor=[UIColor whiteColor].CGColor;
+    
+    self.businessTile.layer.borderWidth=0.5;
+    self.businessTile.layer.borderColor=[UIColor whiteColor].CGColor;
+    
+    
+    ;
     
     // Initialization code
 }
 
--(void)setDealTitle:(NSString *)dTitle BusinessTitle:(NSString*)bTitle Adress:(NSString*)bAddress
+-(void)setDealToShow:(Featured*)deal
 {
-    self.dealTitleLabel.text=dTitle;
-    self.businessTitleLabel.text=bTitle;
-    self.businessAddressLabel.text=bAddress;
+    self.deal=deal;
+    self.dealTitleLabel.text=deal.title;
+    self.businessTitleLabel.text=[deal getBusinessName];
+    self.businessAddressLabel.text=[deal getLocationAddress];
+}
+
+-(void)setGestureRecognizersForTarget:(UIViewController*)controller
+{
+    [self.dealTile addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:controller action:@selector(actionTapDeal:)]];
+    [self.businessTile addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:controller action:@selector(actionTapBusiness:)]];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

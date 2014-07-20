@@ -14,7 +14,9 @@
 typedef NS_ENUM(NSInteger, OfferLike) {
     LK_None,
     LK_Like,
-    LK_Dislike
+    LK_Dislike,
+    LK_UnLike,
+    LK_UnDislike
 };
 
 
@@ -52,6 +54,8 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 
 - (NSURL *)applicationDocumentsDirectory;
 
+-(void)saveEverything;
+
 -(void) saveContext:(NSManagedObjectContext*)context;
 
 -(double)getLikeValueForAction:(OfferLike)action;
@@ -62,12 +66,17 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 //********* Commonly used methods from Statistics Class *********//
 -(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor;
 -(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID;
+-(Statistics*)recordStatisticsFromFeed;
 
 
 //********* Commonly used methods from Business Class *********//
 -(Location*)getClosestBusinessToLocation:(CLLocation*)location;
 
 -(NSArray*)getInterests;
+
+
+-(Statistics*)getStatisticsByURL:(NSURL*)stringID;
+
 
 //********* For testign purpoces *********//
 -(Boolean)checkModel;

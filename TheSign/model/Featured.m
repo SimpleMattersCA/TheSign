@@ -296,6 +296,13 @@
     self.score=@(self.score.doubleValue+value.doubleValue);
 }
 
-
+-(NSString*)getLocationAddress;
+{
+    return [self.linkedBusiness getLocationAddressForDeal:self];
+}
+-(NSString*)getBusinessName
+{
+    return self.linkedBusiness.name;
+}
 
 @end

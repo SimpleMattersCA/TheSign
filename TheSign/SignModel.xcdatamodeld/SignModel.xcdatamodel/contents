@@ -65,11 +65,11 @@
         <attribute name="pObjectID" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Statistics" representedClassName="Statistics" syncable="YES">
-        <attribute name="byBeacon" attributeType="Boolean" syncable="YES"/>
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="liked" attributeType="Integer 64" minValueString="0" maxValueString="2" defaultValueString="0" syncable="YES"/>
         <attribute name="major" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="minor" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="statType" attributeType="Boolean" syncable="YES"/>
         <attribute name="synced" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="wasOpened" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <relationship name="linkedOffer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Featured" inverseName="linkedStats" inverseEntity="Featured" syncable="YES"/>

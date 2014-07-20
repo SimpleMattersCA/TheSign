@@ -20,7 +20,8 @@
 #define P_OPENED (@"wasOpened")
 #define P_USER (@"user")
 #define P_OFFER (@"deal")
-#define P_BEACON (@"byBeacon")
+#define P_BUSINESS (@"business")
+#define P_TYPE (@"statType")
 
 #define CD_DATE (@"date")
 #define CD_LIKED (@"liked")
@@ -30,7 +31,7 @@
 #define CD_OPENED (@"wasOpened")
 #define CD_USER (@"user")
 #define CD_OFFER (@"deal")
-#define CD_BEACON (@"byBeacon")
+#define CD_TYPE (@"statType")
 
 @implementation Statistics
 
@@ -41,30 +42,43 @@
 @dynamic wasOpened;
 @dynamic linkedUser;
 @dynamic linkedOffer;
-@dynamic byBeacon;
+@dynamic statType;
 @dynamic synced;
 
 +(NSString*) entityName {return @"Statistics";}
 +(NSString*) parseEntityName {return @"Statistics";}
 
--(void)recordLike:(OfferLike)newLike
+-(void)setDeal:(Featured*)offer
 {
-    self.liked=@(newLike);
-    
-    //the likeness effect that will go through Tag graph
-    double effect=[[Model sharedModel] getLikeValueForAction:newLike];
-    [self.linkedOffer processLike:effect];
+    self.linkedOffer=offer;
+    [offer addLinkedStatsObject:self];
 }
+
++(Statistics*)recordStatisticsFromFeedForContext:(NSManagedObjectContext*)context
+{
+    
+    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+                                                        inManagedObjectContext:context];
+    newStat.statType=@(1);
+    newStat.date=[NSDate date];
+    newStat.linkedUser=[Model sharedModel].currentUser;
+    newStat.statType=@(0);
+    
+    [[Model sharedModel] saveContext:context];
+    return newStat;
+}
+
 
 +(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor Context:(NSManagedObjectContext *)context
 {
     Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                              inManagedObjectContext:context];
-    newStat.byBeacon=@(YES);
+    newStat.statType=@(1);
     newStat.date=[NSDate date];
     newStat.linkedUser=[Model sharedModel].currentUser;
     newStat.major=major;
     newStat.minor=minor;
+    newStat.statType=@(1);
     [Business discoverBusinessByID:major Context:context];
     
     [[Model sharedModel] saveContext:context];
@@ -75,10 +89,9 @@
 {
     Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                         inManagedObjectContext:context];
-    newStat.byBeacon=@(NO);
+    newStat.statType=@(2);
     newStat.date=[NSDate date];
     newStat.linkedUser=[Model sharedModel].currentUser;
-    newStat.major=businessUID;
     [Business discoverBusinessByID:businessUID Context:context];
     [[Model sharedModel] saveContext:context];
     return newStat;
@@ -114,8 +127,14 @@
             newStatistics[P_MAJOR]=newStat.major;
             newStatistics[P_MINOR]=newStat.minor;
             newStatistics[P_OPENED]=newStat.wasOpened;
-            newStatistics[P_BEACON]=newStat.byBeacon;
-            newStatistics[P_OFFER] = [PFObject objectWithoutDataWithClassName:Featured.parseEntityName objectId:newStat.linkedOffer.pObjectID];
+            newStatistics[P_TYPE]=newStat.statType;
+            if(newStat.linkedOffer)
+            {
+                newStatistics[P_OFFER] = [PFObject objectWithoutDataWithClassName:Featured.parseEntityName objectId:newStat.linkedOffer.pObjectID];
+                if(newStat.linkedOffer.linkedBusiness)
+                    newStatistics[P_BUSINESS] = [PFObject objectWithoutDataWithClassName:Featured.parseEntityName objectId:newStat.linkedOffer.linkedBusiness.pObjectID];
+            }
+            
             newStatistics[P_USER] = [PFObject objectWithoutDataWithClassName:User.parseEntityName objectId:newStat.linkedUser.pObjectID];
             //saving data whenever user gets network connection
             [newStatistics saveEventually];
@@ -123,5 +142,6 @@
         }
     }
 }
+
 
 @end

@@ -8,8 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class Featured;
+
 @interface FeedCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UILabel *dealTitleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *businessTitleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *businessAddressLabel;
 
--(void)setDealTitle:(NSString *)dTitle BusinessTitle:(NSString*)bTitle Adress:(NSString*)bAddress;
+@property (strong, nonatomic) Featured* deal;
 
+-(void)setDealToShow:(Featured*)deal;
+-(void)setGestureRecognizersForTarget:(UIViewController*)controller;
 @end

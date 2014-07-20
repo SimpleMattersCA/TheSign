@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+@class Featured,Statistics;
 @interface DealViewController : UIViewController
+
+-(void)setDealToShow:(Featured*) deal Statistics:(Statistics*)stat BackgroundImage:(UIImage*)image;
 
 @end

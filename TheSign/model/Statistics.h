@@ -23,11 +23,13 @@
 @property (nonatomic, retain) NSNumber * wasOpened;
 @property (nonatomic, retain) User *linkedUser;
 @property (nonatomic, retain) Featured *linkedOffer;
-@property (nonatomic, retain) NSNumber * byBeacon;
+@property (nonatomic, retain) NSNumber * statType;
 
+-(void)setDeal:(Featured*)offer;
 
 +(void)sendToCloudForContext:(NSManagedObjectContext*)context;
 
++(Statistics*)recordStatisticsFromFeedForContext:(NSManagedObjectContext*)context;
 +(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor Context:(NSManagedObjectContext*)context;
 +(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID Context:(NSManagedObjectContext*)context;
 

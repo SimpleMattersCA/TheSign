@@ -38,32 +38,34 @@
     return sharedInsightObj;
 }
 
--(NSString*)generateWelcomeTextForGPSdetectedMajor:(NSNumber*)major
+-(NSString*)generateWelcomeTextForGPSdetectedMajor:(NSNumber*)major ChosenOffer:(Featured**)chosenOffer;
 {
     Location *bizLocation=[Location getLocationByMajor:major Context:[Model sharedModel].managedObjectContext];
-    return [self genereteWelcomeMessageForLocation:bizLocation];
+    return [self genereteWelcomeMessageForLocation:bizLocation ChosenOffer:chosenOffer];
 }
 
 
--(NSString*)generateWelcomeTextForBeaconWithMajor: (NSNumber*)major andMinor:(NSNumber*)minor
+-(NSString*)generateWelcomeTextForBeaconWithMajor: (NSNumber*)major andMinor:(NSNumber*)minor ChosenOffer:(Featured**)chosenOffer;
 {
     Featured* tiedOffer=[Featured getOfferByMajor:major andMinor:minor Context:[Model sharedModel].managedObjectContext];
     
     if(!tiedOffer)
+    {
+        *chosenOffer=tiedOffer;
         return tiedOffer.welcomeText;
+    }
     else
     {
         Location *bizLocation=[Location getLocationByMajor:major Context:[Model sharedModel].managedObjectContext];
-        return [self genereteWelcomeMessageForLocation:bizLocation];
+        return [self genereteWelcomeMessageForLocation:bizLocation ChosenOffer:chosenOffer];
     }
 }
 
--(NSString*)genereteWelcomeMessageForLocation:(Location*)location
+-(NSString*)genereteWelcomeMessageForLocation:(Location*)location ChosenOffer:(Featured**)chosenOffer
 {
     Business* business=location.linkedBusiness;
     NSSet* activeOffers=[business getActiveOffers];
     
-    Featured* chosenOffer;
     Tag* chosenContextTag;
     Template* chosenTemplate;
 
@@ -95,13 +97,13 @@
             if(contextTagsWithOffers.count==0)
             {
                 //no active contexts, choose based on relevancy
-                chosenOffer=[self chooseOfferMostlyByRelevancy:activeOffers];
+                *chosenOffer=[self chooseOfferMostlyByRelevancy:activeOffers];
             }
             else if(contextTagsWithOffers.count==1)
             {
                 //one actve contexts with offers, choose it
                 chosenContextTag=[contextTagsWithOffers firstObject];
-                chosenOffer=[self chooseOfferMostlyByRelevancy:[offerArrays firstObject]];
+                *chosenOffer=[self chooseOfferMostlyByRelevancy:[offerArrays firstObject]];
             }
             else if(contextTagsWithOffers.count>1)
             {
@@ -109,13 +111,13 @@
                 chosenContextTag  =[self chooseContextFromArray:contextTagsWithOffers];
                 NSUInteger keyIndex=[contextTagsWithOffers indexOfObject:chosenContextTag];
                 //choose offer for the active context, if there are more than one - use relevancy score
-                chosenOffer=[self chooseOfferMostlyByRelevancy:[offerArrays objectAtIndex:keyIndex]];
+                *chosenOffer=[self chooseOfferMostlyByRelevancy:[offerArrays objectAtIndex:keyIndex]];
             }
         }
         //no contexts founds
         else
         {
-            chosenOffer=[self chooseOfferMostlyByRelevancy:activeOffers];
+            *chosenOffer=[self chooseOfferMostlyByRelevancy:activeOffers];
         }
         
         //choose random template from those that are attaached to the context
@@ -134,7 +136,7 @@
         }
         
         if(chosenTemplate)
-            return [chosenTemplate generateMessageForOffer:chosenOffer];
+            return [chosenTemplate generateMessageForOffer:*chosenOffer];
         else
             //no template
             return nil;

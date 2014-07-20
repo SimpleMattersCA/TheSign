@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class Featured,Statistics;
+
 @interface FeedController : UITableViewController
+
+-(void) showDealAfterLoad:(Featured*)offer Statistics:(Statistics*)stat;
 
 @end

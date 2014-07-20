@@ -69,19 +69,21 @@
 
 - (void)testWelcomeTextGeneration {
 
-    NSString * starbucksBurnaby=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(4)];
+    Featured* offer;
+    
+    NSString * starbucksBurnaby=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(4) ChosenOffer:&offer];
     NSLog(@"%@",starbucksBurnaby);
     XCTAssertNotNil(starbucksBurnaby);
     
-    NSString * starbucksYaletown=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(3)];
+    NSString * starbucksYaletown=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(3) ChosenOffer:&offer];
     NSLog(@"%@",starbucksYaletown);
     XCTAssertNotNil(starbucksYaletown);
     
-    NSString * bananaBurnaby=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(2)];
+    NSString * bananaBurnaby=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(2) ChosenOffer:&offer];
     NSLog(@"%@",bananaBurnaby);
     XCTAssertNotNil(bananaBurnaby);
     
-    NSString * crepeYaletown=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(1)];
+    NSString * crepeYaletown=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(1) ChosenOffer:&offer];
     NSLog(@"%@",crepeYaletown);
     XCTAssertNotNil(crepeYaletown);
 
@@ -126,7 +128,8 @@
 - (void)testPerformanceWelcomeTextGeneration {
     // This is an example of a performance test case.
     [self measureBlock:^{
-        NSString* result=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(4)];
+        Featured* offer;
+        NSString* result=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(4) ChosenOffer:&offer];
         NSLog(@"%@",result);
 
         // Put the code you want to measure the time of here.

@@ -42,6 +42,7 @@
 +(void)discoverBusinessByID:(NSNumber*)businessUID Context:(NSManagedObjectContext*)context;
 +(NSArray*)getDiscoveredBusinessesForContext:(NSManagedObjectContext*)context;
 
+-(NSString*)getLocationAddressForDeal:(Featured*)deal;
 
 @end
 

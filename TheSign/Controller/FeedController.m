@@ -9,15 +9,18 @@
 #import "FeedController.h"
 #import "FeedCell.h"
 #import "Model.h"
-#import "Featured.h"
-#import "Business.h"
-#import "Location.h"
 #import "DealViewController.h"
+#import "BusinessProfileController.h"
 #import "UIImage+ImageEffects.h"
+#import "Featured.h"
 
 @interface FeedController ()
 
 @property (nonatomic, strong) NSArray* deals;
+
+@property (nonatomic, strong) Featured* dealToShow;
+@property (nonatomic, strong) Statistics* statForDeal;
+
 
 @end
 
@@ -40,6 +43,24 @@
     return self;
 }
 
+-(void) showDealAfterLoad:(Featured*)offer Statistics:(Statistics*)stat
+{
+    self.dealToShow=offer;
+    self.statForDeal=stat;
+}
+
+- (void)actionTapDeal:(UIGestureRecognizer *)sender
+{
+   // NSLog(@"%@",((FeedCell*)sender.view.superview.superview).dealTitleLabel.text);
+    [self performSegueWithIdentifier:@"ShowDeal" sender:sender.view.superview.superview];
+}
+- (void)actionTapBusiness:(UIGestureRecognizer *)sender
+{
+   // NSLog(@"%@",((FeedCell*)sender.view.superview.superview).businessTitleLabel.text);
+    [self performSegueWithIdentifier:@"ShowOneBusiness" sender:sender.view.superview.superview];
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -51,7 +72,22 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if(self.dealToShow && self.statForDeal)
+    {
+        [self performSegueWithIdentifier:@"ShowDeal" sender:self];
+        self.dealToShow=nil;
+        self.statForDeal=nil;
+    }
+    
+}
+
 -(void)viewWillAppear:(BOOL)animated{
+    
+    
    // [self.tableView registerNib:[UINib nibWithNibName:@"FeedCell" bundle:[NSBundle mainBundle]]
     //      forCellReuseIdentifier:@"DealCell"];
 }
@@ -79,30 +115,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //FeedCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DealCell" forIndexPath:indexPath];
-    Featured* deal=self.deals[indexPath.row];
-
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DealCell"];
+    FeedCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DealCell"];
+    [cell setDealToShow:self.deals[indexPath.row]];
+    [cell setGestureRecognizersForTarget:self];
     
-    //
-    ((UILabel *)[cell.contentView viewWithTag:10]).text=deal.fullName;
-    
-    ((UILabel *)[cell.contentView viewWithTag:11]).text=deal.linkedBusiness.name;
-
-    ((UILabel *)[cell.contentView viewWithTag:12]).text=((Location*)(deal.linkedBusiness.linkedLocations.anyObject)).address;
-
-    [cell.contentView viewWithTag:1].layer.borderWidth=0.5;
-    [cell.contentView viewWithTag:1].layer.borderColor=[UIColor whiteColor].CGColor;
-    
-    [cell.contentView viewWithTag:2].layer.borderWidth=0.5;
-    [cell.contentView viewWithTag:2].layer.borderColor=[UIColor whiteColor].CGColor;
-
-    
-    return cell;
-
-    
-   // [cell setDealTitle:deal.fullName BusinessTitle:deal.linkedBusiness.name Adress:((Location*)(deal.linkedBusiness.linkedLocations.anyObject)).address];
-    // Configure the cell...
     
     return cell;
 }
@@ -146,6 +162,10 @@
     return YES;
 }
 */
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"!!!Row Selected :%d",indexPath.row);
+}
 
 
 #pragma mark - Navigation
@@ -153,26 +173,40 @@
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if([segue.identifier isEqualToString:@"ShowBusiness"])
+    if([segue.identifier isEqualToString:@"ShowDeal"] && [segue.destinationViewController isKindOfClass:[DealViewController class]])
     {
-        
-        UIImage* imageOfUnderlyingView = [self convertViewToImage];
-        imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:20
-                                                                 tintColor:[UIColor colorWithWhite:1.0 alpha:0.2]
-                                                     saturationDeltaFactor:1.3
-                                                                 maskImage:nil];
-        
-        DealViewController * controller = [DealViewController new];
+        UIImage* background=[self getBlurredScreenshot];
+        DealViewController * controller = segue.destinationViewController ;
+        if([sender isKindOfClass:[FeedCell class]])
+            [controller setDealToShow:((FeedCell*)sender).deal Statistics:nil BackgroundImage:background];
+        else if([sender isKindOfClass:[FeedController class]])
+            [controller setDealToShow:self.dealToShow Statistics:self.statForDeal BackgroundImage:background];
         controller.modalPresentationStyle = UIModalPresentationCustom;
     }
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    
+    if([segue.identifier isEqualToString:@"ShowOneBusiness"] && [segue.destinationViewController isKindOfClass:[BusinessProfileController class]])
+    {
+        BusinessProfileController * controller = segue.destinationViewController;
+        [controller setBusinessToShow:((FeedCell*)sender).deal.linkedBusiness];
+    }
+
+}
+
+-(UIImage*)getBlurredScreenshot
+{
+    UIImage* imageOfUnderlyingView = [self convertViewToImage];
+    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
+                                                             tintColor:[UIColor colorWithWhite:1.0 alpha:0.2]
+                                                 saturationDeltaFactor:1.2
+                                                             maskImage:nil];
+    return imageOfUnderlyingView;
 }
 
 -(UIImage *)convertViewToImage
 {
-    UIGraphicsBeginImageContext(self.view.bounds.size);
-    [self.view drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
+    UIGraphicsBeginImageContext(self.view.window.bounds.size);
+    //[self.view drawViewHierarchyInRect:[UIScreen mainScreen].applicationFrame afterScreenUpdates:YES];
+    [self.view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
