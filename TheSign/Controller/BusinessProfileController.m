@@ -9,6 +9,9 @@
 #import "BusinessProfileController.h"
 #import "Business.h"
 #import "Featured.h"
+#import "Model.h"
+#import "DealViewController.h"
+#import "UIImage+ImageEffects.h"
 
 @interface BusinessProfileController ()
 @property (weak, nonatomic) IBOutlet UIImageView *businessLogo;
@@ -24,10 +27,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSLog(@"%@", self.business.name);
     self.businessLogo.image=[UIImage imageWithData:self.business.logo];
+    CALayer *imageLayer = self.businessLogo.layer;
+    imageLayer.cornerRadius=self.businessLogo.frame.size.width/2;
+    imageLayer.borderWidth=1;
+    imageLayer.borderColor=[UIColor whiteColor].CGColor;
+    imageLayer.masksToBounds=YES;
     self.navigationBar.title=self.business.name;
-    // Do any additional setup after loading the view.
+    self.dealList.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -84,6 +91,36 @@
     
 }
 
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"ShowDeal"] && [segue.destinationViewController isKindOfClass:[DealViewController class]])
+    {
+        NSIndexPath *indexPath = [self.dealList indexPathForCell:sender];
 
+        UIImage* background=[self getBlurredScreenshot];
+        DealViewController * controller = segue.destinationViewController ;
+     
+        [controller setDealToShow:self.deals[indexPath.row] Statistics:nil BackgroundImage:background];
+       
+        controller.modalPresentationStyle = UIModalPresentationCustom;
+    }
+    
+    
+}
+
+-(UIImage*)getBlurredScreenshot
+{
+    UIGraphicsBeginImageContext(self.view.window.bounds.size);
+    //[self.view drawViewHierarchyInRect:[UIScreen mainScreen].applicationFrame afterScreenUpdates:YES];
+    [self.view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *imageOfUnderlyingView = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
+                                                             tintColor:[UIColor colorWithWhite:1.0 alpha:0.2]
+                                                 saturationDeltaFactor:1.2
+                                                             maskImage:nil];
+    return imageOfUnderlyingView;
+}
 
 @end

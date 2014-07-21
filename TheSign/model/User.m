@@ -125,7 +125,7 @@
                 NSData *imageData = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];
                 currentUser.pic=imageData;
                 
-                
+                [[Model sharedModel] saveContext:[Model sharedModel].managedObjectContext];
                 //[[Model sharedModel] saveContext];
              //   [currentUser findFriends];
             }
@@ -158,26 +158,28 @@
 
     self.name=self.parseObject[P_NAME];
     
-    PFFile *pic=self.parseObject[P_PIC];
-    NSError* error;
-    NSData *pulledImage;
-    pulledImage=[pic getData:&error];
-    if(!error)
+    if(self.parseObject[P_PIC])
     {
-        if(pulledImage!=nil)
-            self.pic=pulledImage;
+        PFFile *pic=self.parseObject[P_PIC];
+        NSError* error;
+        NSData *pulledImage;
+        pulledImage=[pic getData:&error];
+        if(!error)
+        {
+            if(pulledImage!=nil)
+                self.pic=pulledImage;
+            else
+            {
+                NSLog(@"Profile pic is missing");
+                complete=NO;
+            }
+        }
         else
         {
-            NSLog(@"Business logo is missing");
+            NSLog(@"%@",[error localizedDescription]);
             complete=NO;
         }
     }
-    else
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        complete=NO;
-    }
-    
     return complete;
 }
 

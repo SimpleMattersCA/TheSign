@@ -19,6 +19,9 @@
 @interface BusinessListController ()
 
 @property NSArray *businesses;
+@property NSArray *firstLetters;
+
+@property NSDictionary* businessesInSections;
 
 @end
 
@@ -36,7 +39,29 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.businesses=[Business getBusinessesForContext:[Model sharedModel].managedObjectContext];
+    NSArray *unsorted=[[Model sharedModel] getBusinesses];
+    
+    NSMutableDictionary* indexForLetter=[NSMutableDictionary new];
+    
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    self.businesses=[unsorted sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+
+    NSMutableSet *firstCharacters = [NSMutableSet setWithCapacity:0];
+    NSString* letter;
+    for(NSInteger i=0;i<self.businesses.count;i++)
+    {
+        letter=[[self.businesses[i] valueForKey:@"name"] substringToIndex:1];
+        [firstCharacters addObject:letter];
+        [indexForLetter setObject:letter forKey:@(i)];
+    }
+    
+    self.firstLetters = [[firstCharacters allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+    self.businessesInSections=indexForLetter;
+    
+    //remove extra separators
+    self.tableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,0,10)];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+
 }
 
 
@@ -53,26 +78,51 @@
 
 #pragma mark - Table view data source
 
+
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    return self.firstLetters.count;
 }
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
-//    NSArray* businesses=[[Model sharedModel] getBusinessesByType:nil];
-    return self.businesses.count;
+    return [self.businessesInSections allKeysForObject:self.firstLetters[section]].count;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger) section
+{
+    //section text as a label
+    UILabel *header = [UILabel new];
+    header.text=self.firstLetters[section];
+    header.textAlignment = NSTextAlignmentCenter;
+    header.backgroundColor=[UIColor clearColor];
+    header.font = [UIFont fontWithName:@"Futura" size:10];
+    header.textColor=[UIColor whiteColor];
+    
+    return header;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 8;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"BusinessCell" forIndexPath:indexPath];
-    Business* business=self.businesses[indexPath.row];
+    
+    NSInteger index=((NSNumber*)[[self.businessesInSections allKeysForObject:self.firstLetters[indexPath.section]] objectAtIndex:indexPath.row]).integerValue;
+    
+    Business* business=self.businesses[index];
     cell.textLabel.text=business.name;
     cell.detailTextLabel.text=business.welcomeText;
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 5, cell.contentView.frame.size.width, 1)];
+    lineView.backgroundColor = [UIColor whiteColor];
+    [cell.contentView addSubview:lineView];
+    
     //  BusinessCell *newCell=[[BusinessCell alloc] init];
     
 
@@ -103,43 +153,7 @@
 */
 
 }
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 
 #pragma mark - Navigation
@@ -150,19 +164,12 @@
     if([segue.identifier isEqualToString:@"ShowBusiness"] && [segue.destinationViewController isKindOfClass:[BusinessProfileController class]])
     {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+        NSInteger index=((NSNumber*)[[self.businessesInSections allKeysForObject:self.firstLetters[indexPath.section]] objectAtIndex:indexPath.row]).integerValue;
+
         if(indexPath)
         {
             BusinessProfileController *dest = (BusinessProfileController *)segue.destinationViewController;
-            [dest setBusinessToShow:self.businesses[indexPath.row]];
-        }
-    }
-    if([segue.identifier isEqualToString:@"ShowDeal"] && [segue.destinationViewController isKindOfClass:[DealViewController class]])
-    {
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        if(indexPath)
-        {
-            BusinessProfileController *dest = (BusinessProfileController *)segue.destinationViewController;
-            [dest setBusinessToShow:self.businesses[indexPath.row]];
+            [dest setBusinessToShow:self.businesses[index]];
         }
     }
 }

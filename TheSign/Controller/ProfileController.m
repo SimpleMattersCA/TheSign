@@ -16,7 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *profilePic;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UICollectionView *interestsCollection;
-
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (nonatomic, strong) NSArray* interests;
 @end
 
@@ -34,15 +34,25 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.profilePic.image=[UIImage imageWithData:[Model sharedModel].currentUser.pic];
+    User* currentUser=[Model sharedModel].currentUser;
+    if(currentUser)
+    {
+        self.profilePic.image=[UIImage imageWithData:currentUser.pic];
+        self.nameLabel.text=currentUser.name;
+    }
+    else
+    {
+        self.profilePic.image=[UIImage imageNamed:@"default_user"];
+        self.nameLabel.text=@"Stranger";
+    }
     CALayer *imageLayer = self.profilePic.layer;
     imageLayer.cornerRadius=self.profilePic.frame.size.width/2;
-    imageLayer.borderWidth=0;
+    imageLayer.borderWidth=1;
+    imageLayer.borderColor=[UIColor whiteColor].CGColor;
     imageLayer.masksToBounds=YES;
-    self.nameLabel.text=[Model sharedModel].currentUser.name;
-    self.interests=[[Model sharedModel] getInterests];
-    
-    
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    self.interests=[[[Model sharedModel] getInterests] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+
     // Do any additional setup after loading the view.
 }
 
@@ -65,10 +75,38 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     UICollectionViewCell *cell = [self.interestsCollection dequeueReusableCellWithReuseIdentifier:@"InterestCell" forIndexPath:indexPath];
-    [UIView animateWithDuration:1.0 animations:^{
-        cell.layer.backgroundColor = [UIColor orangeColor].CGColor;
-    } completion:NULL];
+    Tag* interest=(Tag*)self.interests[indexPath.row];
+    if([interest.likeness doubleValue]>=[[Model sharedModel].interest_value doubleValue])
+    {
+        interest.likeness=@(0);
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.3];
+        [self.collectionView cellForItemAtIndexPath:indexPath].backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
+        [UIView commitAnimations];
+        
+      //  [UIView animateWithDuration:1.0 animations:^{
+       //     cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
+      //  } completion:^(BOOL complete){
+            interest.likeness=@(0);
+      //  }];
+    }
+    else
+    {
+        interest.likeness=[Model sharedModel].interest_value;
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.3];
+        [self.collectionView cellForItemAtIndexPath:indexPath].backgroundColor=[UIColor colorWithRed:1.0 green:102.0/255.0 blue:0 alpha:1];
+        [UIView commitAnimations];
+        
+        
+     //   [UIView animateWithDuration:1.0 animations:^{
+        //    cell.backgroundColor=[UIColor colorWithRed:1.0 green:102.0/255.0 blue:0 alpha:1];
+     //   } completion:^(BOOL complete){
+     //   }];
+    }
+    
 }
 
 #pragma mark - Table view data source
@@ -90,10 +128,15 @@
     
     UICollectionViewCell *cell = [self.interestsCollection dequeueReusableCellWithReuseIdentifier:@"InterestCell" forIndexPath:indexPath];
     UILabel *interestLabel = (UILabel *)[cell viewWithTag:1];
-    interestLabel.text=((Tag*)(self.interests[indexPath.row])).name;
+    Tag* interest=(Tag*)self.interests[indexPath.row];
+
+    interestLabel.text=interest.name;
+    if([interest.likeness doubleValue]>=[[Model sharedModel].interest_value doubleValue])
+        cell.backgroundColor=[UIColor colorWithRed:1.0 green:102.0/255.0 blue:0 alpha:1];
+    else
+        cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
     cell.layer.borderWidth=1.0;
     cell.layer.borderColor=[UIColor whiteColor].CGColor;
-
     return cell;
 }
 

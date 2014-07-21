@@ -40,15 +40,15 @@ NSNumber *detectedBeaconMajor;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
-   // [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge categories:nil]];
+    [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge categories:nil]];
 
     [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
                   clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     //Push Notifications
-    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
-     UIRemoteNotificationTypeAlert];
+    //[application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
+    // UIRemoteNotificationTypeAlert];
     
 
     //Twitter support
@@ -68,22 +68,22 @@ NSNumber *detectedBeaconMajor;
     
     //first-time ever defaults check and set
     NSLog(@"First run %d",[[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]);
-   if([[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]==NO || ![Model sharedModel].currentUser)
+#warning change back to NO
+   if([[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]==YES)
     {
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
-        WelcomeScreenViewController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"LoginView"];
+        WelcomeScreenViewController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"WelcomeScreen"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SetUpCompleted"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        //[Model sharedModel];
         [navigation pushViewController:firstRun animated:YES];
     }
     [Model sharedModel];
-    NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+ //   NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     
-    if(remoteNotification)
-    {
+  //  if(remoteNotification)
+  //  {
         //check model
-    }
+   // }
     
     
     
@@ -112,6 +112,8 @@ Preparing and starting geofence and beacon monitoring
     {
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
+#warning ios8 only
+        [self.locationManager requestAlwaysAuthorization];
         self.locationManager.pausesLocationUpdatesAutomatically=YES;
         //********* Geofence monitoring *********//
       //  [self.locationManager startMonitoringSignificantLocationChanges];
@@ -196,7 +198,7 @@ Preparing and starting geofence and beacon monitoring
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
-    if (application.applicationState == UIApplicationStateInactive ) {
+    /*if (application.applicationState == UIApplicationStateInactive ) {
         
         
         Statistics* stat=[[Model sharedModel] getStatisticsByURL:[notification.userInfo objectForKey:@"StatisticsObjectID"]];
@@ -223,7 +225,7 @@ Preparing and starting geofence and beacon monitoring
     if(application.applicationState == UIApplicationStateActive )
     {
         //TODO: process notification when application is in foreground
-    }
+    }*/
 }
 
 
@@ -373,6 +375,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    NSLog(@"will terminate");
     [[Model sharedModel] saveEverything];
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }

@@ -11,6 +11,7 @@
 #import "User.h"
 #import "FeedController.h"
 #import "Model.h"
+#import "AppDelegate.h"
 
 @interface LoginController ()
 
@@ -32,7 +33,7 @@
 -(id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        self.delegate=self;
+        [(AppDelegate*)[[UIApplication sharedApplication] delegate] startLocationMonitoring];
         
         // Open session with public_profile (required) and user_birthday read permissions
         /*[FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"user_friends"]
@@ -93,15 +94,6 @@
         */
         
         
-        
-        self.facebookPermissions = @[@"public_profile,user_friends"];
-        self.fields =  /*PFLogInFieldsTwitter |*/ PFLogInFieldsFacebook  | PFLogInFieldsDismissButton;
-        [self.view setBackgroundColor:[UIColor colorWithRed:(72.0/255.0) green:(82.0/255.0) blue:(84.0/255.0) alpha:1]];
-        // Add your subviews here
-        // self.contentView for content
-        // self.backgroundView for the cell background
-        // self.selectedBackgroundView for the selected cell background
-        
     }
     return self;
 }
@@ -129,6 +121,40 @@
 }
 */
 
+
+
+- (IBAction)FacebookLoginAction:(id)sender {
+    
+    [PFFacebookUtils logInWithPermissions:@[@"public_profile", @"user_friends"] block:^(PFUser *user, NSError *error) {
+        if(!error)
+        {
+            if (!user)
+            {
+                NSLog(@"Uh oh. The user cancelled the Facebook login.");
+            }
+            else
+            {
+                [User createUserFromParse:user];
+                [[Model sharedModel] saveContext:[Model sharedModel].managedObjectContext];
+                
+                UINavigationController *navigation=(UINavigationController*)self.view.window.rootViewController;
+                FeedController *feed=[navigation.storyboard instantiateViewControllerWithIdentifier:@"FeedView"];
+                [navigation pushViewController:feed animated:YES];
+            }
+        }
+        else
+        {
+            
+            NSLog(@"%@",error.localizedDescription);
+            NSLog(@"%@",error.localizedFailureReason);
+            for(NSString *key in [error.userInfo allKeys])
+                NSLog(@"%@",[error.userInfo objectForKey:key]);
+        }
+    }];
+}
+
+
+
 #pragma mark - PFLogInViewControllerDelegate
 
 
@@ -136,22 +162,16 @@
 - (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
     [self dismissViewControllerAnimated:YES completion:NULL];
     
-    [User createUserFromParse:user];
-    [[Model sharedModel] saveContext:[Model sharedModel].managedObjectContext];
     
-    UINavigationController *navigation=(UINavigationController*)self.view.window.rootViewController;
-    FeedController *feed=[navigation.storyboard instantiateViewControllerWithIdentifier:@"FeedView"];
-    [navigation pushViewController:feed animated:YES];
-
 }
 
 // Sent to the delegate when the log in screen is dismissed.
-- (void)logInViewControllerDidCancelLogIn:(PFLogInViewController *)logInController {
+/*- (void)logInViewControllerDidCancelLogIn:(PFLogInViewController *)logInController {
     NSLog(@"User dismissed the logInViewController");
-}
+}*/
 
 // Sent to the delegate when the log in attempt fails.
-- (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error {
+/*- (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error {
     NSLog(@"%@",error.localizedDescription);
     NSLog(@"%@",error.localizedFailureReason);
 
@@ -163,7 +183,7 @@
     }
 
 
-}
+}*/
 
 
 

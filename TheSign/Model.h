@@ -42,6 +42,7 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 @property (nonatomic, strong) NSNumber * offersFeedLimit;
 @property (nonatomic, strong) NSNumber * feed_swap_prob;
 @property (nonatomic, strong) NSNumber * weather_poll;
+@property (nonatomic, strong) NSNumber * interest_value;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContextBackground;
@@ -73,6 +74,8 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 -(Location*)getClosestBusinessToLocation:(CLLocation*)location;
 
 -(NSArray*)getInterests;
+
+-(NSArray*) getBusinesses;
 
 
 -(Statistics*)getStatisticsByURL:(NSURL*)stringID;

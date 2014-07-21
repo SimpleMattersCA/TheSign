@@ -36,6 +36,17 @@
     
     
 }
+- (IBAction)actionButton:(id)sender {
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.alertBody =@"Mary's Cafe: So hot and sunny outside! Come in for a refreshing Iced Tea";
+    notification.fireDate=[[NSDate date] dateByAddingTimeInterval:10];
+    
+    
+
+    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+
+
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -44,7 +55,7 @@
 - (IBAction)dismissView:(id)sender {
     if (![self.presentedViewController isBeingDismissed])
     {
-        [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
+        [self dismissViewControllerAnimated:YES completion:^{
             if(self.actioned.boolValue==NO)
                 [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_None]];
         }];

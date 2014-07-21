@@ -51,13 +51,21 @@
 
 - (void)actionTapDeal:(UIGestureRecognizer *)sender
 {
-   // NSLog(@"%@",((FeedCell*)sender.view.superview.superview).dealTitleLabel.text);
-    [self performSegueWithIdentifier:@"ShowDeal" sender:sender.view.superview.superview];
+    UIView* view=sender.view;
+    while(![view isKindOfClass:[FeedCell class]])
+    {
+        view=view.superview;
+    }
+    [self performSegueWithIdentifier:@"ShowDeal" sender:view];
 }
 - (void)actionTapBusiness:(UIGestureRecognizer *)sender
 {
-   // NSLog(@"%@",((FeedCell*)sender.view.superview.superview).businessTitleLabel.text);
-    [self performSegueWithIdentifier:@"ShowOneBusiness" sender:sender.view.superview.superview];
+    UIView* view=sender.view;
+    while(![view isKindOfClass:[FeedCell class]])
+    {
+        view=view.superview;
+    }
+    [self performSegueWithIdentifier:@"ShowOneBusiness" sender:view];
 }
 
 
@@ -192,9 +200,15 @@
 
 }
 
+
+
 -(UIImage*)getBlurredScreenshot
 {
-    UIImage* imageOfUnderlyingView = [self convertViewToImage];
+    UIGraphicsBeginImageContext(self.view.window.bounds.size);
+    //[self.view drawViewHierarchyInRect:[UIScreen mainScreen].applicationFrame afterScreenUpdates:YES];
+    [self.view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *imageOfUnderlyingView = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
     imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
                                                              tintColor:[UIColor colorWithWhite:1.0 alpha:0.2]
                                                  saturationDeltaFactor:1.2
@@ -202,15 +216,5 @@
     return imageOfUnderlyingView;
 }
 
--(UIImage *)convertViewToImage
-{
-    UIGraphicsBeginImageContext(self.view.window.bounds.size);
-    //[self.view drawViewHierarchyInRect:[UIScreen mainScreen].applicationFrame afterScreenUpdates:YES];
-    [self.view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
 
 @end

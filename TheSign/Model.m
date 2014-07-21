@@ -562,6 +562,19 @@
     }
     return _weather_poll;
 }
+-(NSNumber*) interest_value
+{
+    if(!_interest_value)
+    {
+        Settings* param=[Settings getValueForParamName:@"interest_value" Context:self.managedObjectContext];
+        if(param)
+            _interest_value=param.paramFloat;
+        else
+            _interest_value=@(5);
+    }
+    return _interest_value;
+}
+
 
 #pragma mark - Core Data stack
 
@@ -700,6 +713,11 @@
     return [Tag getInterestsForContext:self.managedObjectContext];
 }
 
+-(NSArray*) getBusinesses
+{
+    return [Business getBusinessesForContext:self.managedObjectContext];
+}
+
 
 -(User*) currentUser
 {
@@ -828,7 +846,6 @@
     return (Statistics*)[self.managedObjectContext objectWithURI:stringID];
     
 }
-
 
 
 @end
