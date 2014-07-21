@@ -109,7 +109,7 @@
         interest.likeness=[Model sharedModel].interest_value;
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.3];
-        cell.backgroundColor=[UIColor colorWithRed:1.0 green:102.0/255.0 blue:0 alpha:1];
+        cell.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
         [UIView commitAnimations];
         
         
@@ -144,7 +144,7 @@
 
     interestLabel.text=interest.name;
     if([interest.likeness doubleValue]>=[[Model sharedModel].interest_value doubleValue])
-        cell.backgroundColor=[UIColor colorWithRed:1.0 green:102.0/255.0 blue:0 alpha:1];
+        cell.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
     else
         cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
     cell.layer.borderWidth=1.0;

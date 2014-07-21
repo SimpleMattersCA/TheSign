@@ -51,7 +51,6 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 + (Model*) sharedModel;
-- (void) requestCloud;
 
 - (NSURL *)applicationDocumentsDirectory;
 
@@ -82,7 +81,8 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 
 
 //********* For testign purpoces *********//
--(Boolean)checkModel;
+-(void) updateDBinBackground:(Boolean)inBackground;
+
 -(void)deleteModelForContext:(NSManagedObjectContext*)context;
 -(void) deleteDataStore;
 -(void)checkDeleteHistory;

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6185.11" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="I0v-nz-SqX">
     <dependencies>
-        <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6190.4"/>
     </dependencies>
     <scenes>
@@ -331,7 +330,7 @@
                     <nil name="viewControllers"/>
                     <connections>
                         <segue destination="MlV-zt-Wrg" kind="relationship" relationship="rootViewController" id="5tB-nx-LkQ"/>
-                        <segue destination="IOi-Ci-a5g" kind="push" id="8bf-ap-737"/>
+                        <segue destination="IOi-Ci-a5g" kind="push" identifier="FirstRun" id="8bf-ap-737"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="N3E-ps-T7c" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -543,10 +542,10 @@
         </simulatedScreenMetrics>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="TV9-BH-EdN"/>
         <segue reference="e5c-hV-G3B"/>
-        <segue reference="JXD-KH-JYW"/>
-        <segue reference="LRH-uE-kh8"/>
+        <segue reference="5tB-nx-LkQ"/>
+        <segue reference="6Ee-vm-WkK"/>
+        <segue reference="TrT-7Z-Hts"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
 </document>

@@ -88,6 +88,7 @@ BOOL clickedDislike=NO;
         [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_Like]];
         self.stat.liked=@(LK_Like);
         self.dislikeButton.enabled=NO;
+        self.dislikeButton.backgroundColor=[UIColor grayColor];
     }
     //if clicked before
     else
@@ -95,6 +96,7 @@ BOOL clickedDislike=NO;
         [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_UnLike]];
         self.stat.liked=@(0);
         self.dislikeButton.enabled=YES;
+        self.dislikeButton.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
     }
     
 }
@@ -107,6 +109,7 @@ BOOL clickedDislike=NO;
         [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_Dislike]];
         self.stat.liked=@(LK_Dislike);
         self.likeButton.enabled=NO;
+        self.likeButton.backgroundColor=[UIColor grayColor];
     }
     //if clickedbefore
     else
@@ -114,6 +117,7 @@ BOOL clickedDislike=NO;
         [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_UnDislike]];
         self.stat.liked=@(0);
         self.likeButton.enabled=YES;
+        self.likeButton.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
     }
 }
 

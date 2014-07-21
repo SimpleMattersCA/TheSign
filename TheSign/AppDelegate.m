@@ -64,25 +64,25 @@ NSNumber *detectedBeaconMajor;
     [self.window makeKeyAndVisible];
 
 //
-    
-    
-    //first-time ever defaults check and set
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]==NO)
+
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setBool:NO forKey:@"DidFirstRun"];
+
+    if (![userDefaults boolForKey:@"DidFirstRun"])
     {
-    
+        [userDefaults setBool:YES forKey:@"DidFirstRun"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
         TutorialController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"WelcomeScreen"];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SetUpCompleted"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    
         [navigation pushViewController:firstRun animated:YES];
-
     }
     else
     {
         [self startLocationMonitoring];
         [Model sharedModel];
     }
+    
  //   NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     
   //  if(remoteNotification)
@@ -325,7 +325,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
     //[PFPush handlePush:userInfo];
-    [[Model sharedModel] checkModel];
+  //  [[Model sharedModel] checkModel];
 }
 
 - (BOOL)application:(UIApplication *)application

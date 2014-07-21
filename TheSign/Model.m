@@ -117,7 +117,7 @@
         
         //checking database every hour with tolerance of 10 minutes
 
-        self.networkTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(requestCloud) userInfo:nil repeats:YES];
+        self.networkTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(requestCloudOnTimer) userInfo:nil repeats:YES];
         [self.networkTimer fire];
         [self.networkTimer setTolerance:600];
         
@@ -131,17 +131,30 @@
     return self;
 }
 
-- (void)requestCloud
+- (void)requestCloudOnTimer
+{
+    [self performSelectorInBackground:@selector(requestCloud) withObject:nil];
+}
+
+-(void) requestCloud
 {
     NSDateComponents *components = [[NSCalendar currentCalendar] components: NSHourCalendarUnit fromDate:[NSDate date]];
     //at night we pause database updates firing 8 hours from now
     if(components.hour>22)
         [self.networkTimer setFireDate:[[NSDate date] dateByAddingTimeInterval:60*60*8]];
     
-    //[Statistics sendToCloudForContext:self.managedObjectContextBackground];
-    [self performSelectorInBackground:@selector(checkModel) withObject:nil];
+   // [Statistics sendToCloudForContext:self.managedObjectContextBackground];
+    [self updateDBinBackground:NO];
 }
 
+-(void) updateDBinBackground:(Boolean)inBackground
+{
+    if(inBackground)
+        [self performSelectorInBackground:@selector(checkModel) withObject:nil];
+    else
+        [self checkModel];
+
+}
 
 
 +(Model*)sharedModel

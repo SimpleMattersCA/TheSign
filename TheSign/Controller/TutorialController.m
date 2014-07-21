@@ -16,7 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[Model sharedModel] checkModel];
+    [[Model sharedModel] updateDBinBackground:YES];
 }
 
 - (void)didReceiveMemoryWarning {
