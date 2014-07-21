@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface ProfileController : UIViewController <UICollectionViewDataSource,UICollectionViewDelegate>
+@property (nonatomic, strong) NSNumber* afterRegistration;
 
 @end

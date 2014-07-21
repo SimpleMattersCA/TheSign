@@ -30,8 +30,6 @@
 		559F76DE1967656D00905390 /* Context.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76DD1967656D00905390 /* Context.m */; };
 		559F76E11967C9E700905390 /* Area.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76E01967C9E700905390 /* Area.m */; };
 		559F76E41969295C00905390 /* Template.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76E31969295C00905390 /* Template.m */; };
-		55A5A06F193FCE2A00DDF688 /* WelcomeScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55A5A06E193FCE2A00DDF688 /* WelcomeScreenViewController.m */; };
-		55A5A072193FCE6400DDF688 /* TutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55A5A071193FCE6400DDF688 /* TutorialViewController.m */; };
 		55AE6C9C196C84B100B7B655 /* DataConsistency.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AE6C9B196C84B100B7B655 /* DataConsistency.m */; };
 		55AE6C9E196C84C800B7B655 /* WelcomeTextGeneration.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AE6C9D196C84C800B7B655 /* WelcomeTextGeneration.m */; };
 		55B4AFFA193A484400C5A71B /* CustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B4AFF9193A484400C5A71B /* CustomScrollView.m */; };
@@ -42,6 +40,7 @@
 		55C89C34195BCECF00CA16D9 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C89C33195BCECF00CA16D9 /* Location.m */; };
 		55C89C37195BCED000CA16D9 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C89C36195BCED000CA16D9 /* Settings.m */; };
 		55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E15FE2191A062B00A8B826 /* InsightEngine.m */; };
+		55EBA272197DA93E0049038C /* TutorialController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EBA271197DA93E0049038C /* TutorialController.m */; };
 		55EC54E31950FE16009494E4 /* FeedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EC54E11950FE16009494E4 /* FeedCell.m */; };
 		55EC54E8195160A5009494E4 /* FeedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EC54E7195160A5009494E4 /* FeedController.m */; };
 		55EC54EE195175BF009494E4 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EC54ED195175BF009494E4 /* LoginController.m */; };
@@ -147,10 +146,6 @@
 		559F76E01967C9E700905390 /* Area.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Area.m; path = model/Area.m; sourceTree = "<group>"; };
 		559F76E21969295C00905390 /* Template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Template.h; path = model/Template.h; sourceTree = "<group>"; };
 		559F76E31969295C00905390 /* Template.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Template.m; path = model/Template.m; sourceTree = "<group>"; };
-		55A5A06D193FCE2A00DDF688 /* WelcomeScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WelcomeScreenViewController.h; path = Controller/WelcomeScreenViewController.h; sourceTree = "<group>"; };
-		55A5A06E193FCE2A00DDF688 /* WelcomeScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WelcomeScreenViewController.m; path = Controller/WelcomeScreenViewController.m; sourceTree = "<group>"; };
-		55A5A070193FCE6400DDF688 /* TutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TutorialViewController.h; path = Controller/TutorialViewController.h; sourceTree = "<group>"; };
-		55A5A071193FCE6400DDF688 /* TutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TutorialViewController.m; path = Controller/TutorialViewController.m; sourceTree = "<group>"; };
 		55AE6C9B196C84B100B7B655 /* DataConsistency.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataConsistency.m; sourceTree = "<group>"; };
 		55AE6C9D196C84C800B7B655 /* WelcomeTextGeneration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeTextGeneration.m; sourceTree = "<group>"; };
 		55B4AFF8193A484400C5A71B /* CustomScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomScrollView.h; sourceTree = "<group>"; };
@@ -166,6 +161,8 @@
 		55C89C36195BCED000CA16D9 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Settings.m; path = model/Settings.m; sourceTree = "<group>"; };
 		55E15FE1191A062B00A8B826 /* InsightEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InsightEngine.h; sourceTree = "<group>"; };
 		55E15FE2191A062B00A8B826 /* InsightEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InsightEngine.m; sourceTree = "<group>"; };
+		55EBA270197DA93E0049038C /* TutorialController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TutorialController.h; path = Controller/TutorialController.h; sourceTree = "<group>"; };
+		55EBA271197DA93E0049038C /* TutorialController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TutorialController.m; path = Controller/TutorialController.m; sourceTree = "<group>"; };
 		55EC54E01950FE16009494E4 /* FeedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedCell.h; path = Controller/FeedCell.h; sourceTree = "<group>"; };
 		55EC54E11950FE16009494E4 /* FeedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FeedCell.m; path = Controller/FeedCell.m; sourceTree = "<group>"; };
 		55EC54E6195160A5009494E4 /* FeedController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedController.h; path = Controller/FeedController.h; sourceTree = "<group>"; };
@@ -239,10 +236,6 @@
 			isa = PBXGroup;
 			children = (
 				55EC54DF1950FD30009494E4 /* New UI */,
-				55A5A070193FCE6400DDF688 /* TutorialViewController.h */,
-				55A5A071193FCE6400DDF688 /* TutorialViewController.m */,
-				55A5A06D193FCE2A00DDF688 /* WelcomeScreenViewController.h */,
-				55A5A06E193FCE2A00DDF688 /* WelcomeScreenViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -305,6 +298,8 @@
 			children = (
 				55EC54EC195175BF009494E4 /* LoginController.h */,
 				55EC54ED195175BF009494E4 /* LoginController.m */,
+				55EBA270197DA93E0049038C /* TutorialController.h */,
+				55EBA271197DA93E0049038C /* TutorialController.m */,
 			);
 			name = "First Run";
 			sourceTree = "<group>";
@@ -578,7 +573,6 @@
 				55C89C37195BCED000CA16D9 /* Settings.m in Sources */,
 				5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */,
 				55B746EB18DCAECA00F61354 /* Model.m in Sources */,
-				55A5A072193FCE6400DDF688 /* TutorialViewController.m in Sources */,
 				55EC54E8195160A5009494E4 /* FeedController.m in Sources */,
 				559A427319529F46007D0D66 /* ProfileController.m in Sources */,
 				55EC54E31950FE16009494E4 /* FeedCell.m in Sources */,
@@ -586,7 +580,7 @@
 				559F76E41969295C00905390 /* Template.m in Sources */,
 				550C8105195371B700716D25 /* Business.m in Sources */,
 				550C810E195371B700716D25 /* Statistics.m in Sources */,
-				55A5A06F193FCE2A00DDF688 /* WelcomeScreenViewController.m in Sources */,
+				55EBA272197DA93E0049038C /* TutorialController.m in Sources */,
 				55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */,
 				5501A0FD19765E740051F79D /* DealViewController.m in Sources */,
 				550C8108195371B700716D25 /* Featured.m in Sources */,

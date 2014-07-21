@@ -9,12 +9,12 @@
 #import "AppDelegate.h"
 #import "Model.h"
 #import "InsightEngine.h"
-#import "WelcomeScreenViewController.h"
 #import "Location.h"
 #import "Business.h"
 #import "Statistics.h"
 #import "Featured.h"
 #import "FeedController.h"
+#import "TutorialController.h"
 
 @import UIKit.UINavigationController;
 @import CoreLocation;
@@ -63,41 +63,33 @@ NSNumber *detectedBeaconMajor;
     
     [self.window makeKeyAndVisible];
 
-//    [self startLocationMonitoring];
+//
     
     
     //first-time ever defaults check and set
-    NSLog(@"First run %d",[[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]);
-#warning change back to NO
-   if([[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]==YES)
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"SetUpCompleted"]==NO)
     {
+    
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
-        WelcomeScreenViewController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"WelcomeScreen"];
+        TutorialController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"WelcomeScreen"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SetUpCompleted"];
         [[NSUserDefaults standardUserDefaults] synchronize];
+    
         [navigation pushViewController:firstRun animated:YES];
+
     }
-    [Model sharedModel];
+    else
+    {
+        [self startLocationMonitoring];
+        [Model sharedModel];
+    }
  //   NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     
   //  if(remoteNotification)
   //  {
         //check model
    // }
-    
-    
-    
-    //apparently we should define the default appearance of UIPageControl otherwise it doesn't show
-    UIPageControl *pageControl = [UIPageControl appearance];
-    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-    pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
-    pageControl.backgroundColor = [UIColor whiteColor];
 
-    
-    
-    
-    
-    
     
     return YES;
 }
@@ -198,7 +190,7 @@ Preparing and starting geofence and beacon monitoring
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
-    /*if (application.applicationState == UIApplicationStateInactive ) {
+    if (application.applicationState == UIApplicationStateInactive ) {
         
         
         Statistics* stat=[[Model sharedModel] getStatisticsByURL:[notification.userInfo objectForKey:@"StatisticsObjectID"]];
@@ -225,7 +217,7 @@ Preparing and starting geofence and beacon monitoring
     if(application.applicationState == UIApplicationStateActive )
     {
         //TODO: process notification when application is in foreground
-    }*/
+    }
 }
 
 

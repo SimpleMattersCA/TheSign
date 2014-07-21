@@ -17,9 +17,16 @@
 @property (strong, nonatomic) Featured* deal;
 @property (strong, nonatomic) Statistics* stat;
 @property (strong) NSNumber* actioned;
+@property (weak, nonatomic) IBOutlet UIButton *dislikeButton;
+@property (weak, nonatomic) IBOutlet UIButton *likeButton;
+
 
 @property (strong, nonatomic) UIImage* backgroundImage;
 @end
+
+BOOL clickedLike=NO;
+BOOL clickedDislike=NO;
+
 
 @implementation DealViewController
 
@@ -75,30 +82,39 @@
 - (IBAction)actionLike:(id)sender {
     
     //if hasn't clicked before
-    self.actioned=@(YES);
-    [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_Like]];
-    self.stat.liked=@(LK_Like);
-    //disable dislike button
-    
+    if(self.dislikeButton.enabled)
+    {
+        self.actioned=@(YES);
+        [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_Like]];
+        self.stat.liked=@(LK_Like);
+        self.dislikeButton.enabled=NO;
+    }
     //if clicked before
-    //[self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_UnLike]];
-    //self.stat.liked=@(0);
-    //enable dislike button
-
-
+    else
+    {
+        [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_UnLike]];
+        self.stat.liked=@(0);
+        self.dislikeButton.enabled=YES;
+    }
+    
 }
 - (IBAction)actionDislike:(id)sender {
     
     //if hasn't clicked before
-    self.actioned=@(YES);
-    [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_Dislike]];
-    self.stat.liked=@(LK_Dislike);
-    //disable like button
-
+    if(self.likeButton.enabled)
+    {
+        self.actioned=@(YES);
+        [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_Dislike]];
+        self.stat.liked=@(LK_Dislike);
+        self.likeButton.enabled=NO;
+    }
     //if clickedbefore
-    //[self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_UnDislike]];
-    //self.stat.liked=@(0);
-    //enable dislike button
+    else
+    {
+        [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_UnDislike]];
+        self.stat.liked=@(0);
+        self.likeButton.enabled=YES;
+    }
 }
 
 

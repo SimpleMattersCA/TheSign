@@ -17,6 +17,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UICollectionView *interestsCollection;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UIButton *BackToFeed;
+
 @property (nonatomic, strong) NSArray* interests;
 @end
 
@@ -45,6 +47,8 @@
         self.profilePic.image=[UIImage imageNamed:@"default_user"];
         self.nameLabel.text=@"Stranger";
     }
+
+    
     CALayer *imageLayer = self.profilePic.layer;
     imageLayer.cornerRadius=self.profilePic.frame.size.width/2;
     imageLayer.borderWidth=1;
@@ -53,6 +57,14 @@
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
     self.interests=[[[Model sharedModel] getInterests] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
 
+    if(self.afterRegistration)
+    {
+        self.afterRegistration=nil;
+        self.BackToFeed.hidden=NO;
+    }
+    else
+        self.BackToFeed.hidden=YES;
+    
     // Do any additional setup after loading the view.
 }
 
@@ -83,7 +95,7 @@
         interest.likeness=@(0);
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.3];
-        [self.collectionView cellForItemAtIndexPath:indexPath].backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
+        cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
         [UIView commitAnimations];
         
       //  [UIView animateWithDuration:1.0 animations:^{
@@ -97,7 +109,7 @@
         interest.likeness=[Model sharedModel].interest_value;
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.3];
-        [self.collectionView cellForItemAtIndexPath:indexPath].backgroundColor=[UIColor colorWithRed:1.0 green:102.0/255.0 blue:0 alpha:1];
+        cell.backgroundColor=[UIColor colorWithRed:1.0 green:102.0/255.0 blue:0 alpha:1];
         [UIView commitAnimations];
         
         
