@@ -36,7 +36,7 @@
     {
         NSError *error;
         if(!error)
-            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+            _parseObject=[PFQuery getObjectOfClass:[Link parseEntityName] objectId:self.pObjectID error:&error];
         else
             NSLog(@"%@",[error localizedDescription]);
     }
@@ -58,7 +58,7 @@
 
 +(Link*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Link entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [context executeFetchRequest:request error:&error];
@@ -77,13 +77,13 @@
 {
     if([Link checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        NSLog(@"%@: The object %@ is missing mandatory fields",[Link entityName],object.objectId);
         return NO;
     }
     
     Boolean complete=YES;
 
-    Link *link = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+    Link *link = [NSEntityDescription insertNewObjectForEntityForName:[Link entityName]
                                                inManagedObjectContext:context];
     link.pObjectID=object.objectId;
     if(object[P_URL]!=nil) link.url=object[P_URL];
@@ -109,7 +109,7 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Link entityName],self.pObjectID);
         return NO;
     }
     
@@ -146,7 +146,7 @@
 
 +(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Link entityName]];
     NSError *error;
     NSInteger result = [context countForFetchRequest:request error:&error];
     

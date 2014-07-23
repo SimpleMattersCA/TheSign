@@ -60,7 +60,7 @@
     {
         NSError *error;
         if(!error)
-            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+            _parseObject=[PFQuery getObjectOfClass:[Featured parseEntityName] objectId:self.pObjectID error:&error];
         else
             NSLog(@"%@",[error localizedDescription]);
     }
@@ -80,7 +80,7 @@
 
 +(Featured*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Featured entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@='%@'", OBJECT_ID, identifier]];
 
     NSError *error;
@@ -99,14 +99,14 @@
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        NSLog(@"%@: The object %@ is missing mandatory fields",[Featured entityName],object.objectId);
         return NO;
     }
     
     Boolean complete=YES;
 
     NSError *error;
-    Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+    Featured *deal = [NSEntityDescription insertNewObjectForEntityForName:[Featured entityName]
                                                    inManagedObjectContext:context];
     deal.pObjectID=object.objectId;
     
@@ -161,7 +161,7 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Featured entityName],self.pObjectID);
         return NO;
     }
     
@@ -223,7 +223,7 @@
 
 +(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Featured entityName]];
     NSError *error;
     NSInteger result = [context countForFetchRequest:request error:&error];
     
@@ -239,7 +239,7 @@
 
 +(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Featured entityName]];
     NSPredicate *predicateMajor = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@=%d)", CD_MAJOR, major.intValue]];
     NSPredicate *predicateMinor = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@=%d)", CD_MINOR, minor.intValue]];
     NSPredicate *predicateActive = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@=%d)", CD_ACIVE, minor.boolValue]];

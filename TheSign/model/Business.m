@@ -56,7 +56,7 @@
     {
         NSError *error;
         if(!error)
-            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+            _parseObject=[PFQuery getObjectOfClass:[Business parseEntityName] objectId:self.pObjectID error:&error];
         else
             NSLog(@"%@",[error localizedDescription]);
     }
@@ -75,7 +75,7 @@ static NSArray* _businessTypes;
 
 +(Business*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
     
     request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
@@ -91,7 +91,7 @@ static NSArray* _businessTypes;
 }
 +(Business*) getBusinessByUID:(NSNumber*)identifier Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
     request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@=%d", CD_UID, identifier.intValue]];
     NSError *error;
     NSArray *result = [context executeFetchRequest:request error:&error];
@@ -109,13 +109,13 @@ static NSArray* _businessTypes;
 {
     if([Business checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        NSLog(@"%@: The object %@ is missing mandatory fields",[Business entityName],object.objectId);
         return NO;
     }
     Boolean complete=YES;
 
     NSError *error;
-    Business *business = [NSEntityDescription insertNewObjectForEntityForName:Business.entityName
+    Business *business = [NSEntityDescription insertNewObjectForEntityForName:[Business entityName]
                                                        inManagedObjectContext:context];
     business.pObjectID=object.objectId;
     business.name=object[P_NAME];
@@ -151,7 +151,7 @@ static NSArray* _businessTypes;
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Business entityName],self.pObjectID);
         return NO;
     }
     
@@ -193,7 +193,7 @@ static NSArray* _businessTypes;
 
 +(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
     NSError *error;
     NSInteger result = [context countForFetchRequest:request error:&error];
     
@@ -255,7 +255,7 @@ static NSArray* _businessTypes;
 
 +(NSArray*) getBusinessesForContext:(NSManagedObjectContext*)context
 {
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
         NSError *error;
         NSArray *business = [context executeFetchRequest:request error:&error];
         
@@ -271,7 +271,7 @@ static NSArray* _businessTypes;
 +(NSArray*) getBusinessesByType:(NSString*)type Context:(NSManagedObjectContext *)context
 {
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Business.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
     request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@='%@'", CD_TYPE, type]];
     NSError *error;
     NSArray *business = [context executeFetchRequest:request error:&error];
@@ -311,7 +311,7 @@ static NSArray* _businessTypes;
 
 +(NSArray*)getDiscoveredBusinessesForContext:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
     NSError *error;
     request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@=%d", CD_DISCOVERED, YES]];
     NSArray *result = [context executeFetchRequest:request error:&error];

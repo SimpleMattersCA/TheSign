@@ -16,6 +16,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationItem.title=@"";
+    
+    [self.navigationItem setHidesBackButton:YES animated:NO];
+
     [[Model sharedModel] updateDBinBackground:YES];
 }
 
@@ -25,8 +29,6 @@
 }
 - (void)viewWillAppear:(BOOL)animated
 {
-    UINavigationController *navigation=(UINavigationController*)self.view.window.rootViewController;
-    [navigation.navigationItem setHidesBackButton:YES];
 }
 /*
 #pragma mark - Navigation

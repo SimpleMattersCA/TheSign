@@ -73,7 +73,7 @@
 
 +(User*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[User entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [context executeFetchRequest:request error:&error];
@@ -90,10 +90,10 @@
 
 
 
-+(void)CreateUserProfile:(PFUser *)user CompletionDelegate:(LoginController*)delegate;
++(void)CreateUserProfile:(PFUser *)user;
 {
  //   NSError *error;
-    User *newUser = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+    User *newUser = [NSEntityDescription insertNewObjectForEntityForName:[User entityName]
                                                   inManagedObjectContext:[Model sharedModel].managedObjectContext];
     newUser.pObjectID=user.objectId;
     newUser.isMainUser=@(YES);
@@ -130,8 +130,8 @@
                 
                 [[Model sharedModel] saveContext:[Model sharedModel].managedObjectContext];
                 
-                if([delegate respondsToSelector:@selector(finishSetup)])
-                    [delegate finishSetup];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"facebookDataDownloaded"
+                                                                    object:nil];
                 
              //   [currentUser findFriends];
             }
@@ -150,7 +150,7 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[User entityName],self.pObjectID);
         return NO;
     }
     
@@ -191,7 +191,7 @@
 
 +(NSInteger)getRowCount
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[User entityName]];
     NSError *error;
     NSInteger result = [[Model sharedModel].managedObjectContext countForFetchRequest:request error:&error];
     
@@ -210,7 +210,7 @@
 +(User*) currentUser
 {
 
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[User entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAIN, YES]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
@@ -273,7 +273,7 @@
  */
 +(NSArray*)getUsers
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:User.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[User entityName]];
     NSError *error;
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAIN, NO]];    NSArray *users = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     

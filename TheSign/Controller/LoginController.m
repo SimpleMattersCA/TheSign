@@ -18,10 +18,13 @@
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 
 
+
 @end
 
 @implementation LoginController
 
+bool fbReady=NO;
+bool dbReady=NO;
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -41,7 +44,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dbUpdated) name:@"dbUpdated" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fbUpdated) name:@"facebookDataDownloaded" object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -87,11 +91,7 @@
             else
             {
                 [self.spinner startAnimating];
-                [User CreateUserProfile:user CompletionDelegate:self];
-
-            //    UINavigationController *navigation=(UINavigationController*)self.view.window.rootViewController;
-                //FeedController *feed=[navigation.storyboard instantiateViewControllerWithIdentifier:@"FeedView"];
-               // [navigation pushViewController:feed animated:YES];
+                [User CreateUserProfile:user];
             }
         }
         else
@@ -117,11 +117,29 @@
     
 }
 
-
--(void)finishSetup
+-(void)dbUpdated
 {
-    [self.spinner stopAnimating];
+    dbReady=YES;
+    if(fbReady)
+    {
+        [self.spinner stopAnimating];
+        [self performSelectorOnMainThread:@selector(goToProfile) withObject:nil waitUntilDone:NO];
+    }
+}
+-(void)fbUpdated
+{
+    fbReady=YES;
+    if(dbReady)
+    {
+        [self.spinner stopAnimating];
+        [self performSelectorOnMainThread:@selector(goToProfile) withObject:nil waitUntilDone:NO];
+    }
+}
+
+-(void)goToProfile
+{
     [self performSegueWithIdentifier:@"ProfileAfterRegistration" sender:self];
 }
+
 
 @end

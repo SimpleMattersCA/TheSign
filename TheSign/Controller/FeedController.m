@@ -21,6 +21,9 @@
 
 @interface FeedController ()
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *btnProfile;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *btnPlaces;
+
 @property (nonatomic, strong) NSArray* deals;
 
 @property (nonatomic, strong) Featured* dealToShow;
@@ -104,7 +107,14 @@
     [super viewDidLoad];
     self.deals=[[Model sharedModel] getDealsForFeed];
     
-   
+    [self.btnProfile setTitleTextAttributes:@{
+                                         NSFontAttributeName: [UIFont fontWithName:@"Futura" size:18],
+                                         NSForegroundColorAttributeName: [UIColor whiteColor]
+                                         } forState:UIControlStateNormal];
+    [self.btnPlaces setTitleTextAttributes:@{
+                                              NSFontAttributeName: [UIFont fontWithName:@"Futura" size:18],
+                                              NSForegroundColorAttributeName: [UIColor whiteColor]
+                                              } forState:UIControlStateNormal];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     

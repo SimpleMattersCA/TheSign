@@ -50,6 +50,8 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
+-(BOOL)isBeingUpdated;
+
 + (Model*) sharedModel;
 
 - (NSURL *)applicationDocumentsDirectory;

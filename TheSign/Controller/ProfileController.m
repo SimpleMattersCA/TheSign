@@ -97,12 +97,6 @@
         [UIView setAnimationDuration:0.3];
         cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
         [UIView commitAnimations];
-        
-        //  [UIView animateWithDuration:1.0 animations:^{
-        //     cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
-        //  } completion:^(BOOL complete){
-        interest.likeness=@(0);
-        //  }];
     }
     else
     {
@@ -111,12 +105,6 @@
         [UIView setAnimationDuration:0.3];
         cell.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
         [UIView commitAnimations];
-        
-        
-        //   [UIView animateWithDuration:1.0 animations:^{
-        //    cell.backgroundColor=[UIColor colorWithRed:1.0 green:102.0/255.0 blue:0 alpha:1];
-        //   } completion:^(BOOL complete){
-        //   }];
     }
     
 }

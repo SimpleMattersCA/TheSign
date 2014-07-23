@@ -34,8 +34,10 @@
 
 @property (nonatomic, retain) PFUser* parseObject;
 
-+(void)CreateUserProfile:(PFUser *)user CompletionDelegate:(UIViewController*)delegate;
++(void)CreateUserProfile:(PFUser *)user;
 +(User*) currentUser;
+
++(NSString*) parseEntityName;
 
 
 @end

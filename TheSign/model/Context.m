@@ -38,7 +38,7 @@
     {
         NSError *error;
         if(!error)
-            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+            _parseObject=[PFQuery getObjectOfClass:[Context parseEntityName] objectId:self.pObjectID error:&error];
         else
             NSLog(@"%@",[error localizedDescription]);
     }
@@ -58,7 +58,7 @@
 
 +(Context*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Context entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [context executeFetchRequest:request error:&error];
@@ -77,13 +77,13 @@
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        NSLog(@"%@: The object %@ is missing mandatory fields",[Context entityName],object.objectId);
         return NO;
     }
     
     Boolean complete=YES;
 
-    Context *newContext = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+    Context *newContext = [NSEntityDescription insertNewObjectForEntityForName:[Context entityName]
                                              inManagedObjectContext:context];
     newContext.pObjectID=object.objectId;
     newContext.name=object[P_NAME];
@@ -97,7 +97,7 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Context entityName],self.pObjectID);
         return NO;
     }
     
@@ -117,7 +117,7 @@
 
 +(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Context entityName]];
     NSError *error;
     NSInteger result = [context countForFetchRequest:request error:&error];
     
@@ -144,7 +144,7 @@
 
 +(NSArray*)getCurrentContextsForBusiness:(Business*)business AtLocation:(Location*)location Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Context entityName]];
     NSError *error;
     NSArray *fetchedContexts = [context executeFetchRequest:request error:&error];
     

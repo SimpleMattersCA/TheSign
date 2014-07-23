@@ -19,7 +19,7 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="default_user" translatesAutoresizingMaskIntoConstraints="NO" id="yhG-F3-Vjp">
                                 <rect key="frame" x="80" y="80" width="160" height="158"/>
                             </imageView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Andrey Chudnovskiy" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iJr-Wl-la0">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iJr-Wl-la0">
                                 <rect key="frame" x="20" y="246" width="280" height="32"/>
                                 <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="16"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -122,9 +122,8 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
-                                    <color key="backgroundColor" red="0.30631613731384277" green="0.36376169323921204" blue="0.37130334973335266" alpha="1" colorSpace="custom" customColorSpace="adobeRGB1998"/>
                                 </tableViewCellContentView>
-                                <color key="backgroundColor" red="0.23921568627450979" green="0.32156862745098036" blue="0.32941176470588235" alpha="1" colorSpace="custom" customColorSpace="adobeRGB1998"/>
+                                <color key="backgroundColor" red="0.23921570181846619" green="0.32156863808631897" blue="0.32941177487373352" alpha="1" colorSpace="deviceRGB"/>
                                 <connections>
                                     <segue destination="a8V-33-JbN" kind="push" identifier="ShowBusiness" id="6Ee-vm-WkK"/>
                                 </connections>
@@ -254,6 +253,9 @@
                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.3294117647" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <navigationItem key="navigationItem" id="uP8-za-HxG"/>
+                    <connections>
+                        <outlet property="navigationItem" destination="uP8-za-HxG" id="QGv-0F-CNa"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AcX-2F-gOw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -323,6 +325,7 @@
                         <color key="barTintColor" red="0.92549019610000005" green="0.45098039220000002" blue="0.24313725489999999" alpha="1" colorSpace="deviceRGB"/>
                         <textAttributes key="titleTextAttributes">
                             <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="20"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -401,13 +404,15 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="The Sign" id="1sg-18-oup">
-                        <barButtonItem key="backBarButtonItem" title=" " id="DQg-cT-MCf"/>
+                        <barButtonItem key="backBarButtonItem" title=" " id="1Ld-Z1-p4M"/>
                         <barButtonItem key="leftBarButtonItem" title="Profile" id="CJG-55-qTx">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <segue destination="gbu-bQ-6DF" kind="push" identifier="ShowProfile" id="e5c-hV-G3B"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Places" id="ReR-Wk-zwT">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <segue destination="RjS-5e-xrn" kind="push" identifier="ShowBusinesses" id="l7H-RF-0w9"/>
                             </connections>
@@ -420,6 +425,8 @@
                         </connections>
                     </refreshControl>
                     <connections>
+                        <outlet property="btnPlaces" destination="ReR-Wk-zwT" id="Ntj-kz-qhC"/>
+                        <outlet property="btnProfile" destination="CJG-55-qTx" id="zsu-Ty-a2j"/>
                         <segue destination="12p-MK-t99" kind="modal" identifier="ShowDeal" id="JXD-KH-JYW"/>
                         <segue destination="a8V-33-JbN" kind="push" identifier="ShowOneBusiness" id="LRH-uE-kh8"/>
                     </connections>
@@ -526,9 +533,9 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="TV9-BH-EdN"/>
-        <segue reference="GcE-5b-jyK"/>
+        <segue reference="5tB-nx-LkQ"/>
+        <segue reference="e5c-hV-G3B"/>
         <segue reference="JXD-KH-JYW"/>
-        <segue reference="6Ee-vm-WkK"/>
+        <segue reference="LRH-uE-kh8"/>
     </inferredMetricsTieBreakers>
 </document>

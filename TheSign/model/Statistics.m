@@ -57,7 +57,7 @@
 +(Statistics*)recordStatisticsFromFeedForContext:(NSManagedObjectContext*)context
 {
     
-    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:[Statistics entityName]
                                                         inManagedObjectContext:context];
     newStat.statType=@(1);
     newStat.date=[NSDate date];
@@ -71,7 +71,7 @@
 
 +(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor Context:(NSManagedObjectContext *)context
 {
-    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:[Statistics entityName]
                                              inManagedObjectContext:context];
     newStat.statType=@(1);
     newStat.date=[NSDate date];
@@ -87,7 +87,7 @@
 
 +(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID Context:(NSManagedObjectContext *)context
 {
-    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+    Statistics *newStat = [NSEntityDescription insertNewObjectForEntityForName:[Statistics entityName]
                                                         inManagedObjectContext:context];
     newStat.statType=@(2);
     newStat.date=[NSDate date];
@@ -105,7 +105,7 @@
     [dateComponents setMonth:-1];
     NSDate *monthAgo = [[NSCalendar currentCalendar]  dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
 
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Statistics entityName]];
     NSString *predicateBound = [NSString stringWithFormat: @"%@>'%@'", CD_DATE, monthAgo];
     NSString *predicateSynced = [NSString stringWithFormat: @"%@==%d", CD_SYNCED, NO];
     
@@ -121,7 +121,7 @@
     {
         for (Statistics *newStat in stats)
         {
-            PFObject *newStatistics = [PFObject objectWithClassName:Statistics.parseEntityName];
+            PFObject *newStatistics = [PFObject objectWithClassName:[Statistics parseEntityName]];
             newStatistics[P_DATE] = newStat.date;
             newStatistics[P_LIKED] = newStat.liked;
             newStatistics[P_MAJOR]=newStat.major;
@@ -130,12 +130,12 @@
             newStatistics[P_TYPE]=newStat.statType;
             if(newStat.linkedOffer)
             {
-                newStatistics[P_OFFER] = [PFObject objectWithoutDataWithClassName:Featured.parseEntityName objectId:newStat.linkedOffer.pObjectID];
+                newStatistics[P_OFFER] = [PFObject objectWithoutDataWithClassName:[Featured parseEntityName] objectId:newStat.linkedOffer.pObjectID];
                 if(newStat.linkedOffer.linkedBusiness)
-                    newStatistics[P_BUSINESS] = [PFObject objectWithoutDataWithClassName:Featured.parseEntityName objectId:newStat.linkedOffer.linkedBusiness.pObjectID];
+                    newStatistics[P_BUSINESS] = [PFObject objectWithoutDataWithClassName:[Featured parseEntityName] objectId:newStat.linkedOffer.linkedBusiness.pObjectID];
             }
             
-            newStatistics[P_USER] = [PFObject objectWithoutDataWithClassName:User.parseEntityName objectId:newStat.linkedUser.pObjectID];
+            newStatistics[P_USER] = [PFObject objectWithoutDataWithClassName:[User parseEntityName] objectId:newStat.linkedUser.pObjectID];
             //saving data whenever user gets network connection
             [newStatistics saveEventually];
             newStat.synced=@(YES);

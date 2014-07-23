@@ -42,7 +42,7 @@
     {
         NSError *error;
         if(!error)
-            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+            _parseObject=[PFQuery getObjectOfClass:[Template parseEntityName] objectId:self.pObjectID error:&error];
         else
             NSLog(@"%@",[error localizedDescription]);
     }
@@ -63,7 +63,7 @@
 
 +(Template*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Template entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [context executeFetchRequest:request error:&error];
@@ -82,13 +82,13 @@
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        NSLog(@"%@: The object %@ is missing mandatory fields",[Template entityName],object.objectId);
         return NO;
     }
     
     Boolean complete=YES;
 
-    Template *template = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+    Template *template = [NSEntityDescription insertNewObjectForEntityForName:[Template entityName]
                                              inManagedObjectContext:context];
     template.pObjectID=object.objectId;
     template.messageText=object[P_MESSAGE];
@@ -134,7 +134,7 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Template entityName],self.pObjectID);
         return NO;
     }
     
@@ -187,7 +187,7 @@
 
 +(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Template entityName]];
     NSError *error;
     NSInteger result = [context countForFetchRequest:request error:&error];
     
@@ -211,7 +211,7 @@
 
 +(NSArray*)getGenericTemplatesForContext:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Template entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat: @"%@=nil", CD_CONTEXT]];
     NSError *error;
     NSArray *result = [context executeFetchRequest:request error:&error];

@@ -78,7 +78,7 @@ NSNumber *detectedBeaconMajor;
 
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
         TutorialController *firstRun=[navigation.storyboard instantiateViewControllerWithIdentifier:@"WelcomeScreen"];
-        [navigation pushViewController:firstRun animated:YES];
+        [navigation pushViewController:firstRun animated:NO];
     }
     else
     {

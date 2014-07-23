@@ -27,12 +27,11 @@
 
 @property (strong) NSTimer *networkTimer;
 
-
-
-
+@property NSNumber* isUpdating;
 @end
 
 @implementation NSManagedObjectContext (FetchedObjectFromURI)
+
 - (NSManagedObject *)objectWithURI:(NSURL *)uri
 {
     NSManagedObjectID *objectID =
@@ -79,10 +78,27 @@
 
 @implementation Model
 
+
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectContextBackground = _managedObjectContextBackground;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+
+
+-(BOOL)isBeingUpdated
+{
+    if(!self.isUpdating)
+         NSLog(@"No value");
+    else
+        NSLog(@"IS updated: %d",self.isUpdating.boolValue);
+    
+    if(!self.isUpdating)
+        return NO;
+    else
+        return self.isUpdating.boolValue;
+}
+
+
 
 -(double)getLikeValueForAction:(OfferLike)action
 {
@@ -109,11 +125,6 @@
 {
     if (self = [super init])
     {
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(itemPulledFromCloud:)
-                                                     name:@"itemPulledFromCloud"
-                                                   object:nil];
         
         //checking database every hour with tolerance of 10 minutes
 
@@ -149,10 +160,14 @@
 
 -(void) updateDBinBackground:(Boolean)inBackground
 {
-    if(inBackground)
-        [self performSelectorInBackground:@selector(checkModel) withObject:nil];
-    else
-        [self checkModel];
+    if(!self.isUpdating && self.isUpdating.boolValue==NO)
+    {
+        self.isUpdating=@(YES);
+        if(inBackground)
+            [self performSelectorInBackground:@selector(checkModel) withObject:nil];
+        else
+            [self checkModel];
+    }
 
 }
 
@@ -193,7 +208,7 @@
     Boolean completeData=YES;    
     
     //pull from cloud for
-    PFQuery *query = [PFQuery queryWithClassName:TableTimestamp.parseEntityName];
+    PFQuery *query = [PFQuery queryWithClassName:[TableTimestamp parseEntityName]];
     NSError *error;
     [query orderByAscending:TableTimestamp.pOrder];
     NSArray *objects=[query findObjects:&error];
@@ -204,18 +219,18 @@
     {
         for (PFObject *object in objects)
         {
-            NSString *tableName=object[TableTimestamp.pTableName];
+            NSString *tableName=object[[TableTimestamp pTableName]];
             NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName Context:self.managedObjectContextBackground];
-            if(![timestamp isEqualToDate:object[TableTimestamp.pTimeStamp]])
+            if(![timestamp isEqualToDate:object[[TableTimestamp pTimeStamp]]])
             {
-                NSLog(@"Pulling %@",tableName);
+              //  NSLog(@"Pulling %@",tableName);
                 if([self pullFromCloud:tableName]==NO)
                     completeData=NO;
                 
                 
             }
         }
-        [self pullFromCloud:TableTimestamp.parseEntityName];
+        [self pullFromCloud:[TableTimestamp parseEntityName]];
     }
     else
     {
@@ -224,6 +239,11 @@
     
     
     [self saveContext:self.managedObjectContextBackground];
+    
+    self.isUpdating=@(NO);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"dbUpdated"
+                                                            object:nil];
     return completeData;
 }
 
@@ -232,18 +252,18 @@
  */
 -(void)deleteModelForContext:(NSManagedObjectContext *)context
 {
-    [self deleteEntity:TableTimestamp.entityName];
-    [self deleteEntity:Settings.entityName];
-    [self deleteEntity:Context.entityName];
-    [self deleteEntity:Business.entityName];
-    [self deleteEntity:Link.entityName];
-    [self deleteEntity:Featured.entityName];
-    [self deleteEntity:Tag.entityName];
-    [self deleteEntity:TagSet.entityName];
-    [self deleteEntity:TagConnection.entityName];
-    [self deleteEntity:Location.entityName];
-    [self deleteEntity:Area.entityName];
-    [self deleteEntity:Template.entityName];
+    [self deleteEntity:[TableTimestamp entityName]];
+    [self deleteEntity:[Settings entityName]];
+    [self deleteEntity:[Context entityName]];
+    [self deleteEntity:[Business entityName]];
+    [self deleteEntity:[Link entityName]];
+    [self deleteEntity:[Featured entityName]];
+    [self deleteEntity:[Tag entityName]];
+    [self deleteEntity:[TagSet entityName]];
+    [self deleteEntity:[TagConnection entityName]];
+    [self deleteEntity:[Location entityName]];
+    [self deleteEntity:[Area entityName]];
+    [self deleteEntity:[Template entityName]];
     [self saveContext:context];
 }
 
@@ -256,29 +276,29 @@
 
 -(Class)getClassForParseEntity:(NSString*)entityName
 {
-    if([entityName isEqualToString:TableTimestamp.parseEntityName])
+    if([entityName isEqualToString:[TableTimestamp parseEntityName]])
         return [TableTimestamp class];
-    else if([entityName isEqualToString:Settings.parseEntityName])
+    else if([entityName isEqualToString:[Settings parseEntityName]])
         return [Settings class];
-    else if([entityName isEqualToString:Context.parseEntityName])
+    else if([entityName isEqualToString:[Context parseEntityName]])
         return [Context class];
-    else if([entityName isEqualToString:Business.parseEntityName])
+    else if([entityName isEqualToString:[Business parseEntityName]])
         return [Business class];
-    else if([entityName isEqualToString:Link.parseEntityName])
+    else if([entityName isEqualToString:[Link parseEntityName]])
         return [Link class];
-    else if([entityName isEqualToString:Featured.parseEntityName])
+    else if([entityName isEqualToString:[Featured parseEntityName]])
         return [Featured class];
-    else if([entityName isEqualToString:Tag.parseEntityName])
+    else if([entityName isEqualToString:[Tag parseEntityName]])
         return [Tag class];
-    else if([entityName isEqualToString:TagSet.parseEntityName])
+    else if([entityName isEqualToString:[TagSet parseEntityName]])
         return [TagSet class];
-    else if([entityName isEqualToString:TagConnection.parseEntityName])
+    else if([entityName isEqualToString:[TagConnection parseEntityName]])
         return [TagConnection class];
-    else if([entityName isEqualToString:Location.parseEntityName])
+    else if([entityName isEqualToString:[Location parseEntityName]])
         return [Location class];
-    else if([entityName isEqualToString:Area.parseEntityName])
+    else if([entityName isEqualToString:[Area parseEntityName]])
         return [Area class];
-    else if([entityName isEqualToString:Template.parseEntityName])
+    else if([entityName isEqualToString:[Template parseEntityName]])
         return [Template class];
     
     return nil;

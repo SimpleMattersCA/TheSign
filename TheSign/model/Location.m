@@ -47,7 +47,7 @@
     {
         NSError *error;
         if(!error)
-            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+            _parseObject=[PFQuery getObjectOfClass:[Location parseEntityName] objectId:self.pObjectID error:&error];
         else
             NSLog(@"%@",[error localizedDescription]);
     }
@@ -68,7 +68,7 @@
 
 +(Location*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Location entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
 
     NSError *error;
@@ -89,7 +89,7 @@
 {
     if([Location checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        NSLog(@"%@: The object %@ is missing mandatory fields",[Location entityName],object.objectId);
         return NO;
     }
     
@@ -137,7 +137,7 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Location entityName],self.pObjectID);
         return NO;
     }
     
@@ -196,7 +196,7 @@
 
 +(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Location entityName]];
     NSError *error;
     NSInteger result = [context countForFetchRequest:request error:&error];
     
@@ -213,7 +213,7 @@
 
 +(Location*)getLocationByMajor:(NSNumber*)major Context:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Location.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Location entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAJOR, major.intValue]];
     NSError *error;
     NSArray *result = [context executeFetchRequest:request error:&error];

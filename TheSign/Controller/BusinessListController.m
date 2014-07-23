@@ -61,7 +61,7 @@
     //remove extra separators
     self.tableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,0,10)];
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-
+    self.tableView.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
 }
 
 
@@ -95,13 +95,13 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger) section
 {
     
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0,self.tableView.frame.size.width,65)];
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0,self.tableView.frame.size.width,45)];
     header.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
 
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0,35,self.tableView.frame.size.width,30)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0,30,self.tableView.frame.size.width,30)];
     label.text=self.firstLetters[section];
     label.textAlignment = NSTextAlignmentCenter;
-    label.font = [UIFont fontWithName:@"Futura" size:20];
+    label.font = [UIFont fontWithName:@"Futura" size:14];
     label.textColor=[UIColor whiteColor];
     [header addSubview:label];
 
@@ -109,7 +109,7 @@
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 65;
+    return 55;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -117,8 +117,6 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"BusinessCell" forIndexPath:indexPath];
     
-//    if(indexPath.row==0)
-//    {
     UIView *lineViewUp = [[UIView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 1)];
     
     if(indexPath.row==0)
@@ -126,17 +124,17 @@
     else
         lineViewUp.backgroundColor = [UIColor grayColor];
         
-    UIView *lineViewDown = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height, cell.contentView.frame.size.width, 1)];
+    UIView *lineViewDown = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height-1, cell.contentView.frame.size.width, 1)];
     
     if(indexPath.row==[self.tableView numberOfRowsInSection:indexPath.section]-1)
+    {
         lineViewDown.backgroundColor = [UIColor whiteColor];
-    else
-        lineViewDown.backgroundColor = [UIColor grayColor];
+        [cell.contentView addSubview:lineViewDown];
+
+    }
+    //else
+     //   lineViewDown.backgroundColor = [UIColor grayColor];
     [cell.contentView addSubview:lineViewUp];
-    [cell.contentView addSubview:lineViewDown];
-
-
-  //  }
     
     NSInteger index=((NSNumber*)[[self.businessesInSections allKeysForObject:self.firstLetters[indexPath.section]] objectAtIndex:indexPath.row]).integerValue;
     
@@ -145,8 +143,10 @@
     cell.detailTextLabel.text=business.welcomeText;
     
     
-    //  BusinessCell *newCell=[[BusinessCell alloc] init];
+    cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
     
+    
+    NSLog(@"%d %@",indexPath.row,business.name);
 
     
     return cell;

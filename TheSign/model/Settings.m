@@ -45,7 +45,7 @@
     {
         NSError *error;
         if(!error)
-            _parseObject=[PFQuery getObjectOfClass:[self.class parseEntityName] objectId:self.pObjectID error:&error];
+            _parseObject=[PFQuery getObjectOfClass:[Settings parseEntityName] objectId:self.pObjectID error:&error];
         else
             NSLog(@"%@",[error localizedDescription]);
     }
@@ -62,7 +62,7 @@
 
 +(Settings*) getByID:(NSString*)identifier Context:(NSManagedObjectContext*)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Settings entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", OBJECT_ID, identifier]];
     NSError *error;
     NSArray *result = [context executeFetchRequest:request error:&error];
@@ -82,12 +82,12 @@
 {
     if([Settings checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",self.entityName,object.objectId);
+        NSLog(@"%@: The object %@ is missing mandatory fields",[Settings entityName],object.objectId);
         return NO;
     }
     Boolean complete=YES;
 
-    Settings *settings = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
+    Settings *settings = [NSEntityDescription insertNewObjectForEntityForName:[Settings entityName]
                                                        inManagedObjectContext:context];
     settings.pObjectID=object.objectId;
     settings.name=object[P_NAME];
@@ -104,7 +104,7 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[self.class entityName],self.pObjectID);
+        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Settings entityName],self.pObjectID);
         return NO;
     }
     Boolean complete=YES;
@@ -121,7 +121,7 @@
 
 +(NSInteger)getRowCountForContext:(NSManagedObjectContext *)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Settings entityName]];
     NSError *error;
     NSInteger result = [context countForFetchRequest:request error:&error];
     
@@ -137,7 +137,7 @@
 
 +(Settings*)getValueForParamName:(NSString*)paramName Context:(NSManagedObjectContext*)context
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:Settings.entityName];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Settings entityName]];
     request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@='%@'", P_NAME, paramName]];
     NSError *error;
     NSArray *result = [context executeFetchRequest:request error:&error];
