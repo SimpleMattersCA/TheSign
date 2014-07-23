@@ -88,7 +88,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    UICollectionViewCell *cell = [self.interestsCollection dequeueReusableCellWithReuseIdentifier:@"InterestCell" forIndexPath:indexPath];
+    UICollectionViewCell *cell = [self.interestsCollection cellForItemAtIndexPath:indexPath];
     Tag* interest=(Tag*)self.interests[indexPath.row];
     if([interest.likeness doubleValue]>=[[Model sharedModel].interest_value doubleValue])
     {
@@ -98,11 +98,11 @@
         cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
         [UIView commitAnimations];
         
-      //  [UIView animateWithDuration:1.0 animations:^{
-       //     cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
-      //  } completion:^(BOOL complete){
-            interest.likeness=@(0);
-      //  }];
+        //  [UIView animateWithDuration:1.0 animations:^{
+        //     cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
+        //  } completion:^(BOOL complete){
+        interest.likeness=@(0);
+        //  }];
     }
     else
     {
@@ -113,13 +113,15 @@
         [UIView commitAnimations];
         
         
-     //   [UIView animateWithDuration:1.0 animations:^{
+        //   [UIView animateWithDuration:1.0 animations:^{
         //    cell.backgroundColor=[UIColor colorWithRed:1.0 green:102.0/255.0 blue:0 alpha:1];
-     //   } completion:^(BOOL complete){
-     //   }];
+        //   } completion:^(BOOL complete){
+        //   }];
     }
     
 }
+
+
 
 #pragma mark - Table view data source
 
@@ -138,7 +140,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    UICollectionViewCell *cell = [self.interestsCollection dequeueReusableCellWithReuseIdentifier:@"InterestCell" forIndexPath:indexPath];
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"InterestCell" forIndexPath:indexPath];
     UILabel *interestLabel = (UILabel *)[cell viewWithTag:1];
     Tag* interest=(Tag*)self.interests[indexPath.row];
 
@@ -147,6 +149,7 @@
         cell.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
     else
         cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
+
     cell.layer.borderWidth=1.0;
     cell.layer.borderColor=[UIColor whiteColor].CGColor;
     return cell;

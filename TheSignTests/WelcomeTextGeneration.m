@@ -68,7 +68,7 @@
 
 
 - (void)testWelcomeTextGeneration {
-
+    
     Featured* offer;
     
     NSString * starbucksBurnaby=[[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:@(4) ChosenOffer:&offer];
@@ -88,6 +88,34 @@
     XCTAssertNotNil(crepeYaletown);
 
 }
+-(void)testLocalNotification{
+
+    NSNumber* detectedBeaconMajor=@(1);
+    NSNumber* detectedBeaconMinor=@(1);
+    
+    Statistics* stat=[[Model sharedModel] recordStatisticsFromBeaconMajor:detectedBeaconMajor Minor:detectedBeaconMinor];
+    Featured* chosenOffer;
+    
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor ChosenOffer:&chosenOffer];
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation.absoluteString,@"StatisticsObjectID", nil];
+    
+    notification.fireDate=[[NSDate date] dateByAddingTimeInterval:10];
+    
+    notification.userInfo=infoDict;
+    if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""] && chosenOffer!=nil)
+    {
+        [stat setDeal:chosenOffer];
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+    }
+    
+    
+    
+    
+
+}
+
 
 -(void)testOffersFeed{
     Model* model=[Model sharedModel];
@@ -125,7 +153,7 @@
 
 }
 
-- (void)testPerformanceWelcomeTextGeneration {
+/*- (void)testPerformanceWelcomeTextGeneration {
     // This is an example of a performance test case.
     [self measureBlock:^{
         Featured* offer;
@@ -134,6 +162,6 @@
 
         // Put the code you want to measure the time of here.
     }];
-}
+}*/
 
 @end

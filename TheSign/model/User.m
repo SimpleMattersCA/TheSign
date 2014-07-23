@@ -11,7 +11,7 @@
 #import "User.h"
 #import "Model.h"
 #import "Parse/Parse.h"
-
+#import "LoginController.h"
 
 #define CD_MAIN (@"isMainUser")
 #define CD_PIC (@"pic")
@@ -87,7 +87,10 @@
         return result.firstObject;
 }
 
-+(void)createUserFromParse:(PFUser *)user
+
+
+
++(void)CreateUserProfile:(PFUser *)user CompletionDelegate:(LoginController*)delegate;
 {
  //   NSError *error;
     User *newUser = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
@@ -126,7 +129,10 @@
                 currentUser.pic=imageData;
                 
                 [[Model sharedModel] saveContext:[Model sharedModel].managedObjectContext];
-                //[[Model sharedModel] saveContext];
+                
+                if([delegate respondsToSelector:@selector(finishSetup)])
+                    [delegate finishSetup];
+                
              //   [currentUser findFriends];
             }
         }];
@@ -225,7 +231,7 @@
     
 }
 
--(void)findFriends
+/*-(void)findFriends
 {
     // Issue a Facebook Graph API request to get your user's friend list
     [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -259,7 +265,7 @@
             
         }
     }];
-}
+}*/
 
 
 /**

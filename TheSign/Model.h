@@ -79,9 +79,11 @@ typedef NS_ENUM(NSInteger, OfferLike) {
 
 -(Statistics*)getStatisticsByURL:(NSURL*)stringID;
 
+-(void) updateDBinBackground:(Boolean)inBackground;
 
 //********* For testign purpoces *********//
--(void) updateDBinBackground:(Boolean)inBackground;
+-(Boolean)checkModel;
+
 
 -(void)deleteModelForContext:(NSManagedObjectContext*)context;
 -(void) deleteDataStore;

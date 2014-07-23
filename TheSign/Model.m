@@ -208,6 +208,7 @@
             NSDate *timestamp=[TableTimestamp getUpdateTimestampForTable:tableName Context:self.managedObjectContextBackground];
             if(![timestamp isEqualToDate:object[TableTimestamp.pTimeStamp]])
             {
+                NSLog(@"Pulling %@",tableName);
                 if([self pullFromCloud:tableName]==NO)
                     completeData=NO;
                 

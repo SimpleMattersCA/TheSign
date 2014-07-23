@@ -19,7 +19,7 @@
 @property (strong) NSNumber* actioned;
 @property (weak, nonatomic) IBOutlet UIButton *dislikeButton;
 @property (weak, nonatomic) IBOutlet UIButton *likeButton;
-
+@property (weak,nonatomic) UIViewController* delegate;
 
 @property (strong, nonatomic) UIImage* backgroundImage;
 @end
@@ -41,17 +41,9 @@ BOOL clickedDislike=NO;
     [self.view addSubview:imageView ];
     [self.view sendSubviewToBack:imageView ];
     
-    
-}
-- (IBAction)actionButton:(id)sender {
-    UILocalNotification *notification = [[UILocalNotification alloc] init];
-    notification.alertBody =@"Mary's Cafe: So hot and sunny outside! Come in for a refreshing Iced Tea";
-    notification.fireDate=[[NSDate date] dateByAddingTimeInterval:10];
-    
-    
-
-    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
-
+    //There is a case of mismatching color palettes between what I set in storyboard and what I set programmatically, until I find the reason I'm gonna set it in code
+    self.likeButton.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
+    self.dislikeButton.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
 
 }
 
@@ -59,18 +51,22 @@ BOOL clickedDislike=NO;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (IBAction)dismissView:(id)sender {
-    if (![self.presentedViewController isBeingDismissed])
+- (IBAction)dismissView:(id)sender
+{
+    if (![self.delegate.presentedViewController isBeingDismissed])
     {
-        [self dismissViewControllerAnimated:YES completion:^{
-            if(self.actioned.boolValue==NO)
-                [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_None]];
-        }];
+        if([self.delegate respondsToSelector:@selector(dismissViewControllerAnimated:completion:)]) {
+            [self.delegate dismissViewControllerAnimated:YES completion:^{
+                if(self.actioned.boolValue==NO)
+                    [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_None]];
+            }];
+        }
     }
 }
 
--(void)setDealToShow:(Featured*) deal Statistics:(Statistics*)stat BackgroundImage:(UIImage*)image
+-(void)setDealToShow:(Featured*) deal Statistics:(Statistics*)stat BackgroundImage:(UIImage*)image Delegate:(UIViewController*)delegate;
 {
+    self.delegate=delegate;
     self.deal=deal;
     self.backgroundImage=image;
     if(stat)
@@ -80,7 +76,6 @@ BOOL clickedDislike=NO;
 
 }
 - (IBAction)actionLike:(id)sender {
-    
     //if hasn't clicked before
     if(self.dislikeButton.enabled)
     {

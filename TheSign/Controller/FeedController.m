@@ -14,6 +14,11 @@
 #import "UIImage+ImageEffects.h"
 #import "Featured.h"
 
+//TODO: remove after testing
+#import "Statistics.h"
+#import "InsightEngine.h"
+
+
 @interface FeedController ()
 
 @property (nonatomic, strong) NSArray* deals;
@@ -60,6 +65,31 @@
 }
 - (void)actionTapBusiness:(UIGestureRecognizer *)sender
 {
+    
+    NSNumber* detectedBeaconMajor=@(1);
+    NSNumber* detectedBeaconMinor=@(1);
+    
+    Statistics* stat=[[Model sharedModel] recordStatisticsFromBeaconMajor:detectedBeaconMajor Minor:detectedBeaconMinor];
+    Featured* chosenOffer;
+    
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor ChosenOffer:&chosenOffer];
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation.absoluteString,@"StatisticsObjectID", nil];
+    
+    notification.fireDate=[[NSDate date] dateByAddingTimeInterval:60];
+    
+    notification.userInfo=infoDict;
+    if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""] && chosenOffer!=nil)
+    {
+        [stat setDeal:chosenOffer];
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+    }
+    
+    
+    
+    
+
+    
     UIView* view=sender.view;
     while(![view isKindOfClass:[FeedCell class]])
     {
@@ -73,7 +103,8 @@
 {
     [super viewDidLoad];
     self.deals=[[Model sharedModel] getDealsForFeed];
-
+    
+   
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -84,12 +115,13 @@
 {
     [super viewDidAppear:animated];
     
-    if(self.dealToShow && self.statForDeal)
+     if(self.dealToShow && self.statForDeal)
     {
         [self performSegueWithIdentifier:@"ShowDeal" sender:self];
         self.dealToShow=nil;
         self.statForDeal=nil;
     }
+
     
 }
 
@@ -170,11 +202,6 @@
     return YES;
 }
 */
--(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSLog(@"!!!Row Selected :%d",indexPath.row);
-}
-
 
 #pragma mark - Navigation
 
@@ -186,10 +213,10 @@
         UIImage* background=[self getBlurredScreenshot];
         DealViewController * controller = segue.destinationViewController ;
         if([sender isKindOfClass:[FeedCell class]])
-            [controller setDealToShow:((FeedCell*)sender).deal Statistics:nil BackgroundImage:background];
+            [controller setDealToShow:((FeedCell*)sender).deal Statistics:nil BackgroundImage:background Delegate:self];
         else if([sender isKindOfClass:[FeedController class]])
-            [controller setDealToShow:self.dealToShow Statistics:self.statForDeal BackgroundImage:background];
-        controller.modalPresentationStyle = UIModalPresentationCustom;
+            [controller setDealToShow:self.dealToShow Statistics:self.statForDeal BackgroundImage:background Delegate:self];
+        controller.modalPresentationStyle = UIModalPresentationCurrentContext;
     }
     
     if([segue.identifier isEqualToString:@"ShowOneBusiness"] && [segue.destinationViewController isKindOfClass:[BusinessProfileController class]])

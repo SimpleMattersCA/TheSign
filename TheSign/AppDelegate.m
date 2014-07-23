@@ -40,8 +40,11 @@ NSNumber *detectedBeaconMajor;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
-    [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge categories:nil]];
-
+    /*
+    //ios 8
+    if([application respondsToSelector:@selector(registerUserNotificationSettings)])
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge categories:nil]];
+*/
     [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
                   clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
@@ -66,7 +69,7 @@ NSNumber *detectedBeaconMajor;
 //
 
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setBool:NO forKey:@"DidFirstRun"];
+  //  [userDefaults setBool:NO forKey:@"DidFirstRun"];
 
     if (![userDefaults boolForKey:@"DidFirstRun"])
     {
@@ -104,9 +107,13 @@ Preparing and starting geofence and beacon monitoring
     {
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
-#warning ios8 only
-        [self.locationManager requestAlwaysAuthorization];
-        self.locationManager.pausesLocationUpdatesAutomatically=YES;
+        /*//ios8 only
+        if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)])
+        {
+            [self.locationManager requestAlwaysAuthorization];
+        }*/
+        
+      //  self.locationManager.pausesLocationUpdatesAutomatically=YES;
         //********* Geofence monitoring *********//
       //  [self.locationManager startMonitoringSignificantLocationChanges];
         
@@ -130,8 +137,9 @@ Preparing and starting geofence and beacon monitoring
                                         identifier:@"SignBeacon"];
         
         //show notificaiton only when screen is on
-        self.beaconRegion.notifyEntryStateOnDisplay=YES;
-        self.beaconRegion.notifyOnEntry=NO;
+   //     self.beaconRegion.notifyEntryStateOnDisplay=YES;
+   //     self.beaconRegion.notifyOnEntry=NO;
+        self.beaconRegion.notifyOnEntry=YES;
         self.beaconRegion.notifyOnExit=YES;
         
         // Register the beacon region with the location manager.
@@ -193,16 +201,15 @@ Preparing and starting geofence and beacon monitoring
     if (application.applicationState == UIApplicationStateInactive ) {
         
         
-        Statistics* stat=[[Model sharedModel] getStatisticsByURL:[notification.userInfo objectForKey:@"StatisticsObjectID"]];
+        Statistics* stat=[[Model sharedModel] getStatisticsByURL:[NSURL URLWithString:[notification.userInfo objectForKey:@"StatisticsObjectID"]]];
         Featured* offer;
         
-        NSString* offerObjectID=(NSString*)[notification.userInfo objectForKey:@"StatisticsObjectID"];
+        NSString* offerObjectID=(NSString*)[notification.userInfo objectForKey:@"OfferID"];
         if(offerObjectID)
             offer=[Featured getByID:offerObjectID Context:[Model sharedModel].managedObjectContext];
         
         if(stat && offer)
         {
-            [stat setDeal:offer];
             
             //present deal view
             UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
@@ -249,16 +256,18 @@ Preparing and starting geofence and beacon monitoring
     notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:major ChosenOffer:&chosenOffer];
 
     
-    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation,@"StatisticsObjectID", nil];
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation.absoluteString,@"StatisticsObjectID", nil];
     
     
     notification.userInfo=infoDict;
     if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""] && chosenOffer!=nil)
     {
+        [stat setDeal:chosenOffer];
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
     }
-
+    
+    [self.locationManager stopMonitoringForRegion:self.gpsRegion];
 }
 
 
@@ -296,12 +305,13 @@ Preparing and starting geofence and beacon monitoring
         
         
         
-        NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation,@"StatisticsObjectID", nil];
+        NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation.absoluteString,@"StatisticsObjectID", nil];
 
     
         notification.userInfo=infoDict;
         if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""] && chosenOffer!=nil)
         {
+            [stat setDeal:chosenOffer];
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
         }

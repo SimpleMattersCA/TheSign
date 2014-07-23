@@ -10,5 +10,6 @@
 
 @interface LoginController : UIViewController
 
+-(void)finishSetup;
 
 @end

@@ -15,6 +15,7 @@
 #import "ProfileController.h"
 @interface LoginController ()
 
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 
 
 @end
@@ -85,9 +86,8 @@
             }
             else
             {
-                [User createUserFromParse:user];
-                [[Model sharedModel] saveContext:[Model sharedModel].managedObjectContext];
-                [self performSegueWithIdentifier:@"ProfileAfterRegistration" sender:self];
+                [self.spinner startAnimating];
+                [User CreateUserProfile:user CompletionDelegate:self];
 
             //    UINavigationController *navigation=(UINavigationController*)self.view.window.rootViewController;
                 //FeedController *feed=[navigation.storyboard instantiateViewControllerWithIdentifier:@"FeedView"];
@@ -118,6 +118,10 @@
 }
 
 
-
+-(void)finishSetup
+{
+    [self.spinner stopAnimating];
+    [self performSegueWithIdentifier:@"ProfileAfterRegistration" sender:self];
+}
 
 @end

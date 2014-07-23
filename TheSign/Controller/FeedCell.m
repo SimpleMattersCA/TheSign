@@ -51,7 +51,7 @@
 -(void)setDealToShow:(Featured*)deal
 {
     self.deal=deal;
-    self.dealTitleLabel.text=deal.title;
+    self.dealTitleLabel.text=deal.fullName;
     self.businessTitleLabel.text=[deal getBusinessName];
     self.businessAddressLabel.text=[deal getLocationAddress];
 }

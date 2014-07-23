@@ -23,8 +23,8 @@
 #define CD_MINOR (@"minor")
 #define CD_ACIVE (@"active")
 
-#define P_TITLE (@"fullName")
-#define P_FULLNAME (@"name")
+#define P_TITLE (@"name")
+#define P_FULLNAME (@"fullName")
 #define P_DETAILS (@"description")
 #define P_WELCOMETEXT (@"welcomeText")
 #define P_IMAGE (@"picture")
@@ -172,7 +172,6 @@
     }
     
     Boolean complete=YES;
-
     self.fullName=self.parseObject[P_FULLNAME];
     self.title=self.parseObject[P_TITLE];
     self.details=self.parseObject[P_DETAILS];

@@ -101,7 +101,7 @@
         UIImage* background=[self getBlurredScreenshot];
         DealViewController * controller = segue.destinationViewController ;
      
-        [controller setDealToShow:self.deals[indexPath.row] Statistics:nil BackgroundImage:background];
+        [controller setDealToShow:self.deals[indexPath.row] Statistics:nil BackgroundImage:background Delegate:self];
        
         controller.modalPresentationStyle = UIModalPresentationCustom;
     }

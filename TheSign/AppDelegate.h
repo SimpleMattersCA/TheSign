@@ -7,11 +7,17 @@
 //
 
 @import UIKit;
+
+@class CLRegion;
+
 @interface AppDelegate : UIResponder
 
 
-
 @property (strong, nonatomic) UIWindow *window;
+
+
+//TODO: remove once testing is done
+-(void) welcomeCustomerGPSforRegion:(CLRegion*)region;
 
 -(void) startLocationMonitoring;
 

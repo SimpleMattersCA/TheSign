@@ -94,24 +94,49 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger) section
 {
-    //section text as a label
-    UILabel *header = [UILabel new];
-    header.text=self.firstLetters[section];
-    header.textAlignment = NSTextAlignmentCenter;
-    header.backgroundColor=[UIColor clearColor];
-    header.font = [UIFont fontWithName:@"Futura" size:10];
-    header.textColor=[UIColor whiteColor];
     
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0,self.tableView.frame.size.width,65)];
+    header.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
+
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0,35,self.tableView.frame.size.width,30)];
+    label.text=self.firstLetters[section];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont fontWithName:@"Futura" size:20];
+    label.textColor=[UIColor whiteColor];
+    [header addSubview:label];
+
     return header;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 8;
+    return 65;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"BusinessCell" forIndexPath:indexPath];
+    
+//    if(indexPath.row==0)
+//    {
+    UIView *lineViewUp = [[UIView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 1)];
+    
+    if(indexPath.row==0)
+        lineViewUp.backgroundColor = [UIColor whiteColor];
+    else
+        lineViewUp.backgroundColor = [UIColor grayColor];
+        
+    UIView *lineViewDown = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height, cell.contentView.frame.size.width, 1)];
+    
+    if(indexPath.row==[self.tableView numberOfRowsInSection:indexPath.section]-1)
+        lineViewDown.backgroundColor = [UIColor whiteColor];
+    else
+        lineViewDown.backgroundColor = [UIColor grayColor];
+    [cell.contentView addSubview:lineViewUp];
+    [cell.contentView addSubview:lineViewDown];
+
+
+  //  }
     
     NSInteger index=((NSNumber*)[[self.businessesInSections allKeysForObject:self.firstLetters[indexPath.section]] objectAtIndex:indexPath.row]).integerValue;
     
@@ -119,9 +144,6 @@
     cell.textLabel.text=business.name;
     cell.detailTextLabel.text=business.welcomeText;
     
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 5, cell.contentView.frame.size.width, 1)];
-    lineView.backgroundColor = [UIColor whiteColor];
-    [cell.contentView addSubview:lineView];
     
     //  BusinessCell *newCell=[[BusinessCell alloc] init];
     
@@ -129,31 +151,6 @@
     
     return cell;
 }
-
-//TODO: remove after testing complete
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  /*  Business* selected=self.businesses[indexPath.row];
-    NSNumber* major=((Location*)selected.linkedLocations.anyObject).major;
-    Statistics* stat=[[Model sharedModel] recordStatisticsFromGPS:major];
-    UILocalNotification *notification = [[UILocalNotification alloc] init];
-    notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:major];
-    NSLog(@"%@",notification.alertBody);
-    notification.fireDate=[[NSDate date] dateByAddingTimeInterval:10];
-    
-    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:major,@"Major",stat,@"StatisticsID", nil];
-    
-    
-    notification.userInfo=infoDict;
-    if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""])
-    {
-        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
-    }
-*/
-
-}
-
 
 
 #pragma mark - Navigation

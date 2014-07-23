@@ -49,7 +49,7 @@
 {
     Featured* tiedOffer=[Featured getOfferByMajor:major andMinor:minor Context:[Model sharedModel].managedObjectContext];
     
-    if(!tiedOffer)
+    if(tiedOffer)
     {
         *chosenOffer=tiedOffer;
         return tiedOffer.welcomeText;
