@@ -107,7 +107,7 @@
     {
         [stat setDeal:chosenOffer];
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+     //   [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
     }
     
     

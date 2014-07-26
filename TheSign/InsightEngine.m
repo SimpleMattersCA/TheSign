@@ -183,7 +183,10 @@
     double minValue=sum*[Model sharedModel].prob_no_relev.doubleValue;
     
     //divide minvalue by number of offers with no relevancy
-    double bound=minValue/offersWithoutRelevancy.count;
+    
+    double bound=0;
+    if(offersWithoutRelevancy.count!=0)
+        bound=minValue/offersWithoutRelevancy.count;
     
     //do a random select from 0 to sum of relevancies
     double random=drand48()*sum+bound;

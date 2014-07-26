@@ -11,8 +11,7 @@
 #import "Featured.h"
 #import "Model.h"
 #import "DealViewController.h"
-#import "UIImage+ImageEffects.h"
-
+#import "UIViewController+SignExtension.h"
 @interface BusinessProfileController ()
 @property (weak, nonatomic) IBOutlet UIImageView *businessLogo;
 @property (weak, nonatomic) IBOutlet UITableView *dealList;
@@ -74,6 +73,7 @@
 }
 
 
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //FeedCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DealCell" forIndexPath:indexPath];
@@ -90,37 +90,9 @@
     // Configure the cell...
     
 }
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if([segue.identifier isEqualToString:@"ShowDeal"] && [segue.destinationViewController isKindOfClass:[DealViewController class]])
-    {
-        NSIndexPath *indexPath = [self.dealList indexPathForCell:sender];
-
-        UIImage* background=[self getBlurredScreenshot];
-        DealViewController * controller = segue.destinationViewController ;
-     
-        [controller setDealToShow:self.deals[indexPath.row] Statistics:nil BackgroundImage:background Delegate:self];
-       
-        controller.modalPresentationStyle = UIModalPresentationCustom;
-    }
-    
-    
-}
-
--(UIImage*)getBlurredScreenshot
-{
-    UIGraphicsBeginImageContext(self.view.window.bounds.size);
-    //[self.view drawViewHierarchyInRect:[UIScreen mainScreen].applicationFrame afterScreenUpdates:YES];
-    [self.view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *imageOfUnderlyingView = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
-                                                             tintColor:[UIColor colorWithWhite:1.0 alpha:0.2]
-                                                 saturationDeltaFactor:1.2
-                                                             maskImage:nil];
-    return imageOfUnderlyingView;
+    [self showModalDeal:self.deals[indexPath.row] Statistics:nil];
 }
 
 @end

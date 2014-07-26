@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UIViewController+SignExtension.h"
 
 @class Featured,Statistics;
 

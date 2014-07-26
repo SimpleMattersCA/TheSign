@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UIViewController+SignExtension.h"
 
 @interface ProfileController : UIViewController <UICollectionViewDataSource,UICollectionViewDelegate>
 @property (nonatomic, strong) NSNumber* afterRegistration;

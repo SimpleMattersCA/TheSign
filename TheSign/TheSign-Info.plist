@@ -37,15 +37,14 @@
 	<string>The Sign</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is used to show you deals when you are close to the store</string>
 	<key>NS;pcatopmWhenInUseUsageDescription</key>
+	<string>Your location is used to show you deals when you are close to the store</string>
+	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Your location is used to show you deals when you are close to the store</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
 		<string>location</string>
-		<string>remote-notification</string>
 	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>

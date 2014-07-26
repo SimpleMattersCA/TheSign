@@ -8,12 +8,13 @@
 
 @import UIKit;
 
-@class CLRegion;
+@class CLRegion, SignNotificationBanner;
 
-@interface AppDelegate : UIResponder
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) SignNotificationBanner* banner;
 
 
 //TODO: remove once testing is done

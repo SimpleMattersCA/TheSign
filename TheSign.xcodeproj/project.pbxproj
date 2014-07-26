@@ -26,6 +26,8 @@
 		55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */; };
 		55101D3E18D823ED0074B4D2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55101D3D18D823ED0074B4D2 /* CoreData.framework */; };
 		5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB151931BB1D00B256FF /* TableTimestamp.m */; };
+		558FEC111980E01000320711 /* UIViewController+SignExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 558FEC101980E01000320711 /* UIViewController+SignExtension.m */; };
+		558FEC151980E1D100320711 /* NSManagedObject+ParseSync.m in Sources */ = {isa = PBXBuildFile; fileRef = 558FEC141980E1D100320711 /* NSManagedObject+ParseSync.m */; };
 		559A427319529F46007D0D66 /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 559A427219529F46007D0D66 /* ProfileController.m */; };
 		559F76DE1967656D00905390 /* Context.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76DD1967656D00905390 /* Context.m */; };
 		559F76E11967C9E700905390 /* Area.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76E01967C9E700905390 /* Area.m */; };
@@ -56,6 +58,8 @@
 		55EE37F518B88326002A121C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55EE37F418B88326002A121C /* SystemConfiguration.framework */; };
 		55F353E1197858A00027CBC5 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F353E0197858A00027CBC5 /* UIImage+ImageEffects.m */; };
 		55F353E419789D440027CBC5 /* BusinessProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F353E319789D440027CBC5 /* BusinessProfileController.m */; };
+		55F8B17D1982FADB002D3A13 /* SignNotificationBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F8B17B1982FADB002D3A13 /* SignNotificationBanner.m */; };
+		55F8B17E1982FADB002D3A13 /* SignNotificationBanner.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F8B17C1982FADB002D3A13 /* SignNotificationBanner.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -137,6 +141,10 @@
 		5557BB141931BB1D00B256FF /* TableTimestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TableTimestamp.h; path = model/TableTimestamp.h; sourceTree = "<group>"; };
 		5557BB151931BB1D00B256FF /* TableTimestamp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableTimestamp.m; path = model/TableTimestamp.m; sourceTree = "<group>"; };
 		5557BB1A1931C28700B256FF /* SignEntityProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SignEntityProtocol.h; sourceTree = "<group>"; };
+		558FEC0F1980E01000320711 /* UIViewController+SignExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SignExtension.h"; sourceTree = "<group>"; };
+		558FEC101980E01000320711 /* UIViewController+SignExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SignExtension.m"; sourceTree = "<group>"; };
+		558FEC131980E1D100320711 /* NSManagedObject+ParseSync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+ParseSync.h"; sourceTree = "<group>"; };
+		558FEC141980E1D100320711 /* NSManagedObject+ParseSync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+ParseSync.m"; sourceTree = "<group>"; };
 		559A426B19529B34007D0D66 /* BusinessListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BusinessListController.h; path = Controller/BusinessListController.h; sourceTree = "<group>"; };
 		559A427119529F46007D0D66 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfileController.h; path = Controller/ProfileController.h; sourceTree = "<group>"; };
 		559A427219529F46007D0D66 /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProfileController.m; path = Controller/ProfileController.m; sourceTree = "<group>"; };
@@ -189,6 +197,9 @@
 		55F353E0197858A00027CBC5 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		55F353E219789D440027CBC5 /* BusinessProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BusinessProfileController.h; path = Controller/BusinessProfileController.h; sourceTree = "<group>"; };
 		55F353E319789D440027CBC5 /* BusinessProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BusinessProfileController.m; path = Controller/BusinessProfileController.m; sourceTree = "<group>"; };
+		55F8B17A1982FADB002D3A13 /* SignNotificationBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SignNotificationBanner.h; path = Controller/SignNotificationBanner.h; sourceTree = "<group>"; };
+		55F8B17B1982FADB002D3A13 /* SignNotificationBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SignNotificationBanner.m; path = Controller/SignNotificationBanner.m; sourceTree = "<group>"; };
+		55F8B17C1982FADB002D3A13 /* SignNotificationBanner.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SignNotificationBanner.xib; path = Controller/SignNotificationBanner.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,7 +246,13 @@
 		553E4F4418C714D1004F8312 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				55EC54DF1950FD30009494E4 /* New UI */,
+				558FEC091980D88400320711 /* Notification */,
+				5501A0F519765BAC0051F79D /* Deal View */,
+				55A0ED6919535685001B7F26 /* Business Page */,
+				559A426A19529B07007D0D66 /* Profile */,
+				559A426919529AF8007D0D66 /* Business List */,
+				559A426819529AE8007D0D66 /* First Run */,
+				55EC54E51950FE33009494E4 /* Feed */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -285,6 +302,29 @@
 			name = Parse;
 			sourceTree = "<group>";
 		};
+		558FEC091980D88400320711 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				55F8B17A1982FADB002D3A13 /* SignNotificationBanner.h */,
+				55F8B17B1982FADB002D3A13 /* SignNotificationBanner.m */,
+				55F8B17C1982FADB002D3A13 /* SignNotificationBanner.xib */,
+			);
+			name = Notification;
+			sourceTree = "<group>";
+		};
+		558FEC121980E0B500320711 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				55F353DF197858A00027CBC5 /* UIImage+ImageEffects.h */,
+				55F353E0197858A00027CBC5 /* UIImage+ImageEffects.m */,
+				558FEC0F1980E01000320711 /* UIViewController+SignExtension.h */,
+				558FEC101980E01000320711 /* UIViewController+SignExtension.m */,
+				558FEC131980E1D100320711 /* NSManagedObject+ParseSync.h */,
+				558FEC141980E1D100320711 /* NSManagedObject+ParseSync.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		559774431936B791008FDD45 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -329,19 +369,6 @@
 				55F353E319789D440027CBC5 /* BusinessProfileController.m */,
 			);
 			name = "Business Page";
-			sourceTree = "<group>";
-		};
-		55EC54DF1950FD30009494E4 /* New UI */ = {
-			isa = PBXGroup;
-			children = (
-				5501A0F519765BAC0051F79D /* Deal View */,
-				55A0ED6919535685001B7F26 /* Business Page */,
-				559A426A19529B07007D0D66 /* Profile */,
-				559A426919529AF8007D0D66 /* Business List */,
-				559A426819529AE8007D0D66 /* First Run */,
-				55EC54E51950FE33009494E4 /* Feed */,
-			);
-			name = "New UI";
 			sourceTree = "<group>";
 		};
 		55EC54E51950FE33009494E4 /* Feed */ = {
@@ -409,6 +436,7 @@
 				55E15FE2191A062B00A8B826 /* InsightEngine.m */,
 				55B4AFF8193A484400C5A71B /* CustomScrollView.h */,
 				55B4AFF9193A484400C5A71B /* CustomScrollView.m */,
+				558FEC121980E0B500320711 /* Categories */,
 				553E4F4418C714D1004F8312 /* Controller */,
 				553E4F4518C71525004F8312 /* Model */,
 				559774431936B791008FDD45 /* View */,
@@ -421,8 +449,6 @@
 		55EE37B918B7057C002A121C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				55F353DF197858A00027CBC5 /* UIImage+ImageEffects.h */,
-				55F353E0197858A00027CBC5 /* UIImage+ImageEffects.m */,
 				55EE37BA18B7057C002A121C /* TheSign-Info.plist */,
 				55EE37BB18B7057C002A121C /* InfoPlist.strings */,
 				55EE37BE18B7057C002A121C /* main.m */,
@@ -543,6 +569,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				55EE37CB18B7057C002A121C /* Images.xcassets in Resources */,
+				55F8B17E1982FADB002D3A13 /* SignNotificationBanner.xib in Resources */,
 				55EE37BD18B7057C002A121C /* InfoPlist.strings in Resources */,
 				55EE37C618B7057C002A121C /* Main.storyboard in Resources */,
 			);
@@ -564,6 +591,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				559F76E11967C9E700905390 /* Area.m in Sources */,
+				55F8B17D1982FADB002D3A13 /* SignNotificationBanner.m in Sources */,
 				550C8102195371B700716D25 /* User.m in Sources */,
 				550C810B195371B700716D25 /* TagSet.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
@@ -585,12 +613,14 @@
 				5501A0FD19765E740051F79D /* DealViewController.m in Sources */,
 				550C8108195371B700716D25 /* Featured.m in Sources */,
 				559F76DE1967656D00905390 /* Context.m in Sources */,
+				558FEC111980E01000320711 /* UIViewController+SignExtension.m in Sources */,
 				550C80F6195371B600716D25 /* Link.m in Sources */,
 				55EC54EE195175BF009494E4 /* LoginController.m in Sources */,
 				55F353E419789D440027CBC5 /* BusinessProfileController.m in Sources */,
 				55F353E1197858A00027CBC5 /* UIImage+ImageEffects.m in Sources */,
 				550C8111195371B700716D25 /* Tag.m in Sources */,
 				55EE37BF18B7057C002A121C /* main.m in Sources */,
+				558FEC151980E1D100320711 /* NSManagedObject+ParseSync.m in Sources */,
 				550C80FF195371B700716D25 /* TagConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

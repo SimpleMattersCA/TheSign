@@ -120,6 +120,7 @@ bool dbReady=NO;
 -(void)dbUpdated
 {
     dbReady=YES;
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"dbUpdated" object:nil];
     if(fbReady)
     {
         [self.spinner stopAnimating];
@@ -129,6 +130,7 @@ bool dbReady=NO;
 -(void)fbUpdated
 {
     fbReady=YES;
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"facebookDataDownloaded" object:nil];
     if(dbReady)
     {
         [self.spinner stopAnimating];

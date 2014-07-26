@@ -11,8 +11,10 @@
 #import "Model.h"
 #import "DealViewController.h"
 #import "BusinessProfileController.h"
-#import "UIImage+ImageEffects.h"
 #import "Featured.h"
+
+#import "UIImage+ImageEffects.h"
+#import "UIViewController+SignExtension.h"
 
 //TODO: remove after testing
 #import "Statistics.h"
@@ -55,6 +57,7 @@
 {
     self.dealToShow=offer;
     self.statForDeal=stat;
+    [self viewDidLoad];
 }
 
 - (void)actionTapDeal:(UIGestureRecognizer *)sender
@@ -64,11 +67,13 @@
     {
         view=view.superview;
     }
-    [self performSegueWithIdentifier:@"ShowDeal" sender:view];
+    //[self performSegueWithIdentifier:@"ShowDeal" sender:view];
+    [self showModalDeal:((FeedCell*)view).deal Statistics:nil];
+
 }
 - (void)actionTapBusiness:(UIGestureRecognizer *)sender
 {
-    
+  //TODO: don't forget to remove after testing
     NSNumber* detectedBeaconMajor=@(1);
     NSNumber* detectedBeaconMinor=@(1);
     
@@ -79,13 +84,13 @@
     notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor ChosenOffer:&chosenOffer];
     NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation.absoluteString,@"StatisticsObjectID", nil];
     
-    notification.fireDate=[[NSDate date] dateByAddingTimeInterval:60];
+    notification.fireDate=[[NSDate date] dateByAddingTimeInterval:5];
     
     notification.userInfo=infoDict;
     if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""] && chosenOffer!=nil)
     {
         [stat setDeal:chosenOffer];
-        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
     }
     
     
@@ -115,32 +120,22 @@
                                               NSFontAttributeName: [UIFont fontWithName:@"Futura" size:18],
                                               NSForegroundColorAttributeName: [UIColor whiteColor]
                                               } forState:UIControlStateNormal];
+    
+    if(self.dealToShow && self.statForDeal)
+    {
+       [self performSegueWithIdentifier:@"ShowDeal" sender:self];
+        self.dealToShow=nil;
+        self.statForDeal=nil;
+    }
+
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-     if(self.dealToShow && self.statForDeal)
-    {
-        [self performSegueWithIdentifier:@"ShowDeal" sender:self];
-        self.dealToShow=nil;
-        self.statForDeal=nil;
-    }
 
-    
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    
-    
-   // [self.tableView registerNib:[UINib nibWithNibName:@"FeedCell" bundle:[NSBundle mainBundle]]
-    //      forCellReuseIdentifier:@"DealCell"];
-}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -220,15 +215,9 @@
 {
     if([segue.identifier isEqualToString:@"ShowDeal"] && [segue.destinationViewController isKindOfClass:[DealViewController class]])
     {
-        UIImage* background=[self getBlurredScreenshot];
-        DealViewController * controller = segue.destinationViewController ;
-        if([sender isKindOfClass:[FeedCell class]])
-            [controller setDealToShow:((FeedCell*)sender).deal Statistics:nil BackgroundImage:background Delegate:self];
-        else if([sender isKindOfClass:[FeedController class]])
-            [controller setDealToShow:self.dealToShow Statistics:self.statForDeal BackgroundImage:background Delegate:self];
-        controller.modalPresentationStyle = UIModalPresentationCurrentContext;
+        NSLog(@"Shouldn't be here");
     }
-    
+
     if([segue.identifier isEqualToString:@"ShowOneBusiness"] && [segue.destinationViewController isKindOfClass:[BusinessProfileController class]])
     {
         BusinessProfileController * controller = segue.destinationViewController;
@@ -239,19 +228,6 @@
 
 
 
--(UIImage*)getBlurredScreenshot
-{
-    UIGraphicsBeginImageContext(self.view.window.bounds.size);
-    //[self.view drawViewHierarchyInRect:[UIScreen mainScreen].applicationFrame afterScreenUpdates:YES];
-    [self.view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *imageOfUnderlyingView = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
-                                                             tintColor:[UIColor colorWithWhite:1.0 alpha:0.2]
-                                                 saturationDeltaFactor:1.2
-                                                             maskImage:nil];
-    return imageOfUnderlyingView;
-}
 
 
 @end

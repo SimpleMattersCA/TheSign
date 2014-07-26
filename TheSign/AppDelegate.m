@@ -15,7 +15,8 @@
 #import "Featured.h"
 #import "FeedController.h"
 #import "TutorialController.h"
-
+#import "SignNotificationBanner.h"
+#import "UIViewController+SignExtension.h"
 @import UIKit.UINavigationController;
 @import CoreLocation;
 
@@ -27,6 +28,7 @@
 @property (strong) NSTimer *locationTimer;
 @property (strong) CLCircularRegion* gpsRegion;
 @property (strong) CLBeaconRegion *beaconRegion;
+
 
 @end
 
@@ -62,11 +64,12 @@ NSNumber *detectedBeaconMajor;
     [PFFacebookUtils initializeFacebook];
     
     
-    
-    
-    [self.window makeKeyAndVisible];
 
-//
+    
+    // Override point for customization after application launch.
+    [self.window makeKeyAndVisible];
+    
+
 
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
   //  [userDefaults setBool:NO forKey:@"DidFirstRun"];
@@ -94,6 +97,9 @@ NSNumber *detectedBeaconMajor;
    // }
 
     
+    
+    
+   
     return YES;
 }
 
@@ -185,7 +191,7 @@ Preparing and starting geofence and beacon monitoring
             break;
         
         case CLRegionStateUnknown:
-            [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+       //     [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
             break;
     
         default:
@@ -197,34 +203,47 @@ Preparing and starting geofence and beacon monitoring
 
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    Statistics* stat=[[Model sharedModel] getStatisticsByURL:[NSURL URLWithString:[notification.userInfo objectForKey:@"StatisticsObjectID"]]];
+    Featured* offer;
     
-    if (application.applicationState == UIApplicationStateInactive ) {
+    NSString* offerObjectID=(NSString*)[notification.userInfo objectForKey:@"OfferID"];
+    if(offerObjectID)
+        offer=[Featured getByID:offerObjectID Context:[Model sharedModel].managedObjectContext];
+    if(stat && offer)
+    {
+        UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
+        UIViewController* currentController=navigation.topViewController;
         
-        
-        Statistics* stat=[[Model sharedModel] getStatisticsByURL:[NSURL URLWithString:[notification.userInfo objectForKey:@"StatisticsObjectID"]]];
-        Featured* offer;
-        
-        NSString* offerObjectID=(NSString*)[notification.userInfo objectForKey:@"OfferID"];
-        if(offerObjectID)
-            offer=[Featured getByID:offerObjectID Context:[Model sharedModel].managedObjectContext];
-        
-        if(stat && offer)
+        if (application.applicationState == UIApplicationStateInactive )
         {
-            
             //present deal view
-            UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
-            [navigation popToRootViewControllerAnimated:NO];
-            FeedController* feed=(FeedController*)(navigation.topViewController);
-            [feed showDealAfterLoad:offer Statistics:stat];
+            //FeedController* feed=(FeedController*)(navigation.topViewController);
+            //[feed showDealAfterLoad:offer Statistics:stat];
+            [currentController showModalDeal:offer Statistics:stat];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
         }
         
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+        if(application.applicationState == UIApplicationStateActive )
+        {
+            if(self.banner)
+            {
+                [self.banner.view removeFromSuperview];
+                self.banner=nil;
+            }
+            self.banner=[SignNotificationBanner new];
+           
+            
+            [currentController addBanner:self.banner WithText:notification.alertBody ForDeal:offer Statistics:stat];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeBannerNotification) name:@"removeBannerNotification" object:nil];
+        }
     }
+}
+-(void)removeBannerNotification
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"removeBannerNotification" object:nil];
     
-    if(application.applicationState == UIApplicationStateActive )
-    {
-        //TODO: process notification when application is in foreground
-    }
+    self.banner=nil;
 }
 
 
@@ -264,7 +283,7 @@ Preparing and starting geofence and beacon monitoring
     {
         [stat setDeal:chosenOffer];
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+       // [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
     }
     
     [self.locationManager stopMonitoringForRegion:self.gpsRegion];
@@ -291,12 +310,6 @@ Preparing and starting geofence and beacon monitoring
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
 
         
-        
-               //change the local notification name and add corresponding logic to handle new beacon detection inside the app (don't forget to change notificaitonName
-       // NSDictionary* dict = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:closest.major,closest.minor, nil] forKeys:[NSArray arrayWithObjects:@"major",@"minor", nil]];
-     //   [[NSNotificationCenter defaultCenter] postNotificationName:@"pulledNewDataFromCloud" object:self userInfo:dict];
-        
-        
         Statistics* stat=[[Model sharedModel] recordStatisticsFromBeaconMajor:detectedBeaconMajor Minor:detectedBeaconMinor];
         Featured* chosenOffer;
         
@@ -313,7 +326,7 @@ Preparing and starting geofence and beacon monitoring
         {
             [stat setDeal:chosenOffer];
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+          //  [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
         }
        
         
@@ -321,7 +334,7 @@ Preparing and starting geofence and beacon monitoring
     }
 }
 
-#pragma mark - Push notifications from Parse
+/*#pragma mark - Push notifications from Parse
 
 - (void)application:(UIApplication *)application
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
@@ -336,7 +349,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
     //[PFPush handlePush:userInfo];
   //  [[Model sharedModel] checkModel];
-}
+}*/
 
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url

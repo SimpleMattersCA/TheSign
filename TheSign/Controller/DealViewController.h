@@ -11,6 +11,6 @@
 @class Featured,Statistics;
 @interface DealViewController : UIViewController
 
--(void)setDealToShow:(Featured*) deal Statistics:(Statistics*)stat BackgroundImage:(UIImage*)image Delegate:(UIViewController*)delegate;
+-(void)setDealToShow:(Featured*) deal Statistics:(Statistics*)stat NormalBackground:(UIImage*)nImage BlurredBackground:(UIImage*)bImage;
 
 @end
