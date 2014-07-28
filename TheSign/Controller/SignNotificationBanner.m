@@ -17,6 +17,7 @@
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *userTap;
 @property (strong, nonatomic) IBOutlet UISwipeGestureRecognizer *userSwipe;
 @property (weak, nonatomic) IBOutlet UILabel *notificationLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *imgBackground;
 
 @property (strong) NSNumber* isRemoving;
 
@@ -38,12 +39,13 @@
 {
     [super viewDidLoad];
     [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(hideBanner) userInfo:nil repeats:YES];
-    self.view.backgroundColor = [UIColor redColor];
+    self.view.layer.cornerRadius=8;
     self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view.superview];
     self.isRemoving=@(NO);
     
     self.notificationLabel.text=self.notificationText;
     
+    self.imgBackground.image=self.blurredBackground;
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -68,7 +70,7 @@
 
 +(CGSize)getViewSize
 {
-    return CGSizeMake(320, 80);
+    return CGSizeMake(320, 70);
 }
 
 -(void)viewWillAppear:(BOOL)animated

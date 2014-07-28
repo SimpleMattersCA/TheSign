@@ -144,12 +144,7 @@
     cell.textLabel.text=business.name;
     cell.detailTextLabel.text=business.welcomeText;
     
-    
     cell.backgroundColor=[UIColor colorWithRed:245.0/255.0 green:249.0/255.0 blue:250.0/255.0 alpha:1];
-    
-    
-    NSLog(@"%d %@",indexPath.row,business.name);
-
     
     return cell;
 }

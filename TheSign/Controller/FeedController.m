@@ -16,11 +16,6 @@
 #import "UIImage+ImageEffects.h"
 #import "UIViewController+SignExtension.h"
 
-//TODO: remove after testing
-#import "Statistics.h"
-#import "InsightEngine.h"
-
-
 @interface FeedController ()
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *btnProfile;
@@ -67,40 +62,14 @@
     {
         view=view.superview;
     }
+   // [self.tableView ]
     
     ((FeedCell*)view).imgOpened.image=[UIImage imageNamed:@"Deal_NotOpened"];
-
-    //[self performSegueWithIdentifier:@"ShowDeal" sender:view];
     [self showModalDeal:((FeedCell*)view).deal Statistics:nil];
 
 }
 - (void)actionTapBusiness:(UIGestureRecognizer *)sender
 {
-  //TODO: don't forget to remove after testing
-    NSNumber* detectedBeaconMajor=@(1);
-    NSNumber* detectedBeaconMinor=@(1);
-    
-    Statistics* stat=[[Model sharedModel] recordStatisticsFromBeaconMajor:detectedBeaconMajor Minor:detectedBeaconMinor];
-    Featured* chosenOffer;
-    
-    UILocalNotification *notification = [[UILocalNotification alloc] init];
-    notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor ChosenOffer:&chosenOffer];
-    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation.absoluteString,@"StatisticsObjectID", nil];
-    
-    notification.fireDate=[[NSDate date] dateByAddingTimeInterval:5];
-    
-    notification.userInfo=infoDict;
-    if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""] && chosenOffer!=nil)
-    {
-        [stat setDeal:chosenOffer];
-     //   [[UIApplication sharedApplication] scheduleLocalNotification:notification];
-    }
-    
-    
-    
-    
-
-    
     UIView* view=sender.view;
     while(![view isKindOfClass:[FeedCell class]])
     {
@@ -130,13 +99,6 @@
         self.dealToShow=nil;
         self.statForDeal=nil;
     }
-
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning
@@ -171,45 +133,6 @@
     return cell;
 }
 
-
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Navigation
 

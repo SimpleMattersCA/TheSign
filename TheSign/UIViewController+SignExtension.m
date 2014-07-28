@@ -22,11 +22,26 @@
     [self.view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *imageOfUnderlyingView = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
+    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:8
                                                              tintColor:[UIColor colorWithWhite:1.0 alpha:0.2]
                                                  saturationDeltaFactor:1.2
                                                              maskImage:nil];
     return imageOfUnderlyingView;
+}
+
+-(UIImage*)getBackForBanner
+{
+    CGSize backSize=[SignNotificationBanner getViewSize];
+    UIGraphicsBeginImageContext(backSize);
+    //[self.view drawViewHierarchyInRect:[UIScreen mainScreen].applicationFrame afterScreenUpdates:YES];
+    [self.view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *imageOfUnderlyingView = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return [imageOfUnderlyingView applyBlurWithRadius:12
+                                            tintColor:[UIColor colorWithWhite:1.0 alpha:0.2]
+                                saturationDeltaFactor:1.2
+                                            maskImage:nil];
 }
 
 -(UIImage*)getScreenshot
@@ -62,16 +77,9 @@
     banner.notificationText=welcomeText;
     banner.deal=offer;
     banner.stat=stat;
+    banner.blurredBackground=[self getBackForBanner];
     NSLog(@"About to show up!");
     
-   // CGSize bannerSize=[SignNotificationBanner getViewSize];
-   // UIView *newBanner = [[UIView alloc] initWithFrame:CGRectMake(0, bannerSize.height,bannerSize.width,bannerSize.height)];
-    //UITapGestureRecognizer* userTap=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeBanner)];
-    //[newBanner addGestureRecognizer:userTap];
-    //[newBanner setUserInteractionEnabled:YES];
-    //[newBanner addSubview:banner.view];
-    //[self.view.window bringSubviewToFront:newBanner];
-
     [self.view.window addSubview:banner.view];
 
 }

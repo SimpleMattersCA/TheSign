@@ -54,6 +54,8 @@ BOOL clickedDislike=NO;
     
     self.labelTitle.text=self.deal.fullName;
     self.labelDescription.text=self.deal.details;
+    self.actualDealView.layer.borderColor=[UIColor grayColor].CGColor;
+    self.actualDealView.layer.borderWidth=1;
     
     self.actualDealView.layer.cornerRadius = 8; // if you like rounded corners
    // self.actualDealView.layer.shadowOffset = CGSizeMake(-5, 10);

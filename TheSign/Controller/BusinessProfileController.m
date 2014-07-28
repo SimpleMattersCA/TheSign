@@ -86,11 +86,6 @@
     lbDeal.text=deal.fullName;
 
     return cell;
-    
-    
-    // [cell setDealTitle:deal.fullName BusinessTitle:deal.linkedBusiness.name Adress:((Location*)(deal.linkedBusiness.linkedLocations.anyObject)).address];
-    // Configure the cell...
-    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -124,7 +119,11 @@
     imageLayer.borderColor=[UIColor colorWithRed:61.0/255.0 green:81.0/255.0 blue:83.0/255.0 alpha:1].CGColor;
     imageLayer.masksToBounds=YES;
     
-    header.imgBlurredBack.image=[UIImage imageWithData:self.business.blurredBack];
+    UIImage* blurredBack = [[UIImage imageWithData:self.business.blurredBack] applyBlurWithRadius:8
+                                                                                        tintColor:[UIColor colorWithWhite:1.0 alpha:0.2]
+                                                                            saturationDeltaFactor:1.2
+                                                                                        maskImage:nil];
+    header.imgBlurredBack.image=blurredBack;
     header.lbAbout.text=self.business.about;
     
     return header;

@@ -17,6 +17,8 @@
 @property (nonatomic, weak) Statistics* stat;
 @property (nonatomic, strong) NSString* notificationText;
 
+@property (nonatomic, strong) UIImage* blurredBackground;
+
 -(void) hideBanner;
 
 +(CGSize)getViewSize;

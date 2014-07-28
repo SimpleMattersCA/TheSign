@@ -139,6 +139,25 @@
         complete=NO;
     }
     
+    PFFile *background=object[P_BACK];
+    NSData *pulledBackground;
+    pulledBackground=[background getData:&error];
+    if(!error)
+    {
+        if(pulledBackground!=nil)
+            business.blurredBack=pulledBackground;
+        else
+        {
+            NSLog(@"Business background is missing");
+            //complete=NO;
+        }
+    }
+    else
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        complete=NO;
+    }
+    
     if(object[P_CATEGORY]!=nil)
     {
         //careful, incomplete object - only objectId property is there
@@ -194,6 +213,25 @@
         else
         {
             NSLog(@"Business logo is missing");
+            //complete=NO;
+        }
+    }
+    else
+    {
+        NSLog(@"%@",[error localizedDescription]);
+        complete=NO;
+    }
+    
+    PFFile *background=self.parseObject[P_BACK];
+    NSData *pulledBackground;
+    pulledBackground=[background getData:&error];
+    if(!error)
+    {
+        if(pulledBackground!=nil)
+            self.blurredBack=pulledBackground;
+        else
+        {
+            NSLog(@"Business background is missing");
             //complete=NO;
         }
     }

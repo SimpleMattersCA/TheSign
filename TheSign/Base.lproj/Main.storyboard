@@ -37,7 +37,7 @@
                                 <color key="backgroundColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="1" colorSpace="deviceRGB"/>
                             </view>
                             <button opaque="NO" tag="11" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="feO-Ah-Xbz">
-                                <rect key="frame" x="94" y="452" width="132" height="41"/>
+                                <rect key="frame" x="94" y="451.5" width="132" height="41"/>
                                 <color key="backgroundColor" red="0.99607843137254903" green="0.58039215686274503" blue="0.32549019607843138" alpha="1" colorSpace="deviceRGB"/>
                                 <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="18"/>
                                 <state key="normal" title="Good to Go!"/>
@@ -46,7 +46,7 @@
                                 </connections>
                             </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" bounces="NO" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="GZr-yj-NWC">
-                                <rect key="frame" x="20" y="267" width="280" height="185"/>
+                                <rect key="frame" x="20" y="266.5" width="280" height="185"/>
                                 <color key="backgroundColor" red="0.9647059440612793" green="0.97647064924240112" blue="0.9803922176361084" alpha="1" colorSpace="deviceRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="15" id="XlF-OS-7g6">
                                     <size key="itemSize" width="125" height="35"/>
@@ -201,7 +201,6 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" red="0.95686274510000002" green="0.97254901959999995" blue="0.97647058819999999" alpha="1" colorSpace="deviceRGB"/>
                     </view>
                     <navigationItem key="navigationItem" id="c3F-Yr-q2f"/>
                     <connections>
@@ -415,11 +414,11 @@
                                                                     <color key="backgroundColor" red="0.23529413339999999" green="0.31764706970000001" blue="0.32549020649999999" alpha="1" colorSpace="deviceRGB"/>
                                                                 </view>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F8P-lI-Gsa" userLabel="Opened Icon">
-                                                                    <rect key="frame" x="5" y="0.0" width="50" height="50"/>
+                                                                    <rect key="frame" x="14" y="10" width="30" height="30"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 </imageView>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1sb-7N-4Hg" userLabel="Category Icon">
-                                                                    <rect key="frame" x="60" y="0.0" width="50" height="50"/>
+                                                                    <rect key="frame" x="71" y="10" width="30" height="30"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 </imageView>
                                                             </subviews>
@@ -474,14 +473,14 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="The Sign" id="1sg-18-oup">
                         <barButtonItem key="backBarButtonItem" title=" " id="1Ld-Z1-p4M"/>
-                        <barButtonItem key="leftBarButtonItem" title="Profile" id="CJG-55-qTx">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <barButtonItem key="leftBarButtonItem" image="MenuProfile" id="CJG-55-qTx">
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <segue destination="gbu-bQ-6DF" kind="push" identifier="ShowProfile" id="e5c-hV-G3B"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Places" id="ReR-Wk-zwT">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <barButtonItem key="rightBarButtonItem" image="MenuPlaces" id="ReR-Wk-zwT">
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <segue destination="RjS-5e-xrn" kind="push" identifier="ShowBusinesses" id="l7H-RF-0w9"/>
                             </connections>
@@ -557,12 +556,12 @@
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kum-Dg-Z3i" userLabel="Separator">
                                         <rect key="frame" x="0.0" y="80" width="240" height="1"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3jx-xk-C0n" userLabel="Separator">
                                         <rect key="frame" x="0.0" y="255" width="240" height="1"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -617,6 +616,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="MenuPlaces" width="22" height="22"/>
+        <image name="MenuProfile" width="22" height="22"/>
         <image name="default_user" width="150" height="150"/>
     </resources>
     <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -626,9 +627,9 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="JXD-KH-JYW"/>
+        <segue reference="T3k-x5-As9"/>
+        <segue reference="LRH-uE-kh8"/>
         <segue reference="TV9-BH-EdN"/>
         <segue reference="e5c-hV-G3B"/>
-        <segue reference="LRH-uE-kh8"/>
     </inferredMetricsTieBreakers>
 </document>
