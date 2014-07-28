@@ -22,6 +22,7 @@
 #import "Context.h"
 #import "Template.h"
 #import "User.h"
+#import "BusinessCategory.h"
 
 @interface Model()
 
@@ -264,6 +265,7 @@
     [self deleteEntity:[Location entityName]];
     [self deleteEntity:[Area entityName]];
     [self deleteEntity:[Template entityName]];
+    [self deleteEntity:[BusinessCategory entityName]];
     [self saveContext:context];
 }
 
@@ -284,6 +286,8 @@
         return [Context class];
     else if([entityName isEqualToString:[Business parseEntityName]])
         return [Business class];
+    else if([entityName isEqualToString:[BusinessCategory parseEntityName]])
+        return [BusinessCategory class];
     else if([entityName isEqualToString:[Link parseEntityName]])
         return [Link class];
     else if([entityName isEqualToString:[Featured parseEntityName]])

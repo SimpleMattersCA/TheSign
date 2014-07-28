@@ -15,6 +15,7 @@
 #define P_NAME (@"name")
 #define P_INTEREST (@"interest")
 #define P_CONTEXT (@"context")
+#define P_SPECIAL (@"special")
 
 #define CD_NAME (@"name")
 #define CD_INTEREST (@"interest")
@@ -24,6 +25,7 @@
 @implementation Tag
 
 @dynamic interest;
+@dynamic special;
 @dynamic name;
 @dynamic likeness;
 @dynamic pObjectID;
@@ -96,7 +98,9 @@
                                              inManagedObjectContext:context];
     tag.pObjectID=object.objectId;
     tag.name=object[P_NAME];
+    if(object[P_SPECIAL]) tag.special=object[P_SPECIAL];
     if(object[P_INTEREST]) tag.interest=object[P_INTEREST];
+
     if(object[P_CONTEXT])
     {
         //careful, incomplete object - only objectId property is there
@@ -135,6 +139,7 @@
 
     self.name=self.parseObject[P_NAME];
     if(self.parseObject[P_INTEREST]) self.interest=self.parseObject[P_INTEREST];
+    if(self.parseObject[P_SPECIAL]) self.special=self.parseObject[P_SPECIAL];
     if(self.parseObject[P_CONTEXT])
     {
         //careful, incomplete object - only objectId property is there

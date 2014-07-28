@@ -18,8 +18,10 @@
 @property (nonatomic, retain) NSString * fullName;
 @property (nonatomic, retain) NSString * welcomeText;
 @property (nonatomic, retain) NSString * details;
+@property (nonatomic, retain) NSString * timePeriod;
 @property (nonatomic, retain) NSNumber * score;
 @property (nonatomic, retain) NSNumber * active;
+@property (nonatomic, retain) NSNumber * opened;
 @property (nonatomic, retain) NSData * image;
 @property (nonatomic, retain) NSNumber * major;
 @property (nonatomic, retain) NSNumber * minor;
@@ -40,7 +42,8 @@
 -(Boolean)checkContextTag:(Tag*) lookupTag;
 
 -(void)changeRelevancyByValue:(NSNumber*)value;
-
+-(NSString*)getSpecialTagName;
+-(UIImage*)getCategoryIcon;
 -(NSString*)getLocationAddress;
 -(NSString*)getBusinessName;
 

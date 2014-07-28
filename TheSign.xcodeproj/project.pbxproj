@@ -25,6 +25,8 @@
 		550C8111195371B700716D25 /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 550C8110195371B700716D25 /* Tag.m */; };
 		55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 55101D3A18D81ADE0074B4D2 /* SignModel.xcdatamodeld */; };
 		55101D3E18D823ED0074B4D2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55101D3D18D823ED0074B4D2 /* CoreData.framework */; };
+		5523FBF919844E3E00EAEBB6 /* BusinessCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 5523FBF819844E3E00EAEBB6 /* BusinessCategory.m */; };
+		5523FBFC198498FF00EAEBB6 /* BusinessHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 5523FBFB198498FF00EAEBB6 /* BusinessHeader.m */; };
 		5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 5557BB151931BB1D00B256FF /* TableTimestamp.m */; };
 		558FEC111980E01000320711 /* UIViewController+SignExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 558FEC101980E01000320711 /* UIViewController+SignExtension.m */; };
 		558FEC151980E1D100320711 /* NSManagedObject+ParseSync.m in Sources */ = {isa = PBXBuildFile; fileRef = 558FEC141980E1D100320711 /* NSManagedObject+ParseSync.m */; };
@@ -41,6 +43,7 @@
 		55C75A68194E86920051A0EF /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55C75A67194E86920051A0EF /* Accounts.framework */; };
 		55C89C34195BCECF00CA16D9 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C89C33195BCECF00CA16D9 /* Location.m */; };
 		55C89C37195BCED000CA16D9 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C89C36195BCED000CA16D9 /* Settings.m */; };
+		55C8B8311984A2E700A6C2FA /* BusinessProfileHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55C8B8301984A2E700A6C2FA /* BusinessProfileHeader.xib */; };
 		55E15FE3191A062B00A8B826 /* InsightEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E15FE2191A062B00A8B826 /* InsightEngine.m */; };
 		55EBA272197DA93E0049038C /* TutorialController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EBA271197DA93E0049038C /* TutorialController.m */; };
 		55EC54E31950FE16009494E4 /* FeedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EC54E11950FE16009494E4 /* FeedCell.m */; };
@@ -138,9 +141,14 @@
 		550C8110195371B700716D25 /* Tag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Tag.m; path = model/Tag.m; sourceTree = "<group>"; };
 		55101D3B18D81ADE0074B4D2 /* SignModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SignModel.xcdatamodel; sourceTree = "<group>"; };
 		55101D3D18D823ED0074B4D2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		5523FBF719844E3E00EAEBB6 /* BusinessCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BusinessCategory.h; path = model/BusinessCategory.h; sourceTree = "<group>"; };
+		5523FBF819844E3E00EAEBB6 /* BusinessCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BusinessCategory.m; path = model/BusinessCategory.m; sourceTree = "<group>"; };
+		5523FBFA198498FF00EAEBB6 /* BusinessHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BusinessHeader.h; path = Controller/BusinessHeader.h; sourceTree = "<group>"; };
+		5523FBFB198498FF00EAEBB6 /* BusinessHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BusinessHeader.m; path = Controller/BusinessHeader.m; sourceTree = "<group>"; };
 		5557BB141931BB1D00B256FF /* TableTimestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TableTimestamp.h; path = model/TableTimestamp.h; sourceTree = "<group>"; };
 		5557BB151931BB1D00B256FF /* TableTimestamp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableTimestamp.m; path = model/TableTimestamp.m; sourceTree = "<group>"; };
 		5557BB1A1931C28700B256FF /* SignEntityProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SignEntityProtocol.h; sourceTree = "<group>"; };
+		55790B4619838F5500B08CFD /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		558FEC0F1980E01000320711 /* UIViewController+SignExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SignExtension.h"; sourceTree = "<group>"; };
 		558FEC101980E01000320711 /* UIViewController+SignExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SignExtension.m"; sourceTree = "<group>"; };
 		558FEC131980E1D100320711 /* NSManagedObject+ParseSync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+ParseSync.h"; sourceTree = "<group>"; };
@@ -167,6 +175,7 @@
 		55C89C33195BCECF00CA16D9 /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Location.m; path = model/Location.m; sourceTree = "<group>"; };
 		55C89C35195BCED000CA16D9 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Settings.h; path = model/Settings.h; sourceTree = "<group>"; };
 		55C89C36195BCED000CA16D9 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Settings.m; path = model/Settings.m; sourceTree = "<group>"; };
+		55C8B8301984A2E700A6C2FA /* BusinessProfileHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BusinessProfileHeader.xib; path = View/BusinessProfileHeader.xib; sourceTree = "<group>"; };
 		55E15FE1191A062B00A8B826 /* InsightEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InsightEngine.h; sourceTree = "<group>"; };
 		55E15FE2191A062B00A8B826 /* InsightEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InsightEngine.m; sourceTree = "<group>"; };
 		55EBA270197DA93E0049038C /* TutorialController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TutorialController.h; path = Controller/TutorialController.h; sourceTree = "<group>"; };
@@ -270,6 +279,8 @@
 		5557BB2A1934588A00B256FF /* Parse */ = {
 			isa = PBXGroup;
 			children = (
+				5523FBF719844E3E00EAEBB6 /* BusinessCategory.h */,
+				5523FBF819844E3E00EAEBB6 /* BusinessCategory.m */,
 				55C89C35195BCED000CA16D9 /* Settings.h */,
 				55C89C36195BCED000CA16D9 /* Settings.m */,
 				559F76DF1967C9E700905390 /* Area.h */,
@@ -307,7 +318,6 @@
 			children = (
 				55F8B17A1982FADB002D3A13 /* SignNotificationBanner.h */,
 				55F8B17B1982FADB002D3A13 /* SignNotificationBanner.m */,
-				55F8B17C1982FADB002D3A13 /* SignNotificationBanner.xib */,
 			);
 			name = Notification;
 			sourceTree = "<group>";
@@ -328,6 +338,8 @@
 		559774431936B791008FDD45 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				55F8B17C1982FADB002D3A13 /* SignNotificationBanner.xib */,
+				55C8B8301984A2E700A6C2FA /* BusinessProfileHeader.xib */,
 				55EE37C418B7057C002A121C /* Main.storyboard */,
 			);
 			name = View;
@@ -367,6 +379,8 @@
 			children = (
 				55F353E219789D440027CBC5 /* BusinessProfileController.h */,
 				55F353E319789D440027CBC5 /* BusinessProfileController.m */,
+				5523FBFA198498FF00EAEBB6 /* BusinessHeader.h */,
+				5523FBFB198498FF00EAEBB6 /* BusinessHeader.m */,
 			);
 			name = "Business Page";
 			sourceTree = "<group>";
@@ -428,6 +442,7 @@
 		55EE37B818B7057C002A121C /* TheSign */ = {
 			isa = PBXGroup;
 			children = (
+				55790B4619838F5500B08CFD /* Common.h */,
 				55EE37C118B7057C002A121C /* AppDelegate.h */,
 				55EE37C218B7057C002A121C /* AppDelegate.m */,
 				55B746E918DCAECA00F61354 /* Model.h */,
@@ -572,6 +587,7 @@
 				55F8B17E1982FADB002D3A13 /* SignNotificationBanner.xib in Resources */,
 				55EE37BD18B7057C002A121C /* InfoPlist.strings in Resources */,
 				55EE37C618B7057C002A121C /* Main.storyboard in Resources */,
+				55C8B8311984A2E700A6C2FA /* BusinessProfileHeader.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,6 +609,7 @@
 				559F76E11967C9E700905390 /* Area.m in Sources */,
 				55F8B17D1982FADB002D3A13 /* SignNotificationBanner.m in Sources */,
 				550C8102195371B700716D25 /* User.m in Sources */,
+				5523FBF919844E3E00EAEBB6 /* BusinessCategory.m in Sources */,
 				550C810B195371B700716D25 /* TagSet.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
 				55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */,
@@ -601,6 +618,7 @@
 				55C89C37195BCED000CA16D9 /* Settings.m in Sources */,
 				5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */,
 				55B746EB18DCAECA00F61354 /* Model.m in Sources */,
+				5523FBFC198498FF00EAEBB6 /* BusinessHeader.m in Sources */,
 				55EC54E8195160A5009494E4 /* FeedController.m in Sources */,
 				559A427319529F46007D0D66 /* ProfileController.m in Sources */,
 				55EC54E31950FE16009494E4 /* FeedCell.m in Sources */,

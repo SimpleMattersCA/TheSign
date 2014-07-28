@@ -59,7 +59,7 @@
     //[self.navigationController.view setUserInteractionEnabled:NO];
     
     banner.controller=self;
-    banner.notificationText.text=welcomeText;
+    banner.notificationText=welcomeText;
     banner.deal=offer;
     banner.stat=stat;
     NSLog(@"About to show up!");

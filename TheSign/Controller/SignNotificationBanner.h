@@ -12,10 +12,10 @@
 
 @interface SignNotificationBanner : UIViewController 
 
-@property (weak, nonatomic) IBOutlet UILabel *notificationText;
 @property (nonatomic, weak) UIViewController* controller;
 @property (nonatomic, weak) Featured* deal;
 @property (nonatomic, weak) Statistics* stat;
+@property (nonatomic, strong) NSString* notificationText;
 
 -(void) hideBanner;
 

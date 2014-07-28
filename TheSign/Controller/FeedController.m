@@ -53,12 +53,12 @@
     return self;
 }
 
--(void) showDealAfterLoad:(Featured*)offer Statistics:(Statistics*)stat
-{
-    self.dealToShow=offer;
-    self.statForDeal=stat;
-    [self viewDidLoad];
-}
+//-(void) showDealAfterLoad:(Featured*)offer Statistics:(Statistics*)stat
+//{
+ //   self.dealToShow=offer;
+ //   self.statForDeal=stat;
+  //  [self viewDidLoad];
+//}
 
 - (void)actionTapDeal:(UIGestureRecognizer *)sender
 {
@@ -67,6 +67,9 @@
     {
         view=view.superview;
     }
+    
+    ((FeedCell*)view).imgOpened.image=[UIImage imageNamed:@"Deal_NotOpened"];
+
     //[self performSegueWithIdentifier:@"ShowDeal" sender:view];
     [self showModalDeal:((FeedCell*)view).deal Statistics:nil];
 
@@ -90,7 +93,7 @@
     if(notification.alertBody!=nil && ![notification.alertBody isEqual:@""] && chosenOffer!=nil)
     {
         [stat setDeal:chosenOffer];
-        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+     //   [[UIApplication sharedApplication] scheduleLocalNotification:notification];
     }
     
     

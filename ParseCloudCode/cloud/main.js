@@ -37,6 +37,20 @@ Parse.Cloud.afterSave("Links", function(request) {
   });
 });
 
+Parse.Cloud.afterSave("BusinessCategory", function(request) {
+  query = new Parse.Query("UpdateTimestamps");
+  query.get("BZOidMhX7h", {
+    success: function(timestamp) {
+		timestamp.set("TimeStamp",request.object.updatedAt);
+    	timestamp.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
+});
+
+
 Parse.Cloud.afterSave("Locations", function(request) {
   query = new Parse.Query("UpdateTimestamps");
   query.get("aYBFq7xwkd", {
@@ -180,6 +194,19 @@ Parse.Cloud.beforeDelete("Links", function(request, response) {
       	response.error("Error " + error.code + " : " + error.message);
   });
 });
+
+Parse.Cloud.beforeDelete("BusinessCategory", function(request, response) {
+  	var DeleteHistory = Parse.Object.extend("DeleteHistory");
+  	var newDeleteEntry = new DeleteHistory();
+  	newDeleteEntry.set("delObjectID",request.object.id);
+  	newDeleteEntry.set("table","BusinessCategory");
+	newDeleteEntry.save(null).then(function(message) {
+    	response.success();
+  }, function(error) {
+      	response.error("Error " + error.code + " : " + error.message);
+  });
+});
+
 
 Parse.Cloud.beforeDelete("Locations", function(request, response) {
   	var DeleteHistory = Parse.Object.extend("DeleteHistory");

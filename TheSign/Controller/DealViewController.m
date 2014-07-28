@@ -10,6 +10,7 @@
 #import "Featured.h"
 #import "Statistics.h"
 #import "Model.h"
+#import "Common.h"
 
 @interface DealViewController ()  <UIDynamicAnimatorDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *labelTitle;
@@ -51,13 +52,16 @@ BOOL clickedDislike=NO;
     //recreating actualDealView in code to avoid issues with repositioning of the view with enabked Autolayout
     
     
-    self.labelTitle.text=self.deal.title;
+    self.labelTitle.text=self.deal.fullName;
     self.labelDescription.text=self.deal.details;
     
-    self.actualDealView.layer.cornerRadius = 4; // if you like rounded corners
-    self.actualDealView.layer.shadowOffset = CGSizeMake(-5, 10);
-    self.actualDealView.layer.shadowRadius = 4;
-    self.actualDealView.layer.shadowOpacity = 0.2;
+    self.actualDealView.layer.cornerRadius = 8; // if you like rounded corners
+   // self.actualDealView.layer.shadowOffset = CGSizeMake(-5, 10);
+  //  self.actualDealView.layer.shadowRadius = 4;
+  //  self.actualDealView.layer.shadowOpacity = 0.2;
+    
+    self.likeButton.layer.cornerRadius=8;
+    self.dislikeButton.layer.cornerRadius=8;
     
     UIImageView* imageView = [[UIImageView alloc] initWithImage:self.backgroundImage];
     [self.view addSubview:imageView ];
@@ -69,7 +73,7 @@ BOOL clickedDislike=NO;
     
     
     self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
-
+    self.animator.delegate=self;
     
 }
 
@@ -106,25 +110,35 @@ BOOL clickedDislike=NO;
 }
 - (IBAction)dismissView:(id)sender
 {
-    [self.animator removeBehavior:self.ohSnap];
+    self.isRemoving=@(YES);
+    [self.animator removeAllBehaviors];
     
-    CGPoint point = CGPointMake(160, 790);
+    CGPoint point = CGPointMake(160, 800);
     self.ohSnap=[[UISnapBehavior alloc] initWithItem:self.actualDealView snapToPoint:point];
     self.ohSnap.damping=0.4;
     [self.animator addBehavior:self.ohSnap];
     
+    [self performSelector:@selector(prepareToQuit) withObject:nil afterDelay:0.1];
+    
+}
+
+-(void) prepareToQuit
+{
     if (![self.presentingViewController.presentedViewController isBeingDismissed])
     {
         if([self.presentingViewController respondsToSelector:@selector(dismissViewControllerAnimated:completion:)]) {
             [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
                 if(self.actioned.boolValue==NO)
-                    [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_None]];
+                    self.deal.opened=@(YES);
+                [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_None]];
+                [[Model sharedModel] saveEverything];
+                if(self.isRemoving && self.isRemoving.boolValue==YES)
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"removeBannerNotification"
+                                                                        object:nil];
             }];
         }
     }
 }
-
-
 
 - (IBAction)didPan:(UIPanGestureRecognizer *)sender {
     CGPoint location = [sender locationInView:self.view];
@@ -166,14 +180,16 @@ BOOL clickedDislike=NO;
         }
         case UIGestureRecognizerStateCancelled:
         case UIGestureRecognizerStateEnded: {
-            // Not enough velocity to exit the modal, so snap it back into the center of the screen
-            [self.animator removeAllBehaviors];
-            
-            UISnapBehavior *snapIt = [[UISnapBehavior alloc] initWithItem:self.actualDealView snapToPoint:CGPointMake(160, 284)];
-            snapIt.damping = 0.7;
-            
-            [self.animator addBehavior:snapIt];
-            
+            if(self.isRemoving.boolValue==NO)
+            {
+                // Not enough velocity to exit the modal, so snap it back into the center of the screen
+                [self.animator removeAllBehaviors];
+                
+                UISnapBehavior *snapIt = [[UISnapBehavior alloc] initWithItem:self.actualDealView snapToPoint:CGPointMake(160, 284)];
+                snapIt.damping = 0.7;
+                
+                [self.animator addBehavior:snapIt];
+            }
             
             break;
         }
@@ -281,10 +297,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:
 }
 - (void)dynamicAnimatorDidPause:(UIDynamicAnimator*)animator
 {
-    if(self.isRemoving && self.isRemoving.boolValue==YES)
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"removeBannerNotification"
-                                                            object:nil];
-}
+  }
 
 /*
 #pragma mark - Navigation

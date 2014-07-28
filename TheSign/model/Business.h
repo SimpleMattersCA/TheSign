@@ -11,12 +11,13 @@
 #import "SignEntityProtocol.h"
 
 
-@class DiscoveredBusiness, Featured, Link,PFObject,CLLocation,Location;
+@class DiscoveredBusiness, Featured, Link,PFObject,CLLocation,Location,BusinessCategory;
 
 @interface Business : NSManagedObject <SignEntityProtocol>
 
-@property (nonatomic, retain) NSString * businessType;
+@property (nonatomic, retain) NSData * blurredBack;
 @property (nonatomic, retain) NSData * logo;
+@property (nonatomic, retain) NSString * about;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSNumber * uid;
@@ -26,11 +27,10 @@
 @property (nonatomic, retain) NSSet *linkedOffers;
 @property (nonatomic, retain) NSSet *linkedLinks;
 @property (nonatomic, retain) NSSet *linkedLocations;
+@property (nonatomic, retain) BusinessCategory *linkedCategory;
 
 
 
-+(NSArray*) getBusinessesByType:(NSString*)type Context:(NSManagedObjectContext*)context;
-+(NSArray*) getTypesForContext:(NSManagedObjectContext*)context;
 +(Location*)getClosestBusinessToLocation:(CLLocation*)location Context:(NSManagedObjectContext*)context;
 
 -(NSSet*) getActiveOffers;
@@ -43,6 +43,8 @@
 +(NSArray*)getDiscoveredBusinessesForContext:(NSManagedObjectContext*)context;
 
 -(NSString*)getLocationAddressForDeal:(Featured*)deal;
+
+-(UIImage*)getCategoryIcon;
 
 @end
 

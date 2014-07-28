@@ -11,9 +11,9 @@
 @class Featured;
 
 @interface FeedCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UILabel *dealTitleLabel;
-@property (weak, nonatomic) IBOutlet UILabel *businessTitleLabel;
-@property (weak, nonatomic) IBOutlet UILabel *businessAddressLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *imgOpened;
+@property (weak, nonatomic) IBOutlet UIImageView *imgCategory;
+
 
 @property (strong, nonatomic) Featured* deal;
 

@@ -13,6 +13,5 @@
 
 @interface FeedController : UITableViewController
 
--(void) showDealAfterLoad:(Featured*)offer Statistics:(Statistics*)stat;
 
 @end

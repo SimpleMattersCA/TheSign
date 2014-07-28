@@ -17,8 +17,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title=@"";
-    
-    [self.navigationItem setHidesBackButton:YES animated:NO];
+    [[self navigationController] setNavigationBarHidden:YES animated:NO];
+    //[self.navigationItem setHidesBackButton:YES animated:NO];
 
     [[Model sharedModel] updateDBinBackground:YES];
 }

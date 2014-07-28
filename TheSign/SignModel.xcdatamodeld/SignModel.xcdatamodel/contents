@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6198" systemVersion="13D65" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Area" representedClassName="Area" syncable="YES">
         <attribute name="currentTemperature" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="currentWeather" optional="YES" attributeType="String" syncable="YES"/>
@@ -8,17 +8,25 @@
         <relationship name="linkedLocations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Location" inverseName="linkedArea" inverseEntity="Location" syncable="YES"/>
     </entity>
     <entity name="Business" representedClassName="Business" syncable="YES">
-        <attribute name="businessType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="about" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="blurredBack" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="discovered" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="discoveryDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="logo" attributeType="Binary" syncable="YES"/>
+        <attribute name="logo" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="name" attributeType="String" defaultValueString="DefaultBusiness" syncable="YES"/>
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="uid" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="welcomeText" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="linkedCategory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BusinessCategory" inverseName="linkedBusinesses" inverseEntity="BusinessCategory" syncable="YES"/>
         <relationship name="linkedLinks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Link" inverseName="linkedBusiness" inverseEntity="Link" syncable="YES"/>
         <relationship name="linkedLocations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Location" inverseName="linkedBusiness" inverseEntity="Location" syncable="YES"/>
         <relationship name="linkedOffers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Featured" inverseName="linkedBusiness" inverseEntity="Featured" syncable="YES"/>
+    </entity>
+    <entity name="BusinessCategory" representedClassName="BusinessCategory" syncable="YES">
+        <attribute name="icon" attributeType="Binary" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="linkedBusinesses" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Business" inverseName="linkedCategory" inverseEntity="Business" syncable="YES"/>
     </entity>
     <entity name="Context" representedClassName="Context" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -28,13 +36,15 @@
     </entity>
     <entity name="Featured" representedClassName="Featured" syncable="YES">
         <attribute name="active" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
-        <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="fullName" attributeType="String" syncable="YES"/>
+        <attribute name="details" attributeType="String" defaultValueString="Oops we have a description missing!" syncable="YES"/>
+        <attribute name="fullName" attributeType="String" defaultValueString=" " syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="major" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="minor" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="minor" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="opened" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="score" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="timePeriod" attributeType="String" defaultValueString="Every day" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
         <relationship name="linkedBusiness" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Business" inverseName="linkedOffers" inverseEntity="Business" syncable="YES"/>
         <relationship name="linkedStats" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Statistics" inverseName="linkedOffer" inverseEntity="Statistics" syncable="YES"/>
@@ -87,6 +97,7 @@
         <attribute name="likeness" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" attributeType="String" defaultValueString="DefaultTag" syncable="YES"/>
         <attribute name="pObjectID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="special" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <relationship name="linkedCategoryTemplates" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Template" inverseName="linkedContextTag" inverseEntity="Template" syncable="YES"/>
         <relationship name="linkedConnectionsFrom" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TagConnection" inverseName="linkedTagFrom" inverseEntity="TagConnection" syncable="YES"/>
         <relationship name="linkedConnectionsTo" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TagConnection" inverseName="linkedTagTo" inverseEntity="TagConnection" syncable="YES"/>
@@ -127,18 +138,19 @@
     </entity>
     <elements>
         <element name="Area" positionX="-2997" positionY="-765" width="128" height="118"/>
-        <element name="Business" positionX="-2765" positionY="-603" width="128" height="208"/>
+        <element name="Business" positionX="-2765" positionY="-603" width="128" height="238"/>
         <element name="Context" positionX="-3332" positionY="-126" width="128" height="103"/>
-        <element name="Featured" positionX="-2763" positionY="-333" width="128" height="223"/>
+        <element name="Featured" positionX="-2763" positionY="-333" width="128" height="253"/>
         <element name="Link" positionX="-2970" positionY="-549" width="128" height="103"/>
         <element name="Location" positionX="-2774" positionY="-780" width="128" height="148"/>
         <element name="Settings" positionX="-3483" positionY="-725" width="128" height="148"/>
         <element name="Statistics" positionX="-2567" positionY="-288" width="128" height="178"/>
         <element name="TableTimestamp" positionX="-3287" positionY="-765" width="128" height="103"/>
-        <element name="Tag" positionX="-3143" positionY="-306" width="128" height="208"/>
+        <element name="Tag" positionX="-3143" positionY="-306" width="128" height="223"/>
         <element name="TagConnection" positionX="-3332" positionY="-261" width="128" height="103"/>
         <element name="TagSet" positionX="-2952" positionY="-265" width="128" height="103"/>
         <element name="Template" positionX="-3152" positionY="-486" width="128" height="103"/>
         <element name="User" positionX="-2349" positionY="-306" width="128" height="208"/>
+        <element name="BusinessCategory" positionX="-2522" positionY="-603" width="128" height="103"/>
     </elements>
 </model>

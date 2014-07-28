@@ -18,13 +18,16 @@
 #define CD_DETAILS (@"details")
 #define CD_FULLNAME (@"fullName")
 #define CD_WELCOMETEXT (@"welcomeText")
+#define CD_PERIOD (@"timePeriod")
 #define CD_IMAGE (@"image")
 #define CD_MAJOR (@"major")
 #define CD_MINOR (@"minor")
 #define CD_ACIVE (@"active")
+#define CD_OPENED (@"opened")
 
 #define P_TITLE (@"name")
 #define P_FULLNAME (@"fullName")
+#define P_PERIOD (@"timePeriod")
 #define P_DETAILS (@"description")
 #define P_WELCOMETEXT (@"welcomeText")
 #define P_IMAGE (@"picture")
@@ -38,7 +41,9 @@
 @dynamic fullName;
 @dynamic details;
 @dynamic welcomeText;
+@dynamic timePeriod;
 @dynamic active;
+@dynamic opened;
 @dynamic image;
 @dynamic major;
 @dynamic minor;
@@ -72,7 +77,7 @@
 
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
-    if(object[P_TITLE] && object[P_FULLNAME] && object[P_ACTIVE] && object[P_BUSINESS])
+    if(object[P_TITLE] && object[P_FULLNAME] && object[P_DETAILS] && object[P_BUSINESS])
         return YES;
     else
         return NO;
@@ -112,10 +117,12 @@
     
     if(object[P_FULLNAME]!=nil) deal.fullName=object[P_FULLNAME];
     if(object[P_TITLE]!=nil) deal.title=object[P_TITLE];
+    if(object[P_DETAILS]!=nil) deal.details=object[P_DETAILS];
+    if(object[P_ACTIVE]!=nil)
+        deal.active=object[P_ACTIVE];
+    if(object[P_MINOR]!=nil) deal.minor=object[P_MINOR];
     
-    deal.details=object[P_DETAILS];
-    if(object[P_ACTIVE]!=nil) deal.active=object[P_ACTIVE];
-    deal.minor=object[P_MINOR];
+    if(object[P_PERIOD]!=nil) deal.timePeriod=object[P_PERIOD];
     
     
     if(object[P_IMAGE]!=nil)
@@ -139,21 +146,23 @@
         }
     }
     
-    //careful, incomplete object - only objectId property is there
-    PFObject *fromParseBusiness=object[P_BUSINESS];
-    Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId Context:context];
-    if (linkedBusiness!=nil)
+    if(object[P_BUSINESS]!=nil)
     {
-        deal.major=linkedBusiness.uid;
-        deal.linkedBusiness = linkedBusiness;
-        [linkedBusiness addLinkedOffersObject:deal];
+        //careful, incomplete object - only objectId property is there
+        PFObject *fromParseBusiness=object[P_BUSINESS];
+        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId Context:context];
+        if (linkedBusiness!=nil)
+        {
+            deal.major=linkedBusiness.uid;
+            deal.linkedBusiness = linkedBusiness;
+            [linkedBusiness addLinkedOffersObject:deal];
+        }
+        else
+        {
+            NSLog(@"Linked business wasn't found");
+            complete=NO;
+        }
     }
-    else
-    {
-        NSLog(@"Linked business wasn't found");
-        complete=NO;
-    }
-    
     return complete;
 }
 
@@ -172,12 +181,15 @@
     }
     
     Boolean complete=YES;
-    self.fullName=self.parseObject[P_FULLNAME];
-    self.title=self.parseObject[P_TITLE];
-    self.details=self.parseObject[P_DETAILS];
-    self.active=self.parseObject[P_ACTIVE];
-    self.minor=self.parseObject[P_MINOR];
-    
+    if(self.parseObject[P_FULLNAME]!=nil) self.fullName=self.parseObject[P_FULLNAME];
+    if(self.parseObject[P_TITLE]!=nil) self.title=self.parseObject[P_TITLE];
+    if(self.parseObject[P_DETAILS]!=nil) self.details=self.parseObject[P_DETAILS];
+    if(self.parseObject[P_ACTIVE]!=nil) self.active=self.parseObject[P_ACTIVE];
+
+    if(self.parseObject[P_ACTIVE]!=nil)self.active=self.parseObject[P_ACTIVE];
+    if(self.parseObject[P_MINOR]!=nil)self.minor=self.parseObject[P_MINOR];
+    if(self.parseObject[P_PERIOD]!=nil) self.timePeriod=self.parseObject[P_PERIOD];
+
     if(self.parseObject[P_IMAGE]!=nil)
     {
         NSError *error;
@@ -199,22 +211,25 @@
         }
     }
     
-    //careful, incomplete object - only objectId property is there
-    PFObject *fromParseBusiness=self.parseObject[P_BUSINESS];
-    if(self.linkedBusiness.pObjectID!=fromParseBusiness.objectId)
+    if(self.parseObject[P_BUSINESS]!=nil)
     {
-        [self.linkedBusiness removeLinkedOffersObject:self];
-        Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId Context:context];
-        if(linkedBusiness!=nil)
+        //careful, incomplete object - only objectId property is there
+        PFObject *fromParseBusiness=self.parseObject[P_BUSINESS];
+        if(self.linkedBusiness.pObjectID!=fromParseBusiness.objectId)
         {
-            self.major=linkedBusiness.uid;
-            self.linkedBusiness = linkedBusiness;
-            [linkedBusiness addLinkedOffersObject:self];
-        }
-        else
-        {
-            NSLog(@"Linked business wasn't found");
-            complete=NO;
+            [self.linkedBusiness removeLinkedOffersObject:self];
+            Business *linkedBusiness=[Business getByID:fromParseBusiness.objectId Context:context];
+            if(linkedBusiness!=nil)
+            {
+                self.major=linkedBusiness.uid;
+                self.linkedBusiness = linkedBusiness;
+                [linkedBusiness addLinkedOffersObject:self];
+            }
+            else
+            {
+                NSLog(@"Linked business wasn't found");
+                complete=NO;
+            }
         }
     }
     
@@ -302,6 +317,21 @@
 -(NSString*)getBusinessName
 {
     return self.linkedBusiness.name;
+}
+
+-(UIImage*)getCategoryIcon
+{
+    return [self.linkedBusiness getCategoryIcon];
+        
+}
+-(NSString*)getSpecialTagName
+{
+    for(TagSet* tagset in self.linkedTagSets)
+    {
+        if (tagset && tagset.linkedTag && tagset.linkedTag.special.boolValue==YES)
+            return tagset.linkedTag.name;
+    }
+    return nil;
 }
 
 @end

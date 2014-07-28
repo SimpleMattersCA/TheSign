@@ -44,6 +44,8 @@ bool dbReady=NO;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[self navigationController] setNavigationBarHidden:NO animated:YES];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dbUpdated) name:@"dbUpdated" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fbUpdated) name:@"facebookDataDownloaded" object:nil];
 }
@@ -119,6 +121,7 @@ bool dbReady=NO;
 
 -(void)dbUpdated
 {
+    NSLog(@"DB done");
     dbReady=YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"dbUpdated" object:nil];
     if(fbReady)
@@ -129,6 +132,8 @@ bool dbReady=NO;
 }
 -(void)fbUpdated
 {
+    NSLog(@"FB done");
+
     fbReady=YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"facebookDataDownloaded" object:nil];
     if(dbReady)

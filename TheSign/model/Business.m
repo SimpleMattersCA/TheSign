@@ -11,29 +11,31 @@
 #import "Link.h"
 #import "Model.h"
 #import "Location.h"
+#import "BusinessCategory.h"
 
 #define CD_NAME (@"name")
+#define CD_ABOUT (@"about")
 #define CD_LOGO (@"logo")
+#define CD_BACK (@"blurredBack")
 #define CD_UID (@"uid")
 #define CD_WELCOMETEXT (@"welcomeText")
-#define CD_TYPE (@"businessType")
-#define CD_LATTITUDE (@"locaitonLatt")
-#define CD_LONGITUDE (@"locationLong")
 #define CD_DISCOVERED (@"discovered")
 
 #define P_NAME (@"name")
+#define P_ABOUT (@"about")
 #define P_LOGO (@"logo")
+#define P_BACK (@"blurredBack")
 #define P_UID (@"uid")
 #define P_WELCOMETEXT (@"welcomeText")
-#define P_TYPE (@"businessType")
-#define P_LOCATION (@"location")
+#define P_CATEGORY (@"category")
 
 
 @implementation Business
 
-@dynamic businessType;
 @dynamic logo;
+@dynamic blurredBack;
 @dynamic name;
+@dynamic about;
 @dynamic pObjectID;
 @dynamic uid;
 @dynamic welcomeText;
@@ -42,7 +44,7 @@
 @dynamic linkedOffers;
 @dynamic linkedLinks;
 @dynamic linkedLocations;
-
+@dynamic linkedCategory;
 
 
 
@@ -67,12 +69,6 @@
 +(NSString*) parseEntityName {return @"Business";}
 
 
-///this dictionary contains pairs CLLocation / objectID
-//static NSDictionary* _businessLocations;
-
-//just so I don't have to create another CoreData entity and fuck with the synchronization we gonna store business types in a hashtable. God I love hash tables. They sounds like hash browns..
-static NSArray* _businessTypes;
-
 +(Business*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
@@ -89,6 +85,7 @@ static NSArray* _businessTypes;
     else
         return result.firstObject;
 }
+
 +(Business*) getBusinessByUID:(NSNumber*)identifier Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
@@ -121,8 +118,8 @@ static NSArray* _businessTypes;
     business.name=object[P_NAME];
     business.welcomeText=object[P_WELCOMETEXT];
     business.uid=object[P_UID];
-    business.businessType=object[P_TYPE];
     business.discovered=@(YES);
+    business.about=object[P_ABOUT];
     PFFile *logo=object[P_LOGO];
     NSData *pulledLogo;
     pulledLogo=[logo getData:&error];
@@ -141,6 +138,25 @@ static NSArray* _businessTypes;
         NSLog(@"%@",[error localizedDescription]);
         complete=NO;
     }
+    
+    if(object[P_CATEGORY]!=nil)
+    {
+        //careful, incomplete object - only objectId property is there
+        PFObject *fromParseCategory=object[P_CATEGORY];
+        BusinessCategory *linkedCategory=[BusinessCategory getByID:fromParseCategory.objectId Context:context];
+        if (linkedCategory!=nil)
+        {
+            business.linkedCategory = linkedCategory;
+            [linkedCategory addLinkedBusinessesObject:business];
+        }
+        else
+        {
+            NSLog(@"Linked category wasn't found");
+            complete=NO;
+        }
+    }
+
+    
     
     return complete;
 }
@@ -166,8 +182,7 @@ static NSArray* _businessTypes;
     self.name=self.parseObject[P_NAME];
     self.welcomeText=self.parseObject[P_WELCOMETEXT];
     self.uid=self.parseObject[P_UID];
-    self.businessType=self.parseObject[P_TYPE];
-    
+    self.about=self.parseObject[P_ABOUT];
     PFFile *logo=self.parseObject[P_LOGO];
     NSError *error;
     NSData *pulledLogo;
@@ -188,6 +203,27 @@ static NSArray* _businessTypes;
         complete=NO;
     }
     
+    if(self.parseObject[P_CATEGORY]!=nil)
+    {
+        //careful, incomplete object - only objectId property is there
+        PFObject *fromParseCategory=self.parseObject[P_CATEGORY];
+        if(self.linkedCategory.pObjectID!=fromParseCategory.objectId)
+        {
+            [self.linkedCategory removeLinkedBusinessesObject:self];
+            BusinessCategory *linkedCategory=[BusinessCategory getByID:fromParseCategory.objectId Context:context];
+            if(linkedCategory!=nil)
+            {
+                self.linkedCategory = linkedCategory;
+                [linkedCategory addLinkedBusinessesObject:self];
+            }
+            else
+            {
+                NSLog(@"Linked category wasn't found");
+                complete=NO;
+            }
+        }
+    }
+
     return complete;
 }
 
@@ -237,20 +273,7 @@ static NSArray* _businessTypes;
 
 
 
-+(NSArray*) getTypesForContext:(NSManagedObjectContext *)context
-{
-    if(!_businessTypes)
-    {
-        NSMutableArray* newTypes=[NSMutableArray array];
-        for (Business *business in [Business getBusinessesForContext:context])
-        {
-            if (![newTypes containsObject:business.businessType])
-                [newTypes addObject:business.businessType];
-        }
-        _businessTypes=newTypes;
-    }
-    return _businessTypes;
-}
+
 
 
 +(NSArray*) getBusinessesForContext:(NSManagedObjectContext*)context
@@ -268,29 +291,12 @@ static NSArray* _businessTypes;
         return business;
 }
 
-+(NSArray*) getBusinessesByType:(NSString*)type Context:(NSManagedObjectContext *)context
-{
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
-    request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@='%@'", CD_TYPE, type]];
-    NSError *error;
-    NSArray *business = [context executeFetchRequest:request error:&error];
-        
-    if(error)
-    {
-        NSLog(@"%@",[error localizedDescription]);
-        return nil;
-    }
-        
-    return business;
-    
-}
 
 
 
 +(Boolean)checkIfParseObjectRight:(PFObject*)object
 {
-    if(object[P_UID] && object[P_NAME] && object[P_LOGO])
+    if(object[P_UID] && object[P_NAME] && object[P_ABOUT] && object[P_CATEGORY])
         return YES;
     else
         return NO;
@@ -340,6 +346,16 @@ static NSArray* _businessTypes;
 -(NSString*)getLocationAddressForDeal:(Featured*)deal
 {
     return ((Location*)self.linkedLocations.anyObject).address;
+}
+
+-(UIImage*)getCategoryIcon
+{
+    if(self.linkedCategory)
+    {
+        return [UIImage imageWithData:self.linkedCategory.icon];
+    }
+    else
+        return nil;
 }
 
 @end

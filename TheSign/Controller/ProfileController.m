@@ -52,7 +52,7 @@
     CALayer *imageLayer = self.profilePic.layer;
     imageLayer.cornerRadius=self.profilePic.frame.size.width/2;
     imageLayer.borderWidth=1;
-    imageLayer.borderColor=[UIColor whiteColor].CGColor;
+    imageLayer.borderColor=[UIColor grayColor].CGColor;
     imageLayer.masksToBounds=YES;
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
     self.interests=[[[Model sharedModel] getInterests] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
@@ -87,26 +87,35 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+
     UICollectionViewCell *cell = [self.interestsCollection cellForItemAtIndexPath:indexPath];
+  
+    UIView* outterView=[cell viewWithTag:2];
+
+    UILabel *interestLabel = (UILabel *)[cell viewWithTag:1];
+    interestLabel.userInteractionEnabled=NO;
+
     Tag* interest=(Tag*)self.interests[indexPath.row];
     if([interest.likeness doubleValue]>=[[Model sharedModel].interest_value doubleValue])
     {
         interest.likeness=@(0);
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.3];
-        cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
+        outterView.backgroundColor=[UIColor colorWithRed:216.0/255.0 green:216.0/255.0 blue:216.0/255.0 alpha:1];
+        interestLabel.textColor=[UIColor colorWithRed:60/255.0 green:81.0/255.0 blue:83.0/255.0 alpha:1];
         [UIView commitAnimations];
+
     }
     else
     {
         interest.likeness=[Model sharedModel].interest_value;
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.3];
-        cell.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
+        outterView.backgroundColor=[UIColor colorWithRed:254.0/255.0 green:148.0/255.0 blue:83.0/255.0 alpha:1];
+        interestLabel.textColor=[UIColor whiteColor];
         [UIView commitAnimations];
+
     }
-    
 }
 
 
@@ -129,17 +138,27 @@
 {
     
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"InterestCell" forIndexPath:indexPath];
+    
+    UIView* outterView=[cell viewWithTag:2];
+    outterView.layer.cornerRadius=8;
+    outterView.layer.borderWidth=1;
+    outterView.layer.borderColor=[UIColor darkGrayColor].CGColor;
+    
     UILabel *interestLabel = (UILabel *)[cell viewWithTag:1];
     Tag* interest=(Tag*)self.interests[indexPath.row];
 
     interestLabel.text=interest.name;
     if([interest.likeness doubleValue]>=[[Model sharedModel].interest_value doubleValue])
-        cell.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
+    {
+        outterView.backgroundColor=[UIColor colorWithRed:254.0/255.0 green:148.0/255.0 blue:83.0/255.0 alpha:1];
+        interestLabel.textColor=[UIColor whiteColor];
+    }
     else
-        cell.backgroundColor=[UIColor colorWithRed:61.0/255.0 green:82.0/255.0 blue:84.0/255.0 alpha:1];
+    {
+        outterView.backgroundColor=[UIColor colorWithRed:216.0/255.0 green:216.0/255.0 blue:216.0/255.0 alpha:1];
+        interestLabel.textColor=[UIColor colorWithRed:60/255.0 green:81.0/255.0 blue:83.0/255.0 alpha:1];
+    }
 
-    cell.layer.borderWidth=1.0;
-    cell.layer.borderColor=[UIColor whiteColor].CGColor;
     return cell;
 }
 

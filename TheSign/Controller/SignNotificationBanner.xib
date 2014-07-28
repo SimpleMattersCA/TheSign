@@ -6,7 +6,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SignNotificationBanner">
             <connections>
-                <outlet property="notificationText" destination="K6N-nT-3Z2" id="cxk-68-UyM"/>
+                <outlet property="notificationLabel" destination="K6N-nT-3Z2" id="NYP-rc-fmK"/>
                 <outlet property="userSwipe" destination="ImZ-2L-47f" id="9FT-oL-ldW"/>
                 <outlet property="userTap" destination="cZ1-Ds-NuW" id="gqL-Mw-HnG"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>

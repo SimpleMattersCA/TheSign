@@ -16,6 +16,8 @@
 @interface Tag : NSManagedObject <SignEntityProtocol>
 
 @property (nonatomic, retain) NSNumber * interest;
+@property (nonatomic, retain) NSNumber * special;
+
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * pObjectID;
 @property (nonatomic, retain) NSSet *linkedConnectionsFrom;

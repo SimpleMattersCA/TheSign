@@ -12,9 +12,13 @@
 #import "Model.h"
 #import "DealViewController.h"
 #import "UIViewController+SignExtension.h"
+#import "BusinessHeader.h"
+#import "UIImage+ImageEffects.h"
+
 @interface BusinessProfileController ()
-@property (weak, nonatomic) IBOutlet UIImageView *businessLogo;
+//@property (weak, nonatomic) IBOutlet UIImageView *businessLogo;
 @property (weak, nonatomic) IBOutlet UITableView *dealList;
+//@property (weak, nonatomic) IBOutlet UIImageView *blurredBack;
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
 
 @property (nonatomic, strong) NSArray* deals;
@@ -26,14 +30,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.businessLogo.image=[UIImage imageWithData:self.business.logo];
-    CALayer *imageLayer = self.businessLogo.layer;
-    imageLayer.cornerRadius=self.businessLogo.frame.size.width/2;
-    imageLayer.borderWidth=1;
-    imageLayer.borderColor=[UIColor whiteColor].CGColor;
-    imageLayer.masksToBounds=YES;
     self.navigationBar.title=self.business.name;
     self.dealList.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    
+    [self.dealList registerNib:[UINib nibWithNibName:@"BusinessProfileHeader" bundle:nil] forHeaderFooterViewReuseIdentifier:@"CustomHeader"];
+    //[self.dealList registerClass:[BusinessHeader class] forHeaderFooterViewReuseIdentifier:@"CustomHeader"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,7 +56,6 @@
 {
     self.business=business;
     self.deals=[[business getActiveOffers] allObjects];
-
 }
 #pragma mark - Table view data source
 
@@ -78,11 +78,13 @@
 {
     //FeedCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DealCell" forIndexPath:indexPath];
     Featured* deal=self.deals[indexPath.row];
-    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DealListCell"];
-    [cell.textLabel setText:deal.fullName];
-    
-    
+    UIView* outterView=[cell viewWithTag:1];
+    outterView.layer.cornerRadius=8;
+
+    UILabel* lbDeal=(UILabel*)[cell viewWithTag:2];
+    lbDeal.text=deal.fullName;
+
     return cell;
     
     
@@ -90,7 +92,45 @@
     // Configure the cell...
     
 }
-- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 320;
+}
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    
+    BusinessHeader *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"CustomHeader"];
+    
+   /*
+    UIImageView *blurredBack=(UIImageView*)[header viewWithTag:3];
+    UIImageView *logo=(UIImageView*)[header viewWithTag:4];
+    UILabel *descr=(UILabel*)[header viewWithTag:5];
+    
+    logo.image=[UIImage imageWithData:self.business.logo];
+    CALayer *imageLayer = logo.layer;
+    imageLayer.cornerRadius=logo.frame.size.width/2;
+    imageLayer.borderWidth=1;
+    imageLayer.borderColor=[UIColor whiteColor].CGColor;
+    imageLayer.masksToBounds=YES;
+    
+    blurredBack.image=[UIImage imageWithData:self.business.blurredBack];
+    descr.text=self.business.about;
+*/
+    header.imgLogo.image=[UIImage imageWithData:self.business.logo];
+    CALayer *imageLayer = header.imgLogo.layer;
+    imageLayer.cornerRadius=header.imgLogo.frame.size.width/2;
+    imageLayer.borderWidth=1;
+    imageLayer.borderColor=[UIColor colorWithRed:61.0/255.0 green:81.0/255.0 blue:83.0/255.0 alpha:1].CGColor;
+    imageLayer.masksToBounds=YES;
+    
+    header.imgBlurredBack.image=[UIImage imageWithData:self.business.blurredBack];
+    header.lbAbout.text=self.business.about;
+    
+    return header;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self showModalDeal:self.deals[indexPath.row] Statistics:nil];
 }
