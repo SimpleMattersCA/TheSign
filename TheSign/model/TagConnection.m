@@ -36,8 +36,8 @@
         NSError *error;
         if(!error)
             _parseObject=[PFQuery getObjectOfClass:[TagConnection parseEntityName] objectId:self.pObjectID error:&error];
-        else
-            NSLog(@"%@",[error localizedDescription]);
+       // else
+        //    NSLog(@"%@",[error localizedDescription]);
     }
     return _parseObject;
 }
@@ -62,7 +62,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+     //   NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
     else
@@ -73,7 +73,7 @@
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",[TagConnection entityName],object.objectId);
+     //   NSLog(@"%@: The object %@ is missing mandatory fields",[TagConnection entityName],object.objectId);
         return NO;
     }
     
@@ -94,7 +94,7 @@
     }
     else
     {
-        NSLog(@"TagConnection: Linked tag wasn't found");
+     //   NSLog(@"TagConnection: Linked tag wasn't found");
         complete=NO;
     }
     //careful, incomplete object - only objectId property is there
@@ -107,7 +107,7 @@
     }
     else
     {
-        NSLog(@"TagConnection: Linked tag wasn't found");
+     //   NSLog(@"TagConnection: Linked tag wasn't found");
         complete=NO;
     }
     
@@ -118,13 +118,13 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[TagConnection entityName],self.pObjectID);
+       // NSLog(@"%@: Couldn't fetch the parse object with id: %@",[TagConnection entityName],self.pObjectID);
         return NO;
     }
     
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+      //  NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
         return NO;
     }
     
@@ -152,7 +152,7 @@
     }
     else
     {
-        NSLog(@"TagConnection: Linked tag wasn't found");
+     //   NSLog(@"TagConnection: Linked tag wasn't found");
         complete=NO;
     }
     //careful, incomplete object - only objectId property is there
@@ -165,7 +165,7 @@
     }
     else
     {
-        NSLog(@"TagConnection: Linked tag wasn't found");
+       // NSLog(@"TagConnection: Linked tag wasn't found");
         complete=NO;
     }
     
@@ -180,7 +180,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+      //  NSLog(@"%@",[error localizedDescription]);
         return 0;
     }
     else

@@ -19,6 +19,7 @@
     self.navigationItem.title=@"";
     [[self navigationController] setNavigationBarHidden:YES animated:NO];
     //[self.navigationItem setHidesBackButton:YES animated:NO];
+    ((UILabel*)[self.view viewWithTag:1]).layer.cornerRadius=8;
 
     [[Model sharedModel] updateDBinBackground:YES];
 }

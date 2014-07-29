@@ -50,8 +50,8 @@
         NSError *error;
         if(!error)
             _parseObject=[PFQuery getObjectOfClass:[Tag parseEntityName] objectId:self.pObjectID error:&error];
-        else
-            NSLog(@"%@",[error localizedDescription]);
+       // else
+       //     NSLog(@"%@",[error localizedDescription]);
     }
     return _parseObject;
 }
@@ -76,7 +76,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+      //  NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
     else
@@ -88,7 +88,7 @@
 {
     if([self checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",[Tag entityName],object.objectId);
+      //  NSLog(@"%@: The object %@ is missing mandatory fields",[Tag entityName],object.objectId);
         return NO;
     }
     
@@ -113,7 +113,7 @@
         }
         else
         {
-            NSLog(@"Linked context wasn't found");
+          //  NSLog(@"Linked context wasn't found");
             complete=NO;
         }
     }
@@ -125,13 +125,13 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Tag entityName],self.pObjectID);
+      //  NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Tag entityName],self.pObjectID);
         return NO;
     }
     
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+       // NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
         return NO;
     }
     
@@ -152,7 +152,7 @@
         }
         else
         {
-            NSLog(@"Linked context wasn't found");
+         //   NSLog(@"Linked context wasn't found");
             complete=NO;
         }
     }
@@ -168,7 +168,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+       // NSLog(@"%@",[error localizedDescription]);
         return 0;
     }
     else
@@ -243,7 +243,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+       // NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
     else

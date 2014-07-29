@@ -59,8 +59,8 @@
         NSError *error;
         if(!error)
             _parseObject=[PFQuery getObjectOfClass:[Business parseEntityName] objectId:self.pObjectID error:&error];
-        else
-            NSLog(@"%@",[error localizedDescription]);
+       //else
+         //   NSLog(@"%@",[error localizedDescription]);
     }
     return _parseObject;
 }
@@ -106,7 +106,7 @@
 {
     if([Business checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",[Business entityName],object.objectId);
+       // NSLog(@"%@: The object %@ is missing mandatory fields",[Business entityName],object.objectId);
         return NO;
     }
     Boolean complete=YES;
@@ -135,7 +135,7 @@
     }
     else
     {
-        NSLog(@"%@",[error localizedDescription]);
+        //NSLog(@"%@",[error localizedDescription]);
         complete=NO;
     }
     
@@ -148,13 +148,13 @@
             business.blurredBack=pulledBackground;
         else
         {
-            NSLog(@"Business background is missing");
+           // NSLog(@"Business background is missing");
             //complete=NO;
         }
     }
     else
     {
-        NSLog(@"%@",[error localizedDescription]);
+      //  NSLog(@"%@",[error localizedDescription]);
         complete=NO;
     }
     
@@ -170,7 +170,7 @@
         }
         else
         {
-            NSLog(@"Linked category wasn't found");
+            //NSLog(@"Linked category wasn't found");
             complete=NO;
         }
     }
@@ -186,13 +186,13 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Business entityName],self.pObjectID);
+     //   NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Business entityName],self.pObjectID);
         return NO;
     }
     
     if([Business checkIfParseObjectRight:self.parseObject]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+       // NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
         return NO;
     }
     
@@ -212,13 +212,13 @@
             self.logo=pulledLogo;
         else
         {
-            NSLog(@"Business logo is missing");
+          //  NSLog(@"Business logo is missing");
             //complete=NO;
         }
     }
     else
     {
-        NSLog(@"%@",[error localizedDescription]);
+       // NSLog(@"%@",[error localizedDescription]);
         complete=NO;
     }
     
@@ -231,13 +231,13 @@
             self.blurredBack=pulledBackground;
         else
         {
-            NSLog(@"Business background is missing");
+          //  NSLog(@"Business background is missing");
             //complete=NO;
         }
     }
     else
     {
-        NSLog(@"%@",[error localizedDescription]);
+      //  NSLog(@"%@",[error localizedDescription]);
         complete=NO;
     }
     
@@ -256,7 +256,7 @@
             }
             else
             {
-                NSLog(@"Linked category wasn't found");
+             //   NSLog(@"Linked category wasn't found");
                 complete=NO;
             }
         }
@@ -273,7 +273,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+       // NSLog(@"%@",[error localizedDescription]);
         return 0;
     }
     else
@@ -322,7 +322,7 @@
         
         if(error)
         {
-            NSLog(@"%@",[error localizedDescription]);
+          //  NSLog(@"%@",[error localizedDescription]);
             return nil;
         }
         
@@ -362,7 +362,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+      //  NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
     else

@@ -30,8 +30,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor=[UIColor colorWithRed:244.0/255.0 green:248.0/255.0 blue:249.0/255.0 alpha:1];
+    self.dealList.backgroundColor=[UIColor colorWithRed:244.0/255.0 green:248.0/255.0 blue:249.0/255.0 alpha:1];
     self.navigationBar.title=self.business.name;
-    self.dealList.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+  //  self.dealList.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
     [self.dealList registerNib:[UINib nibWithNibName:@"BusinessProfileHeader" bundle:nil] forHeaderFooterViewReuseIdentifier:@"CustomHeader"];
     //[self.dealList registerClass:[BusinessHeader class] forHeaderFooterViewReuseIdentifier:@"CustomHeader"];
@@ -84,6 +86,7 @@
 
     UILabel* lbDeal=(UILabel*)[cell viewWithTag:2];
     lbDeal.text=deal.fullName;
+    cell.contentView.backgroundColor=[UIColor colorWithRed:244.0/255.0 green:248.0/255.0 blue:249.0/255.0 alpha:1];
 
     return cell;
 }
@@ -126,6 +129,7 @@
     header.imgBlurredBack.image=blurredBack;
     header.lbAbout.text=self.business.about;
     
+    header.contentView.backgroundColor=[UIColor colorWithRed:244.0/255.0 green:248.0/255.0 blue:249.0/255.0 alpha:1];
     return header;
 }
 

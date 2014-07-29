@@ -13,7 +13,7 @@
 @interface FeedCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *imgOpened;
 @property (weak, nonatomic) IBOutlet UIImageView *imgCategory;
-
+@property (strong) NSIndexPath* indexPath;
 
 @property (strong, nonatomic) Featured* deal;
 

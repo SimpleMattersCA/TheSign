@@ -103,13 +103,14 @@
 {
     NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
     [dateComponents setMonth:-1];
-    NSDate *monthAgo = [[NSCalendar currentCalendar]  dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
+  //  NSDate *monthAgo = [[NSCalendar currentCalendar]  dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
 
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Statistics entityName]];
-    NSString *predicateBound = [NSString stringWithFormat: @"%@>'%@'", CD_DATE, monthAgo];
+    //NSString *predicateBound = [NSString stringWithFormat: @"%@>'%@'", CD_DATE, monthAgo];
     NSString *predicateSynced = [NSString stringWithFormat: @"%@==%d", CD_SYNCED, NO];
-    
-    request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateBound,predicateSynced]];
+    request.predicate=[NSPredicate predicateWithFormat:predicateSynced];
+
+  //  request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateBound,predicateSynced]];
     NSError *error;
     NSArray *stats = [context executeFetchRequest:request error:&error];
     

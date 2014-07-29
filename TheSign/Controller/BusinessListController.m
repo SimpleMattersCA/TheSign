@@ -9,9 +9,7 @@
 #import "BusinessListController.h"
 #import "Model.h"
 #import "Business.h"
-//TODO: remove after testing complete
-#import "InsightEngine.h"
-#import "Location.h"
+
 #import "BusinessProfileController.h"
 #import "DealViewController.h"
 

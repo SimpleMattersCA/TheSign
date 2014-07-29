@@ -141,7 +141,7 @@
     if([self.class checkIfParseObjectRight:self.parseObject]==NO)
     {
         NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
-        return NO;
+   //     return NO;
     }
     
     Boolean complete=YES;
@@ -177,7 +177,7 @@
         }
         else
         {
-            NSLog(@"Linked category tag wasn't found");
+        //    NSLog(@"Linked category tag wasn't found");
             complete=NO;
         }
     }
@@ -193,7 +193,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+     //   NSLog(@"%@",[error localizedDescription]);
         return 0;
     }
     else
@@ -218,7 +218,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+      //  NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
     else

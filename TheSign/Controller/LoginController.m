@@ -45,7 +45,8 @@ bool dbReady=NO;
 {
     [super viewDidLoad];
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
-
+    self.navigationController.navigationItem.title=@"Login";
+    ((UILabel*)[self.view viewWithTag:1]).layer.cornerRadius=8;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dbUpdated) name:@"dbUpdated" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fbUpdated) name:@"facebookDataDownloaded" object:nil];
 }
@@ -84,25 +85,29 @@ bool dbReady=NO;
 - (IBAction)FacebookLoginAction:(id)sender {
     
     [PFFacebookUtils logInWithPermissions:@[@"public_profile", @"user_friends"] block:^(PFUser *user, NSError *error) {
+        [self.spinner startAnimating];
         if(!error)
         {
             if (!user)
             {
-                NSLog(@"Uh oh. The user cancelled the Facebook login.");
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"facebookDataDownloaded"
+                                                                    object:nil];
+                //NSLog(@"Uh oh. The user cancelled the Facebook login.");
             }
             else
             {
-                [self.spinner startAnimating];
                 [User CreateUserProfile:user];
             }
         }
         else
         {
-            
-            NSLog(@"%@",error.localizedDescription);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"facebookDataDownloaded"
+                                                                object:nil];
+
+            /*NSLog(@"%@",error.localizedDescription);
             NSLog(@"%@",error.localizedFailureReason);
             for(NSString *key in [error.userInfo allKeys])
-                NSLog(@"%@",[error.userInfo objectForKey:key]);
+                NSLog(@"%@",[error.userInfo objectForKey:key]);*/
         }
     }];
 }
@@ -121,7 +126,7 @@ bool dbReady=NO;
 
 -(void)dbUpdated
 {
-    NSLog(@"DB done");
+  // NSLog(@"DB done");
     dbReady=YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"dbUpdated" object:nil];
     if(fbReady)
@@ -132,7 +137,7 @@ bool dbReady=NO;
 }
 -(void)fbUpdated
 {
-    NSLog(@"FB done");
+   // NSLog(@"FB done");
 
     fbReady=YES;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"facebookDataDownloaded" object:nil];

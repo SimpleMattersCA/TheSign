@@ -48,13 +48,6 @@
     return self;
 }
 
-//-(void) showDealAfterLoad:(Featured*)offer Statistics:(Statistics*)stat
-//{
- //   self.dealToShow=offer;
- //   self.statForDeal=stat;
-  //  [self viewDidLoad];
-//}
-
 - (void)actionTapDeal:(UIGestureRecognizer *)sender
 {
     UIView* view=sender.view;
@@ -62,9 +55,10 @@
     {
         view=view.superview;
     }
-   // [self.tableView ]
     
-    ((FeedCell*)view).imgOpened.image=[UIImage imageNamed:@"Deal_NotOpened"];
+    ((FeedCell*)view).imgOpened.image=[UIImage imageNamed:@"Deal_Opened"];
+    [((FeedCell*)view).imgOpened reloadInputViews];
+  //  [self.tableView reloadRowsAtIndexPaths:@[((FeedCell*)view).indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self showModalDeal:((FeedCell*)view).deal Statistics:nil];
 
 }
@@ -127,6 +121,7 @@
 {
     FeedCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DealCell"];
     [cell setDealToShow:self.deals[indexPath.row]];
+    cell.indexPath=indexPath;
     [cell setGestureRecognizersForTarget:self];
     
     
@@ -141,7 +136,7 @@
 {
     if([segue.identifier isEqualToString:@"ShowDeal"] && [segue.destinationViewController isKindOfClass:[DealViewController class]])
     {
-        NSLog(@"Shouldn't be here");
+      //  NSLog(@"Shouldn't be here");
     }
 
     if([segue.identifier isEqualToString:@"ShowOneBusiness"] && [segue.destinationViewController isKindOfClass:[BusinessProfileController class]])

@@ -39,8 +39,8 @@
         NSError *error;
         if(!error)
             _parseObject=[PFQuery getObjectOfClass:[Area parseEntityName] objectId:self.pObjectID error:&error];
-        else
-            NSLog(@"%@",[error localizedDescription]);
+        //else
+         //   NSLog(@"%@",[error localizedDescription]);
     }
     return _parseObject;
 }
@@ -64,7 +64,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+       // NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
     else
@@ -77,7 +77,7 @@
 {
     if([Area checkIfParseObjectRight:object]==NO)
     {
-        NSLog(@"%@: The object %@ is missing mandatory fields",[Area entityName],object.objectId);
+       // NSLog(@"%@: The object %@ is missing mandatory fields",[Area entityName],object.objectId);
         return NO;
     }
     Boolean complete=YES;
@@ -96,13 +96,13 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Area entityName],self.pObjectID);
+       // NSLog(@"%@: Couldn't fetch the parse object with id: %@",[Area entityName],self.pObjectID);
         return NO;
     }
     
     if([Area checkIfParseObjectRight:self.parseObject]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+      //  NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
         return NO;
     }
     Boolean complete=YES;
@@ -122,7 +122,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+       // NSLog(@"%@",[error localizedDescription]);
         return 0;
     }
     else

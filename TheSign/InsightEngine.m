@@ -131,8 +131,8 @@
             NSArray* genericTemplates=[Template getGenericTemplatesForContext:[Model sharedModel].managedObjectContext];
             if(genericTemplates)
                 chosenTemplate=genericTemplates[arc4random_uniform((short)genericTemplates.count)];
-            else
-                NSLog(@"No generic templates found");
+           // else
+             //   NSLog(@"No generic templates found");
         }
         
         if(chosenTemplate)

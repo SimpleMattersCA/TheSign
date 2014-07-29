@@ -54,8 +54,8 @@
         NSError *error;
         if(!error)
             _parseObject=[PFQuery getUserObjectWithId:self.pObjectID error:&error];
-        else
-            NSLog(@"%@",[error localizedDescription]);
+       // else
+        //    NSLog(@"%@",[error localizedDescription]);
     }
     return _parseObject;
 }
@@ -80,7 +80,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+       // NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
     else
@@ -150,13 +150,13 @@
 {
     if(!self.parseObject)
     {
-        NSLog(@"%@: Couldn't fetch the parse object with id: %@",[User entityName],self.pObjectID);
+      //  NSLog(@"%@: Couldn't fetch the parse object with id: %@",[User entityName],self.pObjectID);
         return NO;
     }
     
     if([User checkIfParseObjectRight:self.parseObject]==NO)
     {
-        NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
+       // NSLog(@"The object %@ is missing mandatory fields",self.parseObject.objectId);
         return NO;
     }
     
@@ -176,13 +176,13 @@
                 self.pic=pulledImage;
             else
             {
-                NSLog(@"Profile pic is missing");
+            //    NSLog(@"Profile pic is missing");
                 complete=NO;
             }
         }
         else
         {
-            NSLog(@"%@",[error localizedDescription]);
+         //   NSLog(@"%@",[error localizedDescription]);
             complete=NO;
         }
     }
@@ -197,7 +197,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+       // NSLog(@"%@",[error localizedDescription]);
         return 0;
     }
     else
@@ -217,7 +217,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+       // NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
     
@@ -225,7 +225,7 @@
         return result.firstObject;
     else
     {
-        NSLog(@"No current user or more than one current user specified");
+       // NSLog(@"No current user or more than one current user specified");
         return nil;
     }
     
@@ -279,7 +279,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+        //NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
     

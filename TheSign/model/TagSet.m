@@ -41,8 +41,8 @@
         NSError *error;
         if(!error)
             _parseObject=[PFQuery getObjectOfClass:[TagSet parseEntityName] objectId:self.pObjectID error:&error];
-        else
-            NSLog(@"%@",[error localizedDescription]);
+        //else
+        //    NSLog(@"%@",[error localizedDescription]);
     }
     return _parseObject;
 }
@@ -67,7 +67,7 @@
     
     if(error)
     {
-        NSLog(@"%@",[error localizedDescription]);
+     //   NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
     else

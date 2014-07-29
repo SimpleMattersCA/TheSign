@@ -88,10 +88,10 @@
 
 -(BOOL)isBeingUpdated
 {
-    if(!self.isUpdating)
-         NSLog(@"No value");
-    else
-        NSLog(@"IS updated: %d",self.isUpdating.boolValue);
+   // if(!self.isUpdating)
+    //     NSLog(@"No value");
+    //else
+    //    NSLog(@"IS updated: %d",self.isUpdating.boolValue);
     
     if(!self.isUpdating)
         return NO;
@@ -155,7 +155,7 @@
     if(components.hour>22)
         [self.networkTimer setFireDate:[[NSDate date] dateByAddingTimeInterval:60*60*8]];
     
-   // [Statistics sendToCloudForContext:self.managedObjectContextBackground];
+//    [Statistics sendToCloudForContext:self.managedObjectContextBackground];
     [self updateDBinBackground:NO];
 }
 
@@ -235,7 +235,7 @@
     }
     else
     {
-        NSLog(@"Error in CheckModel: %@ %@", error, [error userInfo]);
+     //   NSLog(@"Error in CheckModel: %@ %@", error, [error userInfo]);
     }
     
     
@@ -346,7 +346,7 @@
     }
     else
     {
-        NSLog(@"Pulling from cloud error: %@ %@", error, [error userInfo]);
+    //    NSLog(@"Pulling from cloud error: %@ %@", error, [error userInfo]);
         completeFull=NO;
     }
     
@@ -705,7 +705,7 @@
          Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
          
          */
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+      //  NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 
         //abort();
     }

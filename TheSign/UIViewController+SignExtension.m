@@ -78,7 +78,7 @@
     banner.deal=offer;
     banner.stat=stat;
     banner.blurredBackground=[self getBackForBanner];
-    NSLog(@"About to show up!");
+    //NSLog(@"About to show up!");
     
     [self.view.window addSubview:banner.view];
 

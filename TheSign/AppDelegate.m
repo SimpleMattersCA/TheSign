@@ -86,7 +86,7 @@ NSNumber *detectedBeaconMajor;
     else
     {
         [self startLocationMonitoring];
-        [Model sharedModel];
+        [[Model sharedModel] updateDBinBackground:YES];
     }
     
  //   NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -113,22 +113,22 @@ Preparing and starting geofence and beacon monitoring
     {
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
+        [self.locationManager pausesLocationUpdatesAutomatically];
+
         /*//ios8 only
         if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)])
         {
             [self.locationManager requestAlwaysAuthorization];
         }*/
         
-      //  self.locationManager.pausesLocationUpdatesAutomatically=YES;
         //********* Geofence monitoring *********//
-      //  [self.locationManager startMonitoringSignificantLocationChanges];
-        
+      //[self.locationManager startMonitoringSignificantLocationChanges];
         //Setting up the timer that will check the closest location and if it's nearby it will monitor the region and fire the welcome message when the device is in it
-        //The timer runs
-        self.locationTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(updateGPS) userInfo:nil repeats:YES];
-        [self.locationTimer setTolerance:600];
-        [self.locationTimer fire];
-        
+        self.locationTimer=[NSTimer timerWithTimeInterval:3600 target:self selector:@selector(updateGPS)  userInfo:nil repeats:NO];
+      
+        [self.locationTimer setTolerance:300];
+       // [self.locationTimer fire];
+      //  [self updateGPS];
         
         
         
@@ -136,19 +136,18 @@ Preparing and starting geofence and beacon monitoring
          //********* Beacon monitoring *********//
         
         //Beacon UUID, the identifier common for all the beacons
-        NSUUID *proximityUUID=  [[NSUUID alloc] initWithUUIDString:[Model sharedModel].beaconUUID
-];
+        NSUUID *proximityUUID=  [[NSUUID alloc] initWithUUIDString:[Model sharedModel].beaconUUID];
         self.beaconRegion = [[CLBeaconRegion alloc]
                                         initWithProximityUUID:proximityUUID
                                         identifier:@"SignBeacon"];
         
         //show notificaiton only when screen is on
-   //     self.beaconRegion.notifyEntryStateOnDisplay=YES;
-   //     self.beaconRegion.notifyOnEntry=NO;
+        //self.beaconRegion.notifyEntryStateOnDisplay=YES;
+        //self.beaconRegion.notifyOnEntry=NO;
         self.beaconRegion.notifyOnEntry=YES;
         self.beaconRegion.notifyOnExit=YES;
         
-        // Register the beacon region with the location manager.
+        //Register the beacon region with the location manager.
         [self.locationManager startMonitoringForRegion:self.beaconRegion];
         [self.locationManager requestStateForRegion:self.beaconRegion];
         
@@ -163,13 +162,29 @@ Preparing and starting geofence and beacon monitoring
 -(void)updateGPSRegionForLocation:(CLLocation*)currentLocation
 {
     [self.locationManager stopUpdatingLocation];
+    [self.locationManager stopMonitoringForRegion:self.gpsRegion];
+
     Location* closestBusiness=[[Model sharedModel] getClosestBusinessToLocation:currentLocation];
-    [self.locationManager stopMonitoringForRegion:self.gpsRegion];
-    self.gpsRegion=[[CLCircularRegion alloc] initWithCenter:[closestBusiness getLocationObject].coordinate radius:10 identifier:closestBusiness.linkedBusiness.uid.stringValue];
-    //if distance is less than something, start monitoring for a region
-    [self.locationManager startMonitoringForRegion:self.gpsRegion];
-    //else
-    [self.locationManager stopMonitoringForRegion:self.gpsRegion];
+    CLLocation* closestBusinessLocation=[[CLLocation alloc] initWithLatitude:closestBusiness.latitude.doubleValue longitude:closestBusiness.longitude.doubleValue];
+    
+    double distance=[currentLocation distanceFromLocation:closestBusinessLocation];
+    
+    
+    if(distance<50)
+    {
+        self.gpsRegion=[[CLCircularRegion alloc] initWithCenter:[closestBusiness getLocationObject].coordinate radius:10 identifier:closestBusiness.linkedBusiness.uid.stringValue];
+        [self.locationManager startMonitoringForRegion:self.gpsRegion];
+        
+    } else if(distance<100)
+            [self.locationTimer setFireDate:[NSDate dateWithTimeInterval:180 sinceDate:[NSDate date]]];
+        else if(distance<250)
+            [self.locationTimer setFireDate:[NSDate dateWithTimeInterval:600 sinceDate:[NSDate date]]];
+        else if(distance<500)
+            [self.locationTimer setFireDate:[NSDate dateWithTimeInterval:1800 sinceDate:[NSDate date]]];
+        else
+            [self.locationTimer setFireDate:[NSDate dateWithTimeInterval:3600 sinceDate:[NSDate date]]];
+
+
 }
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
@@ -203,6 +218,7 @@ Preparing and starting geofence and beacon monitoring
 
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
     Statistics* stat=[[Model sharedModel] getStatisticsByURL:[NSURL URLWithString:[notification.userInfo objectForKey:@"StatisticsObjectID"]]];
     Featured* offer;
     
@@ -260,7 +276,9 @@ Preparing and starting geofence and beacon monitoring
 {
     if([region isEqual:self.beaconRegion])
         [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
-    
+    else
+        [self.locationManager stopMonitoringForRegion:self.gpsRegion];
+
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
 
 }
@@ -390,7 +408,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    NSLog(@"will terminate");
+   // NSLog(@"will terminate");
     [[Model sharedModel] saveEverything];
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }

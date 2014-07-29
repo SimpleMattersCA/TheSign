@@ -39,8 +39,8 @@
     Model* model=[Model sharedModel];
     
     double newLike=[model getLikeValueForAction:LK_Like];
-    double newDisLike=[model getLikeValueForAction:LK_Dislike];
-    double newNonLike=[model getLikeValueForAction:LK_None];
+   // double newDisLike=[model getLikeValueForAction:LK_Dislike];
+  //  double newNonLike=[model getLikeValueForAction:LK_None];
     
     double currentVal;
     
