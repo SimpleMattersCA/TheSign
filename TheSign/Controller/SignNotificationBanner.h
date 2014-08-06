@@ -10,6 +10,9 @@
 
 @class Featured,Statistics;
 
+/**
+ Custom ViewController for the notification banner
+ */
 @interface SignNotificationBanner : UIViewController 
 
 @property (nonatomic, weak) UIViewController* controller;

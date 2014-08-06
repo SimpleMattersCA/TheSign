@@ -36,7 +36,6 @@
 		559F76E41969295C00905390 /* Template.m in Sources */ = {isa = PBXBuildFile; fileRef = 559F76E31969295C00905390 /* Template.m */; };
 		55AE6C9C196C84B100B7B655 /* DataConsistency.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AE6C9B196C84B100B7B655 /* DataConsistency.m */; };
 		55AE6C9E196C84C800B7B655 /* WelcomeTextGeneration.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AE6C9D196C84C800B7B655 /* WelcomeTextGeneration.m */; };
-		55B4AFFA193A484400C5A71B /* CustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B4AFF9193A484400C5A71B /* CustomScrollView.m */; };
 		55B746EB18DCAECA00F61354 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 55B746EA18DCAECA00F61354 /* Model.m */; };
 		55C75A64194E80440051A0EF /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55C75A63194E80440051A0EF /* FacebookSDK.framework */; };
 		55C75A66194E866B0051A0EF /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55C75A65194E866B0051A0EF /* Social.framework */; };
@@ -148,7 +147,6 @@
 		5557BB141931BB1D00B256FF /* TableTimestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TableTimestamp.h; path = model/TableTimestamp.h; sourceTree = "<group>"; };
 		5557BB151931BB1D00B256FF /* TableTimestamp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableTimestamp.m; path = model/TableTimestamp.m; sourceTree = "<group>"; };
 		5557BB1A1931C28700B256FF /* SignEntityProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SignEntityProtocol.h; sourceTree = "<group>"; };
-		55790B4619838F5500B08CFD /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		558FEC0F1980E01000320711 /* UIViewController+SignExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SignExtension.h"; sourceTree = "<group>"; };
 		558FEC101980E01000320711 /* UIViewController+SignExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SignExtension.m"; sourceTree = "<group>"; };
 		558FEC131980E1D100320711 /* NSManagedObject+ParseSync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+ParseSync.h"; sourceTree = "<group>"; };
@@ -164,8 +162,6 @@
 		559F76E31969295C00905390 /* Template.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Template.m; path = model/Template.m; sourceTree = "<group>"; };
 		55AE6C9B196C84B100B7B655 /* DataConsistency.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataConsistency.m; sourceTree = "<group>"; };
 		55AE6C9D196C84C800B7B655 /* WelcomeTextGeneration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeTextGeneration.m; sourceTree = "<group>"; };
-		55B4AFF8193A484400C5A71B /* CustomScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomScrollView.h; sourceTree = "<group>"; };
-		55B4AFF9193A484400C5A71B /* CustomScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomScrollView.m; sourceTree = "<group>"; };
 		55B746E918DCAECA00F61354 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		55B746EA18DCAECA00F61354 /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
 		55C75A63194E80440051A0EF /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = TheSign/Frameworks/FacebookSDK.framework; sourceTree = "<group>"; };
@@ -442,15 +438,12 @@
 		55EE37B818B7057C002A121C /* TheSign */ = {
 			isa = PBXGroup;
 			children = (
-				55790B4619838F5500B08CFD /* Common.h */,
 				55EE37C118B7057C002A121C /* AppDelegate.h */,
 				55EE37C218B7057C002A121C /* AppDelegate.m */,
 				55B746E918DCAECA00F61354 /* Model.h */,
 				55B746EA18DCAECA00F61354 /* Model.m */,
 				55E15FE1191A062B00A8B826 /* InsightEngine.h */,
 				55E15FE2191A062B00A8B826 /* InsightEngine.m */,
-				55B4AFF8193A484400C5A71B /* CustomScrollView.h */,
-				55B4AFF9193A484400C5A71B /* CustomScrollView.m */,
 				558FEC121980E0B500320711 /* Categories */,
 				553E4F4418C714D1004F8312 /* Controller */,
 				553E4F4518C71525004F8312 /* Model */,
@@ -613,7 +606,6 @@
 				550C810B195371B700716D25 /* TagSet.m in Sources */,
 				55EE37C318B7057C002A121C /* AppDelegate.m in Sources */,
 				55101D3C18D81ADE0074B4D2 /* SignModel.xcdatamodeld in Sources */,
-				55B4AFFA193A484400C5A71B /* CustomScrollView.m in Sources */,
 				5501A0FA19765C610051F79D /* BusinessListController.m in Sources */,
 				55C89C37195BCED000CA16D9 /* Settings.m in Sources */,
 				5557BB161931BB1D00B256FF /* TableTimestamp.m in Sources */,

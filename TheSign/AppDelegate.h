@@ -14,12 +14,16 @@
 
 
 @property (strong, nonatomic) UIWindow *window;
+
+//the object of the custom notificaton banner, it is independed from
 @property (strong, nonatomic) SignNotificationBanner* banner;
 
 
-//TODO: remove once testing is done
--(void) welcomeCustomerGPSforRegion:(CLRegion*)region;
 
+
+
+//********* For testign purpoces *********//
+-(void) welcomeCustomerGPSforRegion:(CLRegion*)region;
 -(void) startLocationMonitoring;
 
 @end

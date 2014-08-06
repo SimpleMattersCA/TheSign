@@ -13,7 +13,6 @@
 #import "Business.h"
 #import "Statistics.h"
 #import "Featured.h"
-#import "FeedController.h"
 #import "TutorialController.h"
 #import "SignNotificationBanner.h"
 #import "UIViewController+SignExtension.h"
@@ -47,14 +46,13 @@ NSNumber *detectedBeaconMajor;
     if([application respondsToSelector:@selector(registerUserNotificationSettings)])
         [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge categories:nil]];
 */
+    
+    //Parse requirements
     [Parse setApplicationId:@"sLTJk7olnOIsBgPq9OhQDx1uPIkFefZeRUt46SWS"
                   clientKey:@"7y0Fw4xQ2GGxCNQ93LO4yjD4cPzlD6Qfi75bYlSa"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    //Push Notifications
-    //[application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
-    // UIRemoteNotificationTypeAlert];
-    
+ 
 
     //Twitter support
     [PFTwitterUtils initializeWithConsumerKey:@"1sFhbRIBGn3KOvKmn1R4V7eod"
@@ -71,9 +69,8 @@ NSNumber *detectedBeaconMajor;
     
 
 
+    //First Run Experience
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-  //  [userDefaults setBool:NO forKey:@"DidFirstRun"];
-
     if (![userDefaults boolForKey:@"DidFirstRun"])
     {
         [userDefaults setBool:YES forKey:@"DidFirstRun"];
@@ -89,24 +86,23 @@ NSNumber *detectedBeaconMajor;
         [[Model sharedModel] updateDBinBackground:YES];
     }
     
- //   NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     
-  //  if(remoteNotification)
-  //  {
-        //check model
-   // }
+    //Push Notifications
+    //[application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
+    // UIRemoteNotificationTypeAlert];
+    //NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    //if(remoteNotification)
+    //{
+    //}
 
     
-    
-    
-   
     return YES;
 }
 
 
 /**
-Preparing and starting geofence and beacon monitoring
- */
+ Preparing and starting geofence and beacon monitoring
+*/
 -(void) startLocationMonitoring
 {
     if(!_locationManager)
@@ -122,13 +118,13 @@ Preparing and starting geofence and beacon monitoring
         }*/
         
         //********* Geofence monitoring *********//
-      //[self.locationManager startMonitoringSignificantLocationChanges];
+        //[self.locationManager startMonitoringSignificantLocationChanges];
         //Setting up the timer that will check the closest location and if it's nearby it will monitor the region and fire the welcome message when the device is in it
         self.locationTimer=[NSTimer timerWithTimeInterval:3600 target:self selector:@selector(updateGPS)  userInfo:nil repeats:NO];
       
         [self.locationTimer setTolerance:300];
-       // [self.locationTimer fire];
-      //  [self updateGPS];
+       //[self.locationTimer fire];
+        //[self updateGPS];
         
         
         
@@ -154,22 +150,29 @@ Preparing and starting geofence and beacon monitoring
     }
 }
 
+/**
+ Starting fetching new GPS locations from location manager
+*/
 -(void)updateGPS
 {
     [self.locationManager startUpdatingLocation];
 }
 
+
+/**
+ Updating the currently monitorred gps region, calculating the right time interval for checking updating it
+*/
 -(void)updateGPSRegionForLocation:(CLLocation*)currentLocation
 {
     [self.locationManager stopUpdatingLocation];
     [self.locationManager stopMonitoringForRegion:self.gpsRegion];
 
+    //Updating the closest business location to monitor
     Location* closestBusiness=[[Model sharedModel] getClosestBusinessToLocation:currentLocation];
     CLLocation* closestBusinessLocation=[[CLLocation alloc] initWithLatitude:closestBusiness.latitude.doubleValue longitude:closestBusiness.longitude.doubleValue];
-    
     double distance=[currentLocation distanceFromLocation:closestBusinessLocation];
     
-    
+    //Based on the distance we calculate the time of the next location check
     if(distance<50)
     {
         self.gpsRegion=[[CLCircularRegion alloc] initWithCenter:[closestBusiness getLocationObject].coordinate radius:10 identifier:closestBusiness.linkedBusiness.uid.stringValue];
@@ -196,6 +199,7 @@ Preparing and starting geofence and beacon monitoring
 
 - (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
 {
+    //Whenever we are in the Beacon region we start ranging beacons to get ther IDs
     switch (state) {
         case CLRegionStateInside:
             [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
@@ -218,27 +222,30 @@ Preparing and starting geofence and beacon monitoring
 
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    //Clearing up the notification badge (and also apparently it affects on the number of notifications in notification center
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+    
+    //Getting Statistics object and the Featured object that were attached to the welcome message
     Statistics* stat=[[Model sharedModel] getStatisticsByURL:[NSURL URLWithString:[notification.userInfo objectForKey:@"StatisticsObjectID"]]];
     Featured* offer;
-    
     NSString* offerObjectID=(NSString*)[notification.userInfo objectForKey:@"OfferID"];
     if(offerObjectID)
         offer=[Featured getByID:offerObjectID Context:[Model sharedModel].managedObjectContext];
+    
     if(stat && offer)
     {
         UINavigationController *navigation=(UINavigationController*)self.window.rootViewController;
         UIViewController* currentController=navigation.topViewController;
         
+        
+        //when app was in background we will show the deal above whatever view was opened
         if (application.applicationState == UIApplicationStateInactive )
         {
-            //present deal view
-            //FeedController* feed=(FeedController*)(navigation.topViewController);
-            //[feed showDealAfterLoad:offer Statistics:stat];
             [currentController showModalDeal:offer Statistics:stat];
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
         }
         
+        //if application is in foreground we show our custom notification banner
         if(application.applicationState == UIApplicationStateActive )
         {
             if(self.banner)
@@ -247,24 +254,25 @@ Preparing and starting geofence and beacon monitoring
                 self.banner=nil;
             }
             self.banner=[SignNotificationBanner new];
-           
-            
             [currentController addBanner:self.banner WithText:notification.alertBody ForDeal:offer Statistics:stat];
             
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeBannerNotification) name:@"removeBannerNotification" object:nil];
         }
     }
 }
+/**
+  Notification that removes the custom notification banner and frees the memory
+*/
 -(void)removeBannerNotification
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"removeBannerNotification" object:nil];
-    
     self.banner=nil;
 }
 
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
+    //Depending to which region - iBeacon or GPS - we entered we process accordingly
     if([region isEqual:self.beaconRegion])
         [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
     else
@@ -274,6 +282,7 @@ Preparing and starting geofence and beacon monitoring
 
 -(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
+    //Depending from which region - iBeacon or GPS - we left we process accordingly
     if([region isEqual:self.beaconRegion])
         [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
     else
@@ -284,15 +293,20 @@ Preparing and starting geofence and beacon monitoring
 }
 
 
+/**
+ Processing generation of the welcoming message for GPS location
+*/
 -(void) welcomeCustomerGPSforRegion:(CLRegion*)region
 {
     NSNumber* major=@([region.identifier intValue]);
     Statistics* stat=[[Model sharedModel] recordStatisticsFromGPS:major];
     Featured* chosenOffer;
     UILocalNotification *notification = [[UILocalNotification alloc] init];
+    
+    //Generating the welcome notificaiton text and set it to local notification body. Passing the address of the variable storing chosen Deal
     notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForGPSdetectedMajor:major ChosenOffer:&chosenOffer];
 
-    
+    //With local notification we pass chosen offer's pObjectID, statistics object's objectID
     NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation.absoluteString,@"StatisticsObjectID", nil];
     
     
@@ -308,14 +322,15 @@ Preparing and starting geofence and beacon monitoring
 }
 
 
-// Delegate method from the CLLocationManagerDelegate protocol.
+/**
+ Processing generation of the welcoming message for iBeacon location
+*/
 - (void)locationManager:(CLLocationManager *)manager
         didRangeBeacons:(NSArray *)beacons 
                inRegion:(CLBeaconRegion *)region {
-    
     CLBeacon *closest=(CLBeacon*)[beacons firstObject];
-   
-   
+    
+    //in otder to not spam user with notifications we store the closest of the detected ibeacons major and minor
     if (beacons.count > 0 && (![detectedBeaconMajor isEqual:closest.major] && ![detectedBeaconMinor isEqual:closest.minor]))
     {
         detectedBeaconMinor =closest.minor;
@@ -324,18 +339,18 @@ Preparing and starting geofence and beacon monitoring
         //CLearing notification center and lock screen notificaitons. Yeah, it's that weird
         //[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
         //[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
-        
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
-
         
+        //Creating a statistics object
         Statistics* stat=[[Model sharedModel] recordStatisticsFromBeaconMajor:detectedBeaconMajor Minor:detectedBeaconMinor];
+        //The variable will be populated as part of the welcome text generation process
         Featured* chosenOffer;
+        UILocalNotification *notification = [UILocalNotification new];
         
-        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        //Generating the welcome notificaiton text and set it to local notification body. Passing the address of the variable storing chosen Deal
         notification.alertBody = [[InsightEngine sharedInsight] generateWelcomeTextForBeaconWithMajor:detectedBeaconMajor andMinor:detectedBeaconMinor ChosenOffer:&chosenOffer];
         
-        
-        
+        //With local notification we pass chosen offer's pObjectID, statistics object's objectID
         NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:chosenOffer.pObjectID,@"OfferID",stat.objectID.URIRepresentation.absoluteString,@"StatisticsObjectID", nil];
 
     

@@ -10,9 +10,8 @@
 #import "Featured.h"
 #import "Statistics.h"
 #import "Model.h"
-#import "Common.h"
 
-@interface DealViewController ()  <UIDynamicAnimatorDelegate>
+@interface DealViewController ()  <UIDynamicAnimatorDelegate,UIGestureRecognizerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *labelTitle;
 @property (weak, nonatomic) IBOutlet UILabel *labelDescription;
 @property (strong, nonatomic) Featured* deal;
@@ -49,31 +48,29 @@ BOOL clickedDislike=NO;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //recreating actualDealView in code to avoid issues with repositioning of the view with enabked Autolayout
-    
-    
+    //Setting values from Deal
     self.labelTitle.text=self.deal.fullName;
     self.labelDescription.text=self.deal.details;
+    
     self.actualDealView.layer.borderColor=[UIColor grayColor].CGColor;
     self.actualDealView.layer.borderWidth=1;
+    self.actualDealView.layer.cornerRadius = 8;
     
-    self.actualDealView.layer.cornerRadius = 8; // if you like rounded corners
-   // self.actualDealView.layer.shadowOffset = CGSizeMake(-5, 10);
-  //  self.actualDealView.layer.shadowRadius = 4;
-  //  self.actualDealView.layer.shadowOpacity = 0.2;
     
+    //Setting like/dislike buttons
     self.likeButton.layer.cornerRadius=8;
     self.dislikeButton.layer.cornerRadius=8;
-    
-    UIImageView* imageView = [[UIImageView alloc] initWithImage:self.backgroundImage];
-    [self.view addSubview:imageView ];
-    [self.view sendSubviewToBack:imageView ];
-    self.background=imageView;
     //There is a case of mismatching color palettes between what I set in storyboard and what I set programmatically, until I find the reason I'm gonna set it in code
     self.likeButton.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
     self.dislikeButton.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
     
+    //Setting background image
+    UIImageView* imageView = [[UIImageView alloc] initWithImage:self.backgroundImage];
+    [self.view addSubview:imageView ];
+    [self.view sendSubviewToBack:imageView];
+    self.background=imageView;
     
+    //Adding animator that will respond to snap and attachment behaviour
     self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
     self.animator.delegate=self;
     
@@ -131,8 +128,10 @@ BOOL clickedDislike=NO;
         if([self.presentingViewController respondsToSelector:@selector(dismissViewControllerAnimated:completion:)]) {
             [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
                 if(self.actioned.boolValue==NO)
+                {
                     self.deal.opened=@(YES);
-                [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_None]];
+                    [self.deal processLike:[Model sharedModel].lk_none.doubleValue];
+                }
                 [[Model sharedModel] saveEverything];
                 if(self.isRemoving && self.isRemoving.boolValue==YES)
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"removeBannerNotification"
@@ -222,7 +221,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:
     if(self.dislikeButton.enabled)
     {
         self.actioned=@(YES);
-        [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_Like]];
+        [self.deal processLike:[Model sharedModel].lk_like.doubleValue];
         self.stat.liked=@(LK_Like);
         self.dislikeButton.enabled=NO;
         self.dislikeButton.backgroundColor=[UIColor grayColor];
@@ -230,7 +229,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:
     //if clicked before
     else
     {
-        [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_UnLike]];
+        [self.deal processLike:[Model sharedModel].lk_unlike.doubleValue];
         self.stat.liked=@(0);
         self.dislikeButton.enabled=YES;
         self.dislikeButton.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
@@ -243,7 +242,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:
     if(self.likeButton.enabled)
     {
         self.actioned=@(YES);
-        [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_Dislike]];
+        [self.deal processLike:[Model sharedModel].lk_dislike.doubleValue];
         self.stat.liked=@(LK_Dislike);
         self.likeButton.enabled=NO;
         self.likeButton.backgroundColor=[UIColor grayColor];
@@ -251,7 +250,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:
     //if clickedbefore
     else
     {
-        [self.deal processLike:[[Model sharedModel] getLikeValueForAction:LK_UnDislike]];
+        [self.deal processLike:[Model sharedModel].lk_undislike.doubleValue];
         self.stat.liked=@(0);
         self.likeButton.enabled=YES;
         self.likeButton.backgroundColor=[UIColor colorWithRed:236.0/255.0 green:115.0/255.0 blue:62.0/255.0 alpha:1];
@@ -293,22 +292,5 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:
     [super viewDidDisappear:animated];
 }
 
-
-- (void)dynamicAnimatorWillResume:(UIDynamicAnimator*)animator
-{
-}
-- (void)dynamicAnimatorDidPause:(UIDynamicAnimator*)animator
-{
-  }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

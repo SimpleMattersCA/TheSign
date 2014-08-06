@@ -26,8 +26,6 @@
     return self;
 }
 
-
-
 +(InsightEngine*)sharedInsight
 {
     static InsightEngine *sharedInsightObj = nil;    // static instance variable
@@ -40,13 +38,19 @@
 
 -(NSString*)generateWelcomeTextForGPSdetectedMajor:(NSNumber*)major ChosenOffer:(Featured**)chosenOffer;
 {
+    //Getting Location object by its id number associated with that gps region which is equal to the iBeacon major number for the same business location
     Location *bizLocation=[Location getLocationByMajor:major Context:[Model sharedModel].managedObjectContext];
-    return [self genereteWelcomeMessageForLocation:bizLocation ChosenOffer:chosenOffer];
+
+    if (bizLocation)
+        return [self genereteWelcomeMessageForLocation:bizLocation ChosenOffer:chosenOffer];
+    else
+        return nil;
 }
 
 
 -(NSString*)generateWelcomeTextForBeaconWithMajor: (NSNumber*)major andMinor:(NSNumber*)minor ChosenOffer:(Featured**)chosenOffer;
 {
+    //Checking if there is an offer tied to the iBeacon meaning that we shouldn't mess with it and just show it.
     Featured* tiedOffer=[Featured getOfferByMajor:major andMinor:minor Context:[Model sharedModel].managedObjectContext];
     
     if(tiedOffer)
@@ -57,16 +61,27 @@
     else
     {
         Location *bizLocation=[Location getLocationByMajor:major Context:[Model sharedModel].managedObjectContext];
-        return [self genereteWelcomeMessageForLocation:bizLocation ChosenOffer:chosenOffer];
+        if (bizLocation)
+            return [self genereteWelcomeMessageForLocation:bizLocation ChosenOffer:chosenOffer];
+        else
+            return nil;
     }
 }
 
+
+/**
+ Generating the welcoming message and storing the address of the chosen Offer in chossenOffer parameter
+ */
 -(NSString*)genereteWelcomeMessageForLocation:(Location*)location ChosenOffer:(Featured**)chosenOffer
 {
+    //The business that owns this location
     Business* business=location.linkedBusiness;
+    //The list of active offers that we can choose from to show
     NSSet* activeOffers=[business getActiveOffers];
     
+    //Here we'll store the context tag for this particular moment of time, if it exist
     Tag* chosenContextTag;
+    //Here we'll store the chosen template for this situation
     Template* chosenTemplate;
 
     //check if we do have a business object that has active offers
@@ -76,10 +91,9 @@
         //get current contexts (interesting time, day, weather etc.)
         NSArray* activeContextTags=[Context getCurrentContextsForBusiness:business AtLocation:location Context:[Model sharedModel].managedObjectContext];
         
-        
+        //If there is an interesting context for this moment
         if(activeContextTags && activeContextTags.count!=0)
         {
-            
             NSMutableArray* contextTagsWithOffers=[NSMutableArray arrayWithCapacity:activeContextTags.count];
             NSMutableArray* offerArrays=[NSMutableArray arrayWithCapacity:activeContextTags.count];
 
@@ -149,6 +163,9 @@
 }
 
 
+/**
+ Choosing the offer from the set using their relevancy scores with a bit of randomization
+ */
 -(Featured*)chooseOfferMostlyByRelevancy:(NSSet*)offers
 {
     if(offers.count==0 || offers.count==1)
@@ -207,6 +224,9 @@
 }
 
 
+/**
+ Returns the set of Offers that correspond to the particular Context Tag
+ */
 -(NSSet*)findOffersFromSet:(NSSet*)offerList ForContextTag:(Tag*)contextTag
 {
     NSMutableSet* offersForContext=[NSMutableSet setWithCapacity:offerList.count];
@@ -219,6 +239,10 @@
     return offersForContext;
 }
 
+
+/**
+ Choosing the one context out of the array of the current contexts. It uses probabilities for each context and does the random choice according to it.
+ */
 -(Tag*)chooseContextFromArray:(NSArray*)contexts
 {
     double sum=0;

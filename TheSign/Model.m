@@ -467,7 +467,7 @@
         if(param)
             _prob_pref=param.paramFloat;
         else
-            _prob_pref=@(0.5);
+            _prob_pref=@(0.3);
     }
     return _prob_pref;
 }
@@ -560,6 +560,24 @@
             _lk_dislike=@(-1);
     }
     return _lk_dislike;
+}
+
+-(NSNumber*) lk_unlike
+{
+    if(!_lk_unlike)
+    {
+        _lk_unlike=[NSNumber numberWithDouble:(-1)*self.lk_like.doubleValue];
+    }
+    return _lk_unlike;
+}
+
+-(NSNumber*) lk_undislike
+{
+    if(!_lk_undislike)
+    {
+        _lk_undislike=[NSNumber numberWithDouble:(-1)*self.lk_dislike.doubleValue];
+    }
+    return _lk_undislike;
 }
 
 -(NSNumber*) offersFeedLimit
