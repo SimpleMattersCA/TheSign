@@ -211,7 +211,7 @@
 {
 
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[User entityName]];
-    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAIN, YES]];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@==%d", CD_MAIN,YES]];
     NSError *error;
     NSArray *result = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
@@ -275,7 +275,7 @@
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[User entityName]];
     NSError *error;
-    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@=%d", CD_MAIN, NO]];    NSArray *users = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
+    request.predicate=[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@==%d", CD_MAIN,NO]];    NSArray *users = [[Model sharedModel].managedObjectContext executeFetchRequest:request error:&error];
     
     if(error)
     {

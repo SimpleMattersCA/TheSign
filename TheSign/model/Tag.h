@@ -34,9 +34,20 @@
  The minimal likeness to be used = 0.1
  */
 -(void)processLike:(double)effect AlreadyProcessed:(NSMutableSet**)processedTags;
+
+/**
+ Returns accumulated relevancy score on the current depth level of the Tag's graph
+ */
 -(double) calculateRelevancyOnLevel:(NSInteger)depth AlreadyProcessed:(NSMutableSet**)processedTags;
+
+/**
+ Changing the likeness value for this tag
+ */
 -(void)changeLikenessByValue:(NSNumber*)value;
 
+/**
+ Getting all the Interest Tags
+ */
 +(NSArray*)getInterestsForContext:(NSManagedObjectContext*)context;
 
 @end

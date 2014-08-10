@@ -68,9 +68,7 @@
     else
     {
       //  self.lbSpecialTag.text=@"";
-        
         self.vwSpecialTag.backgroundColor=[UIColor clearColor];
-;
     }
     
     self.imgCategory.image=[deal getCategoryIcon];
@@ -86,13 +84,6 @@
 {
     [self.dealTile addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:controller action:@selector(actionTapDeal:)]];
     [self.businessTile addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:controller action:@selector(actionTapBusiness:)]];
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 @end

@@ -30,20 +30,45 @@
 @property (nonatomic, retain) BusinessCategory *linkedCategory;
 
 
-
+/**
+ Get the Location object that corresponds to this Business that is closest to a specific geographical location
+ */
 +(Location*)getClosestBusinessToLocation:(CLLocation*)location Context:(NSManagedObjectContext*)context;
 
+/**
+ Get the list of active offers
+ */
 -(NSSet*) getActiveOffers;
 
+
+/**
+ Get the Business object by UID(iBeacon's major) identifier
+ */
 +(Business*) getBusinessByUID:(NSNumber*)identifier Context:(NSManagedObjectContext*)context;
 
+/**
+ Get all the businesses
+ */
 +(NSArray*) getBusinessesForContext:(NSManagedObjectContext*)context;
 
+/**
+ Add business with a specific UID (iBeacon's major) to the list of discovered
+ */
 +(void)discoverBusinessByID:(NSNumber*)businessUID Context:(NSManagedObjectContext*)context;
+
+/**
+ Get only businesses that were discovered
+ */
 +(NSArray*)getDiscoveredBusinessesForContext:(NSManagedObjectContext*)context;
 
+/**
+ Get the description of the location for a specific deal (certain deals can be location specific)
+ */
 -(NSString*)getLocationAddressForDeal:(Featured*)deal;
 
+/**
+ Get the icon of the category that this business corresponds
+ */
 -(UIImage*)getCategoryIcon;
 
 @end

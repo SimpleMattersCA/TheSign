@@ -22,7 +22,9 @@
 
 
 
-
+/**
+ Getting the value of the parameter from core data by name. If it's not there, returns nil
+ */
 +(Settings*)getValueForParamName:(NSString*)paramName Context:(NSManagedObjectContext*)context;
 
 @end

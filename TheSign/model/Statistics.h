@@ -25,12 +25,29 @@
 @property (nonatomic, retain) Featured *linkedOffer;
 @property (nonatomic, retain) NSNumber * statType;
 
+/**
+ Tying a deal to statistics object
+ */
 -(void)setDeal:(Featured*)offer;
 
+/**
+ 
+ */
 +(void)sendToCloudForContext:(NSManagedObjectContext*)context;
 
+/**
+ Creating a statistics object for offer opened from inside the app
+ */
 +(Statistics*)recordStatisticsFromFeedForContext:(NSManagedObjectContext*)context;
+
+/**
+ Creating a statistics object for offer opened from iBeacon notification
+ */
 +(Statistics*)recordStatisticsFromBeaconMajor:(NSNumber*)major Minor:(NSNumber*)minor Context:(NSManagedObjectContext*)context;
+
+/**
+ Creating a statistics object for offer opened from GPS notificaiton
+ */
 +(Statistics*)recordStatisticsFromGPS:(NSNumber*)businessUID Context:(NSManagedObjectContext*)context;
 
 +(NSString*) entityName;

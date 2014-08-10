@@ -64,11 +64,6 @@
 }
 
 
--(void)viewWillAppear:(BOOL)animated{
- //   [self.tableView registerNib:[UINib nibWithNibName:@"BusinessCell" bundle:[NSBundle mainBundle]]
-   //      forCellReuseIdentifier:@"BusinessCell"];
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -91,6 +86,10 @@
     return [self.businessesInSections allKeysForObject:self.firstLetters[section]].count;
 }
 
+
+/**
+ The view of the section header - the first letter of businesses' names in the section
+ */
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger) section
 {
     

@@ -128,16 +128,9 @@
     {
         
         //checking database every hour with tolerance of 10 minutes
-
         self.networkTimer=[NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(requestCloudOnTimer) userInfo:nil repeats:YES];
         [self.networkTimer fire];
         [self.networkTimer setTolerance:600];
-        
-        //[self checkModel];
-        
-        //when you do too many changes to data model it might be neccessary to explisistly delete the current datastore in order to build a new one
-        //[self deleteModel];
-        //[self performSelectorInBackground:@selector(checkModel) withObject:nil];
         
     }
     return self;
@@ -155,7 +148,8 @@
     if(components.hour>22)
         [self.networkTimer setFireDate:[[NSDate date] dateByAddingTimeInterval:60*60*8]];
     
-//    [Statistics sendToCloudForContext:self.managedObjectContextBackground];
+    [Statistics sendToCloudForContext:self.managedObjectContextBackground];
+    //requestCloudOnTimer already calls this method in the background
     [self updateDBinBackground:NO];
 }
 
@@ -642,9 +636,10 @@
         return _managedObjectContext;
     }
    
+    
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
         if (coordinator != nil) {
-            _managedObjectContext = [[NSManagedObjectContext alloc] init];
+            _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
             [_managedObjectContext setPersistentStoreCoordinator:coordinator];
         }
    
@@ -662,7 +657,7 @@
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        _managedObjectContextBackground = [[NSManagedObjectContext alloc] init];
+        _managedObjectContextBackground = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
         [_managedObjectContextBackground setPersistentStoreCoordinator:coordinator];
     }
     
@@ -688,6 +683,13 @@
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
     if (_persistentStoreCoordinator != nil) {
+        return _persistentStoreCoordinator;
+    }
+    
+    if (![NSThread currentThread].isMainThread) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            (void)[self persistentStoreCoordinator];
+        });
         return _persistentStoreCoordinator;
     }
     

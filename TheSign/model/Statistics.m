@@ -107,7 +107,7 @@
 
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Statistics entityName]];
     //NSString *predicateBound = [NSString stringWithFormat: @"%@>'%@'", CD_DATE, monthAgo];
-    NSString *predicateSynced = [NSString stringWithFormat: @"%@==%d", CD_SYNCED, NO];
+    NSString *predicateSynced = [NSString stringWithFormat: @"%@==%d", CD_SYNCED,NO];
     request.predicate=[NSPredicate predicateWithFormat:predicateSynced];
 
   //  request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateBound,predicateSynced]];
@@ -127,7 +127,7 @@
             newStatistics[P_LIKED] = newStat.liked;
             newStatistics[P_MAJOR]=newStat.major;
             newStatistics[P_MINOR]=newStat.minor;
-            newStatistics[P_OPENED]=newStat.wasOpened;
+            newStatistics[P_OPENED]=@(newStat.wasOpened.boolValue);
             newStatistics[P_TYPE]=newStat.statType;
             if(newStat.linkedOffer)
             {
@@ -135,8 +135,12 @@
                 if(newStat.linkedOffer.linkedBusiness)
                     newStatistics[P_BUSINESS] = [PFObject objectWithoutDataWithClassName:[Featured parseEntityName] objectId:newStat.linkedOffer.linkedBusiness.pObjectID];
             }
+            PFUser* currentUser=[PFUser currentUser];
+            if(newStat.linkedUser && currentUser)
+            {
+                newStatistics[P_USER] = currentUser;
+            }
             
-            newStatistics[P_USER] = [PFObject objectWithoutDataWithClassName:[User parseEntityName] objectId:newStat.linkedUser.pObjectID];
             //saving data whenever user gets network connection
             [newStatistics saveEventually];
             newStat.synced=@(YES);

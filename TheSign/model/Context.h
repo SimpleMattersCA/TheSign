@@ -18,11 +18,15 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * probability;
 @property (nonatomic, retain) NSSet *linkedTags;
+
+/**
+ Return array of Context Tags that correspond to the specific Busines's Location
+ */
++(NSArray*)getCurrentContextsForBusiness:(Business*)business AtLocation:(Location*)location Context:(NSManagedObjectContext*)context;
+
 @end
 
 @interface Context (CoreDataGeneratedAccessors)
-
-+(NSArray*)getCurrentContextsForBusiness:(Business*)business AtLocation:(Location*)location Context:(NSManagedObjectContext*)context;
 
 - (void)addLinkedTagsObject:(Tag *)value;
 - (void)removeLinkedTagsObject:(Tag *)value;

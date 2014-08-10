@@ -134,6 +134,8 @@
         return result;
 }
 
+#pragma mark - Custom Methods
+
 
 +(Settings*)getValueForParamName:(NSString*)paramName Context:(NSManagedObjectContext*)context
 {

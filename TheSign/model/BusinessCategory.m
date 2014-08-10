@@ -29,6 +29,9 @@
 
 @synthesize parseObject=_parseObject;
 
++(NSString*) entityName {return @"BusinessCategory";}
++(NSString*) parseEntityName {return @"BusinessCategory";}
+
 -(PFObject*)parseObject
 {
     if(!_parseObject)
@@ -42,8 +45,14 @@
     return _parseObject;
 }
 
-+(NSString*) entityName {return @"BusinessCategory";}
-+(NSString*) parseEntityName {return @"BusinessCategory";}
++(Boolean)checkIfParseObjectRight:(PFObject*)object
+{
+    if(object[P_NAME] && (object[P_ICON] || object[P_IMAGE]))
+        return YES;
+    else
+        return NO;
+}
+
 
 
 +(BusinessCategory*) getByID:(NSString*)identifier Context:(NSManagedObjectContext *)context
@@ -185,7 +194,7 @@
         return result;
 }
 
-
+#pragma mark - Custom Methods
 
 +(NSArray*) getCategoriesForContext:(NSManagedObjectContext*)context
 {
@@ -204,14 +213,6 @@
 
 
 
-
-+(Boolean)checkIfParseObjectRight:(PFObject*)object
-{
-    if(object[P_NAME] && (object[P_ICON] || object[P_IMAGE]))
-        return YES;
-    else
-        return NO;
-}
 
 
 

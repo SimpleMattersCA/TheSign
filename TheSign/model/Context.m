@@ -130,6 +130,10 @@
         return result;
 }
 
+
+
+
+
 -(Tag*)getContextTagByName:(NSString*)name;
 {
     if(self.linkedTags)
@@ -153,9 +157,11 @@
       //  NSLog(@"%@",[error localizedDescription]);
         return nil;
     }
-    
+    //Getting the list of all Contexts
     NSMutableArray* currentContexts=[NSMutableArray arrayWithCapacity:fetchedContexts.count];
+    
     Tag* contextTag;
+    //Going through contexts, getting relevant to the moment context Tags for each available Context
     for(Context *context in fetchedContexts)
     {
         if([context.name isEqualToString:@"weather"])
@@ -183,6 +189,9 @@
     return currentContexts;
 }
 
+/**
+ Returns the weather Context Tag that reflects current conditions. If nothing's special, returns nil
+ */
 -(Tag*)getWeatherAtLocation:(Location*)location
 {
     Tag* contextTagTemp;
@@ -224,7 +233,9 @@
 }
 
 
-
+/**
+ Returns the Day of the Week Context Tag that reflects current date. If nothing's special, returns nil
+ */
 -(Tag*)getDayOfTheWeek
 {
     Tag* contextTag;
@@ -254,6 +265,9 @@
     return contextTag;
 }
 
+/**
+ Returns the time Context Tag that reflects current moment. If nothing's special, returns nil
+ */
 -(Tag*) getTime
 {
     Tag* contextTag;

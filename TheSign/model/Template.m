@@ -201,8 +201,11 @@
 }
 
 
+#pragma mark - Custom Methods
+
 -(NSString*) generateMessageForOffer:(Featured*)offer
 {
+    //Returns welcoming message in a format: "#BusinessName#: #Greeting# #WelcomeText# #OfferTitle#"
     if(offer && self.messageText.length!=0 && offer.title.length!=0)
         return [NSString stringWithFormat:@"%@: %@ %@ %@",offer.linkedBusiness.name,[self generateGreeting], self.messageText,offer.title];
     else
@@ -225,6 +228,9 @@
         return result;
 }
 
+/**
+ Return the greeting part of the welcoming message. May include the name of the current user
+ */
 -(NSString*)generateGreeting
 {
     NSArray *greetingOptions;

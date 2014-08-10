@@ -18,8 +18,14 @@
 @property (nonatomic, retain) Tag *linkedCategoryTag;
 @property (nonatomic, retain) NSString * pObjectID;
 
+/**
+ Generating a welcoming message using this template for a specific offer
+ */
 -(NSString*) generateMessageForOffer:(Featured*)offer;
 
+/**
+ Get all the generic templates (not related to any context)
+ */
 +(NSArray*)getGenericTemplatesForContext:(NSManagedObjectContext*)context;
 
 @end

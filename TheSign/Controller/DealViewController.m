@@ -129,9 +129,13 @@ BOOL clickedDislike=NO;
             [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
                 if(self.actioned.boolValue==NO)
                 {
-                    self.deal.opened=@(YES);
                     [self.deal processLike:[Model sharedModel].lk_none.doubleValue];
                 }
+                self.deal.opened=@(YES);
+                
+                self.stat.linkedOffer=self.deal;
+                self.stat.wasOpened=@(YES);
+                
                 [[Model sharedModel] saveEverything];
                 if(self.isRemoving && self.isRemoving.boolValue==YES)
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"removeBannerNotification"

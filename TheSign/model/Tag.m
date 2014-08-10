@@ -175,13 +175,18 @@
         return result;
 }
 
+
+#pragma mark - Custom Methods
+
 -(void)processLike:(double)effect AlreadyProcessed:(NSMutableSet**)processedTags
 {
+    //if this tag worth processing (we haven't checked it before, the likeness effect greater than the minimum)
     if(self.linkedContext==nil && ![*processedTags containsObject:self.pObjectID] && fabs(effect)>=[Model sharedModel].min_like_level.doubleValue)
     {
         [*processedTags addObject:self.pObjectID];
         [self changeLikenessByValue:@(effect)];
         
+        //going through the graph to pass the likeness taking into account the weight of the connection
         for (TagConnection* connection in self.linkedConnectionsFrom)
         {
             if(connection.linkedTagTo && ![*processedTags containsObject:connection.linkedTagTo.pObjectID])
@@ -189,6 +194,8 @@
                 [connection.linkedTagTo processLike:effect*connection.weight.doubleValue AlreadyProcessed:processedTags];
             }
         }
+        
+        //going through the graph to pass the likeness taking into account the weight of the connection
         for (TagConnection* connection in self.linkedConnectionsTo)
         {
             if(connection.linkedTagFrom && ![*processedTags containsObject:connection.linkedTagFrom.pObjectID])
@@ -209,6 +216,7 @@
         [*processedTags addObject:self.pObjectID];
         cumulativeScore=self.likeness.doubleValue;
         
+        //going through the graph and accumulate the relevancy score
         for (TagConnection* connection in self.linkedConnectionsFrom)
         {
             if(connection.linkedTagTo && ![*processedTags containsObject:connection.linkedTagTo.pObjectID])
@@ -216,6 +224,8 @@
                 cumulativeScore+=[connection.linkedTagTo calculateRelevancyOnLevel:depth+1 AlreadyProcessed:processedTags];
             }
         }
+        
+        //going through the graph and accumulate the relevancy score
         for (TagConnection* connection in self.linkedConnectionsTo)
         {
             if(connection.linkedTagFrom && ![*processedTags containsObject:connection.linkedTagFrom.pObjectID])

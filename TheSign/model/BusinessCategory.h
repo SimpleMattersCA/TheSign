@@ -18,6 +18,13 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSData * icon;
 @property (nonatomic, retain) NSSet *linkedBusinesses;
+
+
+/**
+ Getting the array of all business categories
+ */
++(NSArray*) getCategoriesForContext:(NSManagedObjectContext*)context;
+
 @end
 
 @interface BusinessCategory (CoreDataGeneratedAccessors)

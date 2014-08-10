@@ -37,14 +37,39 @@
  */
 -(void) processLike:(double)effect;
 
+/**
+ Getting the offer that is tied to the iBeacon with specific Major and Minor
+ */
 +(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor Context:(NSManagedObjectContext*)context;
 
+/**
+ Checking if a specific Context Tag is in the Tag's graph for this offer
+ */
 -(Boolean)checkContextTag:(Tag*) lookupTag;
 
+/**
+ Changing relevancy score for this offer by a specific value
+ */
 -(void)changeRelevancyByValue:(NSNumber*)value;
+
+/**
+ Get a special tag(sale, discount, featured etc.) associated with this offer. If it's missing, returns nil.
+ */
 -(NSString*)getSpecialTagName;
+
+/**
+ Getting a category icon
+ */
 -(UIImage*)getCategoryIcon;
+
+/**
+ Getting a location description
+ */
 -(NSString*)getLocationAddress;
+
+/**
+ Getting the name of the business that provides this offer
+ */
 -(NSString*)getBusinessName;
 
 @end

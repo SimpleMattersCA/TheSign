@@ -210,6 +210,7 @@
 }
 
 
+#pragma mark - Custom Methods
 
 +(Location*)getLocationByMajor:(NSNumber*)major Context:(NSManagedObjectContext *)context
 {

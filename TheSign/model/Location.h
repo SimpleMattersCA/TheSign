@@ -22,12 +22,27 @@
 @property (nonatomic, retain) NSString * address;
 @property (nonatomic, retain) NSNumber * major;
 
+/**
+ Get the numeric value of the temperature at this locaiton. Default - nil
+ */
 -(NSNumber*)getTemperature;
+/**
+ Get text description of the weather at this locaiton. Default - nil
+ */
 -(NSString*)getWeather;
+/**
+ Get the timestamp of weather infomration at this locaiton. Default - nil
+ */
 -(NSDate*)getWeatherTime;
 
+/**
+ Get the location object for a specific Major iBeacon identifier
+ */
 +(Location*)getLocationByMajor:(NSNumber*)major Context:(NSManagedObjectContext*)context;
 
+/**
+ Return CLLocation object based on this business location's longitude and lattitude
+ */
 -(CLLocation*)getLocationObject;
 
 @end

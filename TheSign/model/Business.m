@@ -280,6 +280,16 @@
         return result;
 }
 
++(Boolean)checkIfParseObjectRight:(PFObject*)object
+{
+    if(object[P_UID] && object[P_NAME] && object[P_ABOUT] && object[P_CATEGORY])
+        return YES;
+    else
+        return NO;
+}
+
+
+
 
 +(Location*)getClosestBusinessToLocation:(CLLocation*)curLocation Context:(NSManagedObjectContext *)context
 {
@@ -309,11 +319,6 @@
 }
 
 
-
-
-
-
-
 +(NSArray*) getBusinessesForContext:(NSManagedObjectContext*)context
 {
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
@@ -331,15 +336,7 @@
 
 
 
-
-+(Boolean)checkIfParseObjectRight:(PFObject*)object
-{
-    if(object[P_UID] && object[P_NAME] && object[P_ABOUT] && object[P_CATEGORY])
-        return YES;
-    else
-        return NO;
-}
-
+#pragma mark - Custom Methods
 
 -(NSSet*) getActiveOffers
 {
@@ -357,7 +354,7 @@
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Business entityName]];
     NSError *error;
-    request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@=%d", CD_DISCOVERED, YES]];
+    request.predicate=[NSPredicate predicateWithFormat: [NSString stringWithFormat:@"%@==%d",CD_DISCOVERED,YES]];
     NSArray *result = [context executeFetchRequest:request error:&error];
     
     if(error)

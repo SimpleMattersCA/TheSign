@@ -255,9 +255,9 @@
 +(Featured*) getOfferByMajor:(NSNumber*)major andMinor:(NSNumber*)minor Context:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[Featured entityName]];
-    NSPredicate *predicateMajor = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@=%d)", CD_MAJOR, major.intValue]];
-    NSPredicate *predicateMinor = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@=%d)", CD_MINOR, minor.intValue]];
-    NSPredicate *predicateActive = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@=%d)", CD_ACIVE, minor.boolValue]];
+    NSPredicate *predicateMajor = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@==%d)", CD_MAJOR, major.intValue]];
+    NSPredicate *predicateMinor = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@==%d)", CD_MINOR, minor.intValue]];
+    NSPredicate *predicateActive = [NSPredicate predicateWithFormat: [NSString stringWithFormat:@"(%@==%d)", CD_ACIVE,YES]];
     request.predicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicateMajor, predicateMinor,predicateActive]];
    
     NSError *error;
@@ -285,7 +285,7 @@
 
 -(void) processLike:(double)effect
 {
-    //update likeness scores for tags
+    //update likeness scores for tags. alreadyProcessed dictionary holds pObjectID's of tags that we've checked already
     NSMutableSet* alreadyProcessed=[NSMutableSet set];
     for(TagSet* tagset in self.linkedTagSets)
     {
@@ -299,8 +299,6 @@
         if( tagset.linkedTag) score+=[tagset.linkedTag calculateRelevancyOnLevel:0 AlreadyProcessed:&alreadyProcessed];
     
     [self changeRelevancyByValue:@(score)];
-    
-   // [[Model sharedModel] saveContext:context];
 }
 
 

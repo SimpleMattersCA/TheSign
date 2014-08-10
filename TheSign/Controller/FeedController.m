@@ -31,6 +31,9 @@
 
 @implementation FeedController
 
+/**
+ Pull to refresh
+ */
 - (IBAction)updateDealList:(id)sender {
     self.deals=[[Model sharedModel] getDealsForFeed];
     [self.tableView reloadData];
@@ -48,6 +51,9 @@
     return self;
 }
 
+/**
+ Tapping on the left side of the cell - triggers opening the deal
+ */
 - (void)actionTapDeal:(UIGestureRecognizer *)sender
 {
     UIView* view=sender.view;
@@ -62,6 +68,10 @@
     [self showModalDeal:((FeedCell*)view).deal Statistics:nil];
 
 }
+
+/**
+ Tapping on the right side of the cell - triggers opening the business information
+ */
 - (void)actionTapBusiness:(UIGestureRecognizer *)sender
 {
     UIView* view=sender.view;
@@ -78,10 +88,12 @@
     [super viewDidLoad];
     self.deals=[[Model sharedModel] getDealsForFeed];
     
+    //Top Bar button the leads to profile
     [self.btnProfile setTitleTextAttributes:@{
                                          NSFontAttributeName: [UIFont fontWithName:@"Futura" size:18],
                                          NSForegroundColorAttributeName: [UIColor whiteColor]
                                          } forState:UIControlStateNormal];
+    //Top Bar button the leads to the list of businesses
     [self.btnPlaces setTitleTextAttributes:@{
                                               NSFontAttributeName: [UIFont fontWithName:@"Futura" size:18],
                                               NSForegroundColorAttributeName: [UIColor whiteColor]
@@ -123,7 +135,6 @@
     [cell setDealToShow:self.deals[indexPath.row]];
     cell.indexPath=indexPath;
     [cell setGestureRecognizersForTarget:self];
-    
     
     return cell;
 }
