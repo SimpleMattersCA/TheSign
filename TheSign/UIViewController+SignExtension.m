@@ -18,7 +18,6 @@
 -(UIImage*)getBlurredScreenshot
 {
     UIGraphicsBeginImageContext(self.view.window.bounds.size);
-    //[self.view drawViewHierarchyInRect:[UIScreen mainScreen].applicationFrame afterScreenUpdates:YES];
     [self.view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *imageOfUnderlyingView = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
