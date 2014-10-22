@@ -320,8 +320,6 @@
     
     if (!error)
     {
-        //delete entity from coredata, so we can create a new one
-      //  [self deleteEntity:entityName];
         //go through the objects we got from Parse
         Boolean completeRecord=YES;;
 
